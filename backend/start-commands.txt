@@ -1,0 +1,11 @@
+# Init
+pip3 install django
+pip3 install djangorestframework
+django-admin startproject server .
+
+# Start
+python3.10 manage.py runserver
+python3.10 manage.py migrate
+
+# Create admin account
+python3.10 manage.py createsuperuser
