@@ -1,8 +1,8 @@
 package com.voyager
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.voyager.databinding.ActivityMainBinding
 import okhttp3.OkHttpClient
 import retrofit2.Call
