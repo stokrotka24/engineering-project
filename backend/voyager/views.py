@@ -1,8 +1,11 @@
+from rest_framework.permissions import IsAuthenticatedOrReadOnly
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 
 class Hello(APIView):
+    permission_classes = [IsAuthenticatedOrReadOnly]
+
     def get(self, request, format=None):
         return Response({'message': 'Hello unknown!'})
 
