@@ -1,3 +1,10 @@
 <resources>
     <string name="app_name">Voyager</string>
+    <string name="username">Username</string>
+    <string name="email">Email</string>
+    <string name="pass">Password</string>
+    <string name="pass_confirm">Password confirmation</string>
+    <string name="register">Register</string>
+    <string name="non_unique_field">This field must be unique.</string>
+    <string name="user_with_this_email_already_exists">User with this email already exists</string>
 </resources>

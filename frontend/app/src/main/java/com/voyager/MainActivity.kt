@@ -3,14 +3,14 @@ package com.voyager
 import android.os.Bundle
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
+import com.voyager.api.ApiInterface
+import com.voyager.api.ApiService
 import com.voyager.databinding.ActivityMainBinding
-import okhttp3.OkHttpClient
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
+private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
@@ -22,13 +22,7 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
-        val okHttpClient = OkHttpClient().newBuilder().build()
-        api = Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BuildConfig.API_URL)
-            .client(okHttpClient)
-            .build()
-            .create(ApiInterface::class.java)
+        api = ApiService.getApi()
 
         binding.getButton.setOnClickListener {
             getHello()
@@ -39,15 +33,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getHello() {
-        val getCall = api.postHello()
+        val getCall = api.getHello()
         getCall.enqueue(object : Callback<ServerHello?> {
             override fun onResponse(call: Call<ServerHello?>, response: Response<ServerHello?>) {
-                Log.d("MainActivity", "getHello: onResponse")
+                Log.d(TAG, "getHello: onResponse")
                 binding.serverTextView.text = response.body()!!.message
             }
 
             override fun onFailure(call: Call<ServerHello?>, t: Throwable) {
-                Log.d("MainActivity", "getHello: onFailure: " + t.message)
+                Log.d(TAG, "getHello: onFailure: " + t.message)
             }
         })
     }
@@ -58,11 +52,11 @@ class MainActivity : AppCompatActivity() {
         val postCall = api.postHello(clientHello)
         postCall.enqueue(object : Callback<ServerHello?> {
             override fun onResponse(call: Call<ServerHello?>, response: Response<ServerHello?>) {
-                Log.d("MainActivity", "postHello: onResponse")
+                Log.d(TAG, "postHello: onResponse")
                 binding.serverTextView.text = response.body()!!.message
             }
             override fun onFailure(call: Call<ServerHello?>, t: Throwable) {
-                Log.d("MainActivity", "getHello: onFailure: " + t.message)
+                Log.d(TAG, "getHello: onFailure: " + t.message)
 
             }
         })
