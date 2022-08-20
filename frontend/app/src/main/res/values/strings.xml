@@ -7,4 +7,9 @@
     <string name="register">Register</string>
     <string name="non_unique_field">This field must be unique.</string>
     <string name="user_with_this_email_already_exists">User with this email already exists</string>
+    <string name="login">Login</string>
+    <string name="server_error">"Server error occurred. Try again later"</string>
+    <string name="login_error">"Wrong email or password!"</string>
+    <string name="new_to_voyager">"New to Voyager?"</string>
+    <string name="create_an_account">"Create an account"</string>
 </resources>

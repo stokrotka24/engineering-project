@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".RegisterActivity">
+    tools:context=".LoginActivity">
 
     <TextView
         android:id="@+id/logoTextView"
@@ -21,7 +21,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/usernameTextField"
+        android:id="@+id/emailTextField"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -29,39 +29,16 @@
         android:layout_marginTop="72dp"
         android:layout_marginEnd="32dp"
         android:clickable="true"
-        android:hint="@string/username"
+        android:hint="@string/email"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/logoTextView">
 
         <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/usernameInnerTextField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/emailTextField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:clickable="true"
-        android:hint="@string/email"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/usernameTextField">
-
-        <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/emailInnerTextField"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:clickable="true"/>
+            android:clickable="true" />
 
     </com.google.android.material.textfield.TextInputLayout>
 
@@ -90,40 +67,49 @@
 
     </com.google.android.material.textfield.TextInputLayout>
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/passwordConfirmTextField"
-        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="32dp"
-        android:clickable="true"
-        android:hint="@string/pass_confirm"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordTextField"
-        app:passwordToggleEnabled="true"
-        app:passwordToggleTint="@color/primary_dark">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/passwordConfirmInnerTextField"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:clickable="true"
-            android:inputType="textPassword" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
     <Button
-        android:id="@+id/registerButton"
+        android:id="@+id/loginButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginEnd="32dp"
-        android:text="@string/register"
-        app:layout_constraintBottom_toBottomOf="parent"
+        android:text="@string/login"
+        app:layout_constraintBottom_toTopOf="@+id/newToVoyagerTextView"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/passwordConfirmTextField"
-        app:layout_constraintVertical_bias="0.30" />
+        app:layout_constraintTop_toBottomOf="@+id/passwordTextField"
+        app:layout_constraintVertical_bias="0.15" />
 
+    <TextView
+        android:id="@+id/loginErrorTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:textColor="@color/design_textinput_error_color"
+        app:layout_constraintBottom_toTopOf="@+id/emailTextField"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/logoTextView"
+        app:layout_constraintVertical_bias="0.75"
+        tools:text="@string/login_error" />
+
+    <TextView
+        android:id="@+id/newToVoyagerTextView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="8dp"
+        android:text="@string/new_to_voyager"
+        android:textColor="@color/secondary_text"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toTopOf="@+id/createAccountButton"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/createAccountButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
+        android:text="@string/create_an_account"
+        android:textSize="14sp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>
