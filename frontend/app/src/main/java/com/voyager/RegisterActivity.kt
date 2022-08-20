@@ -101,7 +101,9 @@ class RegisterActivity : AppCompatActivity() {
                 when (responseCode) {
                     HttpStatus.Created.code -> {
                         Log.d(TAG, "onResponse: response.body = ${response.body()}")
-                        Toast.makeText(applicationContext, "Your account has been created", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, getString(R.string.account_created), Toast.LENGTH_LONG).show()
+                        Thread.sleep(1_000)
+                        finish()
                     }
 
                     HttpStatus.BadRequest.code -> {

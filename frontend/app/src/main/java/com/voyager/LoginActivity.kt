@@ -1,5 +1,6 @@
 package com.voyager
 
+import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -27,6 +28,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordField: TextInputLayout
     private lateinit var passwordInnerField: TextInputEditText
     private lateinit var loginButton: Button
+    private lateinit var createAccountButton: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +52,7 @@ class LoginActivity : AppCompatActivity() {
             passwordInnerField = it.passwordInnerTextField
 
             loginButton = it.loginButton
+            createAccountButton = it.createAccountButton
         }
     }
 
@@ -61,6 +64,7 @@ class LoginActivity : AppCompatActivity() {
         passwordField.setOnClickListener { passwordField.error = null }
 
         loginButton.setOnClickListener { loginButtonClicked() }
+        createAccountButton.setOnClickListener { createAccountButtonClicked() }
     }
 
     private fun loginButtonClicked() {
@@ -71,6 +75,11 @@ class LoginActivity : AppCompatActivity() {
         val email = emailField.editText?.text.toString()
         val password = passwordField.editText?.text.toString()
         tryLogin(email, password)
+    }
+
+    private fun createAccountButtonClicked() {
+        val intent = Intent(this, RegisterActivity::class.java)
+        startActivity(intent)
     }
 
     private fun tryLogin(email: String, password: String) {
@@ -84,7 +93,10 @@ class LoginActivity : AppCompatActivity() {
                 when (responseCode) {
                     HttpStatus.OK.code -> {
                         Log.d(TAG, "onResponse: response.body = ${response.body()}")
-                        Toast.makeText(applicationContext, "Your are logged in", Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, getString(R.string.logged_in), Toast.LENGTH_LONG).show()
+                        Thread.sleep(1_000)
+                        val intent = Intent(applicationContext, MainActivity::class.java)
+                        startActivity(intent)
                     }
 
                     HttpStatus.BadRequest.code -> {
