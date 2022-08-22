@@ -10,8 +10,13 @@ import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
-import com.voyager.api.ApiInterface
 import com.voyager.api.ApiService
+import com.voyager.api.ApiUtils
+import com.voyager.api.HttpStatus
+import com.voyager.api.login.LoginRequest
+import com.voyager.api.registration.RegisterErrors
+import com.voyager.api.tokens.TokenManager
+import com.voyager.api.tokens.TokenResponse
 import com.voyager.databinding.ActivityLoginBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -21,7 +26,8 @@ private const val TAG = "LoginActivity"
 
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
-    private lateinit var api: ApiInterface
+    private lateinit var api: ApiService
+    private lateinit var tokenManager: TokenManager
     private lateinit var errorTextView: TextView
     private lateinit var emailField: TextInputLayout
     private lateinit var emailInnerField: TextInputEditText
@@ -38,7 +44,10 @@ class LoginActivity : AppCompatActivity() {
 
         bindComponents()
         setComponentsListeners()
-        api = ApiService.getApi()
+        api = ApiUtils.getApi()
+        tokenManager = TokenManager(this)
+        // TODO extract to strings.xml
+        Toast.makeText(this, "You have to log in to use Voyager", Toast.LENGTH_LONG).show()
     }
 
     private fun bindComponents() {
@@ -84,17 +93,19 @@ class LoginActivity : AppCompatActivity() {
 
     private fun tryLogin(email: String, password: String) {
         val loginRequest = LoginRequest(email, password)
-        val loginCall: Call<LoginResponse> = api.login(loginRequest)
-        loginCall.enqueue(object : Callback<LoginResponse?> {
-            override fun onResponse(call: Call<LoginResponse?>, response: Response<LoginResponse?>) {
+        val loginCall: Call<TokenResponse> = api.login(loginRequest)
+        loginCall.enqueue(object : Callback<TokenResponse?> {
+            override fun onResponse(call: Call<TokenResponse?>, response: Response<TokenResponse?>) {
                 val responseCode = response.code()
                 Log.d(TAG, "onResponse: response.code = $responseCode")
 
                 when (responseCode) {
                     HttpStatus.OK.code -> {
                         Log.d(TAG, "onResponse: response.body = ${response.body()}")
+                        val tokenResponse = response.body()!!
+                        tokenManager.saveTokens(tokenResponse.access, tokenResponse.refresh)
+                        ApiUtils.loggedIn(applicationContext)
                         Toast.makeText(applicationContext, getString(R.string.logged_in), Toast.LENGTH_LONG).show()
-                        Thread.sleep(1_000)
                         val intent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(intent)
                     }
@@ -123,7 +134,7 @@ class LoginActivity : AppCompatActivity() {
                 }
             }
 
-            override fun onFailure(call: Call<LoginResponse?>, t: Throwable) {
+            override fun onFailure(call: Call<TokenResponse?>, t: Throwable) {
                 Log.d(TAG, "onFailure: ${t.message}")
             }
         })

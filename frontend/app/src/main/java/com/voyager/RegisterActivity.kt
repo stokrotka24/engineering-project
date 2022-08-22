@@ -8,8 +8,12 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
-import com.voyager.api.ApiInterface
 import com.voyager.api.ApiService
+import com.voyager.api.ApiUtils
+import com.voyager.api.HttpStatus
+import com.voyager.api.registration.RegisterErrors
+import com.voyager.api.registration.RegisterRequest
+import com.voyager.api.registration.RegisterResponse
 import com.voyager.databinding.ActivityRegisterBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -20,7 +24,7 @@ private const val TAG = "RegisterActivity"
 
 class RegisterActivity : AppCompatActivity() {
     private lateinit var binding: ActivityRegisterBinding
-    private lateinit var api: ApiInterface
+    private lateinit var api: ApiService
     private lateinit var usernameField: TextInputLayout
     private lateinit var usernameInnerField: TextInputEditText
     private lateinit var emailField: TextInputLayout
@@ -40,7 +44,7 @@ class RegisterActivity : AppCompatActivity() {
 
         bindComponents()
         setComponentsListeners()
-        api = ApiService.getApi()
+        api = ApiUtils.getApi()
     }
 
     private fun bindComponents() {

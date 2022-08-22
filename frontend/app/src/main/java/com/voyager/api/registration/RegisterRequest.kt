@@ -1,4 +1,4 @@
-package com.voyager
+package com.voyager.api.registration
 
 data class RegisterRequest(
     val username: String,

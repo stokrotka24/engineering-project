@@ -1,28 +1,25 @@
 package com.voyager.api
 
-import android.util.Log
-import com.voyager.BuildConfig
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
+import com.voyager.*
+import com.voyager.api.login.LoginRequest
+import com.voyager.api.registration.RegisterRequest
+import com.voyager.api.registration.RegisterResponse
+import com.voyager.api.tokens.TokenResponse
+import retrofit2.Call
+import retrofit2.http.Body
+import retrofit2.http.GET
+import retrofit2.http.POST
 
-private const val TAG = "ApiService"
+interface ApiService {
+    @GET("hello/")
+    fun getHello(): Call<ServerHello>
 
-object ApiService {
-    private val okHttpClient: OkHttpClient = OkHttpClient().newBuilder().build()
-    private val api: ApiInterface = buildApi()
+    @POST("hello/")
+    fun postHello(@Body clientHello: ClientHello): Call<ServerHello>
 
-    private fun buildApi(): ApiInterface {
-        Log.d(TAG, "buildApi: ")
-        return Retrofit.Builder()
-            .addConverterFactory(GsonConverterFactory.create())
-            .baseUrl(BuildConfig.API_URL)
-            .client(okHttpClient)
-            .build()
-            .create(ApiInterface::class.java)
-    }
+    @POST("register/")
+    fun register(@Body registerRequest: RegisterRequest): Call<RegisterResponse>
 
-    fun getApi(): ApiInterface {
-        return api
-    }
+    @POST("login/")
+    fun login(@Body loginRequest: LoginRequest): Call<TokenResponse>
 }

@@ -1,4 +1,4 @@
-package com.voyager
+package com.voyager.api
 
 enum class HttpStatus(val code: Int) {
     OK(200),
