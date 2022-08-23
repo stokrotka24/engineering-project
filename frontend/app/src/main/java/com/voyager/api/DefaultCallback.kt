@@ -9,12 +9,13 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-private const val TAG = "BaseCallback"
+private const val TAG = "DefaultCallback"
 
-abstract class BaseCallback<T>(private val context: Context): Callback<T> {
+abstract class DefaultCallback<T>(private val context: Context): Callback<T> {
     override fun onResponse(call: Call<T>, response: Response<T>) {
         if (response.code() == HttpStatus.Unauthorized.code) {
             val intent = Intent(context, LoginActivity::class.java)
+            intent.putExtra("afterAutoLogOut", true)
             context.startActivity(intent)
         } else {
             onSuccess(response)

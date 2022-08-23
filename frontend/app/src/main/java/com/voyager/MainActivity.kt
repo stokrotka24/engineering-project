@@ -1,11 +1,11 @@
 package com.voyager
 
-import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
-import com.voyager.api.BaseCallback
+import com.voyager.api.DefaultCallback
 import com.voyager.databinding.ActivityMainBinding
 import retrofit2.Response
 
@@ -33,23 +33,9 @@ class MainActivity : AppCompatActivity() {
 
     private fun getHello() {
         val getCall = api.getHello()
-//        getCall.enqueue(object : Callback<ServerHello?> {
-//            override fun onResponse(call: Call<ServerHello?>, response: Response<ServerHello?>) {
-//                Log.d(TAG, "getHello: onResponse")
-//
-//                if (response.code() == HttpStatus.Unauthorized.code) {
-//                    startActivity(Intent(applicationContext, LoginActivity::class.java))
-//                } else {
-//                    binding.serverTextView.text = response.body()!!.message
-//                }
-//            }
-//
-//            override fun onFailure(call: Call<ServerHello?>, t: Throwable) {
-//                Log.d(TAG, "getHello: onFailure: " + t.message)
-//            }
-//        })
-        getCall.enqueue(object : BaseCallback<ServerHello?>(this) {
+        getCall.enqueue(object : DefaultCallback<ServerHello?>(this) {
             override fun onSuccess(response: Response<ServerHello?>) {
+                Log.d(TAG, "onSuccess: getHello")
                 binding.serverTextView.text = response.body()!!.message
             }
         })
@@ -59,22 +45,9 @@ class MainActivity : AppCompatActivity() {
         val name = binding.editTextPersonName.text.toString()
         val clientHello = ClientHello(name)
         val postCall = api.postHello(clientHello)
-//        postCall.enqueue(object : Callback<ServerHello?> {
-//            override fun onResponse(call: Call<ServerHello?>, response: Response<ServerHello?>) {
-//                Log.d(TAG, "postHello: onResponse")
-//                if (response.code() == HttpStatus.Unauthorized.code) {
-//                    startActivity(Intent(applicationContext, LoginActivity::class.java))
-//                } else{
-//                    binding.serverTextView.text = response.body()!!.message
-//                }
-//            }
-//            override fun onFailure(call: Call<ServerHello?>, t: Throwable) {
-//                Log.d(TAG, "getHello: onFailure: " + t.message)
-//
-//            }
-//        })
-        postCall.enqueue(object : BaseCallback<ServerHello?>(this) {
+        postCall.enqueue(object : DefaultCallback<ServerHello?>(this) {
             override fun onSuccess(response: Response<ServerHello?>) {
+                Log.d(TAG, "onSuccess: postHello")
                 binding.serverTextView.text = response.body()!!.message
             }
         })

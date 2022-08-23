@@ -1,5 +1,6 @@
 package com.voyager
 
+import android.app.AlertDialog
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -35,6 +36,7 @@ class LoginActivity : AppCompatActivity() {
     private lateinit var passwordInnerField: TextInputEditText
     private lateinit var loginButton: Button
     private lateinit var createAccountButton: Button
+    private var afterAutoLogOut: Boolean = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,8 +48,9 @@ class LoginActivity : AppCompatActivity() {
         setComponentsListeners()
         api = ApiUtils.getApi()
         tokenManager = TokenManager(this)
-        // TODO extract to strings.xml
-        Toast.makeText(this, "You have to log in to use Voyager", Toast.LENGTH_LONG).show()
+        afterAutoLogOut = intent.getBooleanExtra("afterAutoLogOut", false)
+        Log.d(TAG, "onCreate: afterAutoLogOut = $afterAutoLogOut")
+        if (afterAutoLogOut) { displayAutoLogOutDialog() }
     }
 
     private fun bindComponents() {
@@ -138,5 +141,23 @@ class LoginActivity : AppCompatActivity() {
                 Log.d(TAG, "onFailure: ${t.message}")
             }
         })
+    }
+
+    private fun displayAutoLogOutDialog() {
+        val dialogBuilder = AlertDialog.Builder(this)
+
+        dialogBuilder
+            .setTitle("Automatic log out")
+            .setMessage(getString(R.string.auto_logged_out))
+            .setPositiveButton("OK",null)
+
+        val dialog = dialogBuilder.create()
+        dialog.show()
+    }
+
+    override fun onBackPressed() {
+        if (!afterAutoLogOut) {
+            super.onBackPressed()
+        }
     }
 }

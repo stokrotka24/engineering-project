@@ -1,10 +1,7 @@
 package com.voyager.api.tokens
 
 import android.content.Context
-import android.content.Intent
 import android.util.Log
-import com.voyager.LoginActivity
-import com.voyager.RefreshTokenExpiredException
 import com.voyager.api.ApiBuilder
 import com.voyager.api.ApiUtils
 import com.voyager.api.HttpStatus
@@ -12,7 +9,7 @@ import okhttp3.*
 
 private const val TAG = "TokenAuthenticator"
 
-class TokenAuthenticator(private val context: Context): Authenticator {
+class TokenAuthenticator(context: Context): Authenticator {
     private val tokenManager = TokenManager(context)
     private val tokenRefreshApi = buildTokenRefreshApi()
 

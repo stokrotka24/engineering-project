@@ -11,6 +11,7 @@
     <string name="login">Login</string>
     <string name="login_error">Wrong email or password!</string>
     <string name="logged_in">Your are logged in</string>
+    <string name="auto_logged_out">You have been automatically logged out. To continue using the application, log in again</string>
     <string name="new_to_voyager">New to Voyager?</string>
     <string name="create_an_account">Create an account</string>
     <string name="server_error">Server error occurred. Try again later</string>
