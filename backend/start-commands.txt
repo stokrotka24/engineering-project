@@ -2,7 +2,8 @@
 pip3 install django
 pip3 install djangorestframework
 django-admin startproject server .
-django-admin startapp voyager
+django-admin startapp authorization
+django-admin startapp hotels
 
 # Start
 python3.10 manage.py runserver

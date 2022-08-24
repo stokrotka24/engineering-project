@@ -5,3 +5,4 @@ Werkzeug~=2.2.2
 pyOpenSSL~=22.0.0
 djangorestframework_simplejwt~=5.2.0
 django_filter~=22.1
+django-enum choicefield-3.0.1

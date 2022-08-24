@@ -2,8 +2,8 @@ from django.urls import path
 from rest_framework.urlpatterns import format_suffix_patterns
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
 
-from voyager import views
-from voyager.views import RegisterView
+from authorization import views
+from authorization.views import RegisterView
 
 urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),

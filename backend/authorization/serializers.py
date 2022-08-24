@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 
-from voyager.models import User
+from authorization.models import User
 
 
 class RegisterSerializer(serializers.ModelSerializer):

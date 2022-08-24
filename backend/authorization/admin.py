@@ -2,8 +2,8 @@ from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import Group
 
-from voyager.forms import CustomUserCreationForm, CustomUserChangeForm
-from voyager.models import User
+from authorization.forms import CustomUserCreationForm, CustomUserChangeForm
+from authorization.models import User
 
 
 class UserAdmin(BaseUserAdmin):

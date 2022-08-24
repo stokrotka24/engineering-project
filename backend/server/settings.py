@@ -36,7 +36,8 @@ ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0', '10.0.2.2', ip_address]
 # Application definition
 
 INSTALLED_APPS = [
-    'voyager',
+    'authorization',
+    'hotels',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -48,7 +49,7 @@ INSTALLED_APPS = [
     'django_filters',
 ]
 
-AUTH_USER_MODEL = "voyager.User"
+AUTH_USER_MODEL = "authorization.User"
 
 REST_FRAMEWORK = {
     'DEFAULT_FILTER_BACKENDS': [
@@ -60,6 +61,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
+    # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
     'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
     'ROTATE_REFRESH_TOKENS': True,
 }

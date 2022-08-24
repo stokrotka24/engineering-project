@@ -1,6 +1,6 @@
 from django.contrib.auth.forms import UserCreationForm, UserChangeForm
 from django import forms
-from voyager.models import User
+from authorization.models import User
 
 
 class CustomUserCreationForm(forms.ModelForm):

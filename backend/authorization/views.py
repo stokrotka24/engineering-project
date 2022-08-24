@@ -3,8 +3,8 @@ from rest_framework.permissions import IsAuthenticatedOrReadOnly, AllowAny
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from voyager.models import User
-from voyager.serializers import RegisterSerializer
+from authorization.models import User
+from authorization.serializers import RegisterSerializer
 
 
 class Hello(APIView):

@@ -4,7 +4,7 @@ from django.core.validators import int_list_validator
 from django.db import models
 import random
 import string
-from voyager.managers import UserManager
+from authorization.managers import UserManager
 
 USER_ID_LEN = 22
 
