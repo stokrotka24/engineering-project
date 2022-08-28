@@ -1,9 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from djongo import models
 from enumchoicefield import ChoiceEnum, EnumChoiceField
-
-# from django.contrib.postgres.fields import ArrayField
-
 from common.utils.id import ID_LEN, random_id
 
 
@@ -132,57 +129,58 @@ class Ambience(models.Model):
 
 class Attributes(models.Model):
     businessAcceptsCreditCards = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    wiFi = EnumChoiceField(WifiValue, default=WifiValue.null)
-    restaurantsPriceRange2 = EnumChoiceField(RestaurantsPriceRange, RestaurantsPriceRange.null)
-    byAppointmentOnly = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    restaurantsDelivery = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    restaurantsGoodForGroups = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    goodForKids = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    outdoorSeating = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    restaurantsReservations = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    hasTV = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    restaurantsTakeOut = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    noiseLevel = EnumChoiceField(NoiseLevel, default=NoiseLevel.null)
-    restaurantsAttire = EnumChoiceField(RestaurantsAttire, default=RestaurantsAttire.null)
-    businessAcceptsBitcoin = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    music = models.EmbeddedField(
-        model_container=Music,
-        null=True
-    )
-    businessParking = models.EmbeddedField(
-        model_container=Parking,
-        null=True
-    )
-    goodForMeal = models.EmbeddedField(
-        model_container=GoodForMeal,
-        null=True
-    )
-    BYOBCorkage = EnumChoiceField(BYOBCorkage, default=BYOBCorkage.null)
-    smoking = EnumChoiceField(Smoking, default=Smoking.null)
-    BYOB = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    restaurantsTableService = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    caters = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    alcohol = EnumChoiceField(Alcohol, default=AttributeValue.null)
-    dogsAllowed = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    wheelchairAccessible = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    happyHour = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    goodForDancing = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    bestNights = models.EmbeddedField(
-        model_container=BestNights,
-        null=True
-    )
-    ambience = models.EmbeddedField(
-        model_container=Ambience,
-        null=True
-    )
-    coatCheck = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    bikeParking = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    corkage = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    driveThru = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    open24Hours = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    acceptsInsurance = EnumChoiceField(AttributeValue, default=AttributeValue.null)
-    restaurantsCounterService = EnumChoiceField(AttributeValue, default=AttributeValue.null)
 
+    # wiFi = EnumChoiceField(WifiValue, default=WifiValue.null)
+    # restaurantsPriceRange2 = EnumChoiceField(RestaurantsPriceRange, RestaurantsPriceRange.null)
+    # byAppointmentOnly = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # restaurantsDelivery = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # restaurantsGoodForGroups = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # goodForKids = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # outdoorSeating = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # restaurantsReservations = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # hasTV = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # restaurantsTakeOut = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # noiseLevel = EnumChoiceField(NoiseLevel, default=NoiseLevel.null)
+    # restaurantsAttire = EnumChoiceField(RestaurantsAttire, default=RestaurantsAttire.null)
+    # businessAcceptsBitcoin = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # music = models.EmbeddedField(
+    #     model_container=Music,
+    #     null=True
+    # )
+    # businessParking = models.EmbeddedField(
+    #     model_container=Parking,
+    #     null=True
+    # )
+    # goodForMeal = models.EmbeddedField(
+    #     model_container=GoodForMeal,
+    #     null=True
+    # )
+    # BYOBCorkage = EnumChoiceField(BYOBCorkage, default=BYOBCorkage.null)
+    # smoking = EnumChoiceField(Smoking, default=Smoking.null)
+    # BYOB = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # restaurantsTableService = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # caters = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # alcohol = EnumChoiceField(Alcohol, default=AttributeValue.null)
+    # dogsAllowed = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # wheelchairAccessible = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # happyHour = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # goodForDancing = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # bestNights = models.EmbeddedField(
+    #     model_container=BestNights,
+    #     null=True
+    # )
+    # ambience = models.EmbeddedField(
+    #     model_container=Ambience,
+    #     null=True
+    # )
+    # coatCheck = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # bikeParking = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # corkage = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # driveThru = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # open24Hours = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # acceptsInsurance = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    # restaurantsCounterService = EnumChoiceField(AttributeValue, default=AttributeValue.null)
+    #
     class Meta:
         abstract = True
 
@@ -203,8 +201,8 @@ class Hotel(models.Model):
         ]
     )
     review_count = models.PositiveIntegerField()
-    # categories = ArrayField(models.CharField(max_length=32))
-    # hours
+    # TODO change categories to array, list
+    categories = models.CharField(max_length=1024)
     attributes = models.EmbeddedField(
         model_container=Attributes
     )

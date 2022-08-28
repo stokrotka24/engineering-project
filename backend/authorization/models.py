@@ -17,8 +17,6 @@ class User(AbstractUser):
     cool_votes = models.PositiveIntegerField(default=0)
     fans = models.PositiveIntegerField(default=0)
     elite = models.CharField(max_length=100, validators=[int_list_validator])
-    # elite = ArrayField(models.PositiveIntegerField())
-    # elite = models.ArrayField(models.PositiveIntegerField())
     average_stars = models.DecimalField(
         default=2.5,
         max_digits=3,
