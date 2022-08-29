@@ -5,7 +5,7 @@ from hotels.models import Hotel
 from hotels.serializers import HotelSerializer
 
 
-class HotelView(generics.CreateAPIView):
+class HotelView(generics.ListCreateAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelSerializer
     # TODO change permission
