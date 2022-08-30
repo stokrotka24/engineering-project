@@ -13,13 +13,6 @@ class WiFi(ChoiceEnum):
     paid = "paid"
 
 
-class RestaurantsPriceRange(ChoiceEnum):
-    one = "1"
-    two = "2"
-    three = "3"
-    four = "4"
-
-
 class NoiseLevel(ChoiceEnum):
     quiet = "quiet"
     average = "average"
@@ -82,6 +75,7 @@ class Smoking(ChoiceEnum):
 
 
 class Alcohol(ChoiceEnum):
+    none = "none"
     full_bar = "full_bar"
     beer_and_wine = "beer_and_wine"
 
@@ -124,7 +118,13 @@ class Category(models.Model):
 class Attributes(models.Model):
     businessAcceptsCreditCards = models.NullBooleanField()
     wiFi = EnumChoiceField(WiFi)
-    restaurantsPriceRange2 = EnumChoiceField(RestaurantsPriceRange)
+    restaurantsPriceRange2 = models.PositiveIntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ],
+        null=True
+    )
     byAppointmentOnly = models.NullBooleanField()
     restaurantsDelivery = models.NullBooleanField()
     restaurantsGoodForGroups = models.NullBooleanField()
@@ -137,7 +137,9 @@ class Attributes(models.Model):
     restaurantsAttire = EnumChoiceField(RestaurantsAttire)
     businessAcceptsBitcoin = models.NullBooleanField()
     music = models.EmbeddedField(
-        model_container=Music
+        model_container=Music,
+        null=True,
+        blank=True,
     )
     businessParking = models.EmbeddedField(
         model_container=Parking
@@ -176,22 +178,22 @@ class Attributes(models.Model):
 class Hotel(models.Model):
     id = models.CharField(max_length=ID_LEN, default=random_id, unique=True, primary_key=True)
     name = models.CharField(max_length=64, unique=False)
-    # address = models.CharField(max_length=64)
-    # city = models.CharField(max_length=32)
-    # state = models.CharField(max_length=2)
-    # postal_code = models.CharField(max_length=8)
-    # latitude = models.DecimalField(max_digits=13, decimal_places=10)
-    # longitude = models.DecimalField(max_digits=13, decimal_places=10)
-    # stars = models.IntegerField(
-    #     validators=[
-    #         MinValueValidator(1),
-    #         MaxValueValidator(5)
-    #     ]
-    # )
-    # review_count = models.PositiveIntegerField(default=0)
-    # categories = models.ArrayField(
-    #     model_container=Category
-    # )
+    address = models.CharField(max_length=64)
+    city = models.CharField(max_length=32)
+    state = models.CharField(max_length=2)
+    postal_code = models.CharField(max_length=8)
+    latitude = models.DecimalField(max_digits=13, decimal_places=10)
+    longitude = models.DecimalField(max_digits=13, decimal_places=10)
+    stars = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ]
+    )
+    review_count = models.PositiveIntegerField(default=0)
+    categories = models.ArrayField(
+        model_container=Category
+    )
     attributes = models.EmbeddedField(
         model_container=Attributes,
         null=True

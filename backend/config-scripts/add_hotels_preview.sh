@@ -1,6 +1,6 @@
-echo 'from hotels.models import Hotel, Attributes, WiFi; h = Hotel(name="ww"); h.attributes={
+echo 'from hotels.models import Hotel, WiFi; h = Hotel(); h.attributes={
    "businessAcceptsCreditCards":None,
-   "wiFi":WiFi.free,
+   "wiFi":None,
    "restaurantsPriceRange2":None,
    "byAppointmentOnly":None,
    "restaurantsDelivery":None,
@@ -13,15 +13,7 @@ echo 'from hotels.models import Hotel, Attributes, WiFi; h = Hotel(name="ww"); h
    "noiseLevel":None,
    "restaurantsAttire":None,
    "businessAcceptsBitcoin":None,
-   "music":{
-      "dj":None,
-      "background_music":None,
-      "no_music":None,
-      "jukebox":None,
-      "live":None,
-      "video":None,
-      "karaoke":None
-   },
+   "music":{},
    "businessParking":{
       "garage":None,
       "street":None,

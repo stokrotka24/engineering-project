@@ -17,38 +17,33 @@ def select_hotels(businesses):
 
 def parse_categories(categories):
     parsed_categories = categories.split(",")
-    return [{"name": category.strip()} for category in parsed_categories]
+    return [category.strip() for category in parsed_categories]
 
 
-# def parse_attributes(attributes):
-#     if attributes is None:
-#         return None
-#
-#     attributes_keys = \
-#         ["BusinessAcceptsCreditCards", "WiFi", "RestaurantsPriceRange2", "ByAppointmentOnly",
-#          "RestaurantsDelivery", "RestaurantsGoodForGroups", "GoodForKids", "OutdoorSeating",
-#          "RestaurantsReservations", "HasTV", "RestaurantsTakeOut", "NoiseLevel", "RestaurantsAttire",
-#          "BusinessAcceptsBitcoin", "Music", "BusinessParking", "GoodForMeal", "BYOBCorkage",
-#          "Smoking", "BYOB", "RestaurantsTableService", "Caters", "Alcohol", "DogsAllowed",
-#          "WheelchairAccessible", "HappyHour", "GoodForDancing", "BestNights", "Ambience", "CoatCheck",
-#          "BikeParking", "Corkage", "DriveThru", "Open24Hours", "AcceptsInsurance", "RestaurantsCounterService"]
-#
-#     null_boolean_map = {"True": True, "False": False, "None": None, None: None}
-#     wifi_map = {"'no'": "WiFiValue.no", "'paid'": "WiFiValue.paid",
-#                 "u'paid'": "WiFiValue.paid", "u'free'": "WiFiValue.free",
-#                 "u'no'": "WiFiValue.no", "'free'": "WiFiValue.free"}
-#
-#     parsed_attributes = {}
-#     for attr_key in attributes_keys:
-#         match attr_key:
-#             case "WiFi":
-#                 parsed_attributes["wiFi"] = wifi_map[attributes["WiFi"]]
-#                 print(parsed_attributes)
-#                 sys.exit()
-#             case other:
-#                 parsed_attributes[other[0].lower() + other[1:]] = null_boolean_map[attributes[other]]
-#
-#     return parsed_attributes
+def truncate(x):
+    return x[1:] if x.startswith("u'") else x
+
+
+def parse_attributes(attributes):
+    if attributes is None:
+        return None
+
+    embedded_attrs = ["music", "businessParking", "goodForMeal", "bestNights", "ambience"]
+    null_boolean_vals = ["True", "False", "None"]
+
+    parsed_attributes = {}
+    for (attr_key, attr_val) in attributes.items():
+        if not attr_key.startswith("BYOB"):
+            attr_key = attr_key[0].lower() + attr_key[1:]
+        attr_val = attr_val.replace("u'", "'")
+
+        if attr_key in embedded_attrs:
+            attr_val = attr_val.replace("'", "\"")
+            for val in null_boolean_vals:
+                attr_val = attr_val.replace(val, f"\"{val}\"")
+
+        parsed_attributes[attr_key] = attr_val
+    return parsed_attributes
 
 
 def parse_hotel_properties(hotels):
@@ -64,6 +59,8 @@ def parse_hotel_properties(hotels):
                     pass
                 case "categories":
                     parsed_hotel["categories"] = parse_categories(hotel["categories"])
+                case "attributes":
+                    parsed_hotel["attributes"] = parse_attributes(hotel["attributes"])
                 case other:
                     parsed_hotel[other] = hotel[other]
         parsed_hotels.append(parsed_hotel)
