@@ -4,9 +4,6 @@ from enumchoicefield import ChoiceEnum, EnumChoiceField
 from common.utils.id import ID_LEN, random_id
 
 
-# Hotel będzie miał w profilu algorytmicznym np. wifi.free = 1 i wifi.paid = wifi.no = wifi.null = 0,
-# jeżeli user będzie miał najwyższy wskaźnik dla None, to znaczy, że dla niego obecność wifi
-# lub jego brak nie ma znaczenia
 class WiFi(ChoiceEnum):
     no = "no"
     free = "free"
@@ -121,7 +118,7 @@ class Attributes(models.Model):
     restaurantsPriceRange2 = models.PositiveIntegerField(
         validators=[
             MinValueValidator(1),
-            MaxValueValidator(5)
+            MaxValueValidator(4)
         ],
         null=True
     )
@@ -137,9 +134,7 @@ class Attributes(models.Model):
     restaurantsAttire = EnumChoiceField(RestaurantsAttire)
     businessAcceptsBitcoin = models.NullBooleanField()
     music = models.EmbeddedField(
-        model_container=Music,
-        null=True,
-        blank=True,
+        model_container=Music
     )
     businessParking = models.EmbeddedField(
         model_container=Parking

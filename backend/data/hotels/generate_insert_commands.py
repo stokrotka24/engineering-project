@@ -1,11 +1,30 @@
 import json
 
+from parse import parse_hotels
+
+
+def select_hotels(businesses):
+    hotels = []
+
+    for business in businesses:
+        parsed_business = json.loads(business)
+        if parsed_business["categories"] is not None:
+            categories = parsed_business["categories"].split(",")
+            categories = [cat.strip() for cat in categories]
+
+            if "Hotels" in categories:
+                hotels.append(parsed_business)
+
+    return hotels
+
 
 def add_property(commands, prop_name, prop):
     commands.append(f"{prop_name}=\"{prop}\",")
 
 
 def add_categories(commands, categories):
+    categories.remove("Hotels")
+
     commands.append("categories=[")
     for category in categories:
         commands.append(f"{{\"name\": \"{category}\"}},")
@@ -43,19 +62,19 @@ def add_attributes(commands, attributes):
                  "None": None, None: None}
     restaurants_attire_map = {"'dressy'": "RestaurantsAttire.dressy", "'casual'": "RestaurantsAttire.casual",
                               "'formal'": "RestaurantsAttire.formal", None: None}
-    byob_corkage = {"'no'": "BYOBCorkage.no", "'yes_corkage'": "BYOBCorkage.yes_corkage",
-                    "'yes_free'": "BYOBCorkage.yes_free", None: None}
-    smoking = {"'outdoor'": "Smoking.outdoor", "'yes'": "Smoking.yes", "'no'": "Smoking.no", None: None}
-    alcohol = {"'full_bar'": "Alcohol.full_bar", "'beer_and_wine'": "Alcohol.beer_and_wine",
-               "'none'": "Alcohol.none", None: None}
+    byob_corkage_map = {"'no'": "BYOBCorkage.no", "'yes_corkage'": "BYOBCorkage.yes_corkage",
+                        "'yes_free'": "BYOBCorkage.yes_free", None: None}
+    smoking_map = {"'outdoor'": "Smoking.outdoor", "'yes'": "Smoking.yes", "'no'": "Smoking.no", None: None}
+    alcohol_map = {"'full_bar'": "Alcohol.full_bar", "'beer_and_wine'": "Alcohol.beer_and_wine",
+                   "'none'": "Alcohol.none", None: None}
     attr_to_map = {"wiFi": wifi_map, "noiseLevel": noise_map, "restaurantsAttire": restaurants_attire_map,
-                   "BYOBCorkage": byob_corkage, "smoking": smoking, "alcohol": alcohol, None: None}
+                   "BYOBCorkage": byob_corkage_map, "smoking": smoking_map, "alcohol": alcohol_map}
 
     music = ["dj", "background_music", "no_music", "jukebox", "live", "video", "karaoke"]
     parking = ["garage", "street", "validated", "lot", "valet"]
     good_meal = ["dessert", "latenight", "lunch", "dinner", "brunch", "breakfast"]
     best_nights = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
-    ambience = ["touristy", "hipster", "romantic",  "divey", "intimate", "trendy", "upscale", "classy", "casual"]
+    ambience = ["touristy", "hipster", "romantic", "divey", "intimate", "trendy", "upscale", "classy", "casual"]
     embedded_attrs_keys_map = {"music": music, "businessParking": parking, "goodForMeal": good_meal,
                                "bestNights": best_nights, "ambience": ambience}
 
@@ -68,16 +87,22 @@ def add_attributes(commands, attributes):
                 attr_map = attr_to_map.get(attr_key)
 
                 if attr_map:
-                    commands.append(f"\"{attr_key}\": {attr_map[attr_val]},")
-                else:
-                    commands.append(f"\"{attr_key}\": {attr_val},")
+                    attr_val = attr_map[attr_val]
+
+                commands.append(f"\"{attr_key}\": {attr_val},")
 
     commands.append("}")
 
 
 def add_hotels():
-    with open("../data/hotels/parsed_data.json") as file:
-        hotels = json.load(file)
+    with open("../yelp_dataset/yelp_academic_dataset_business.json") as file:
+        businesses = file.readlines()
+    print("No. businesses:", len(businesses))
+
+    hotels = select_hotels(businesses)
+    print("No.hotels:", len(hotels))
+
+    hotels = parse_hotels(hotels)
 
     properties = ["id", "name", "address", "city",
                   "state", "postal_code", "latitude",
@@ -86,7 +111,6 @@ def add_hotels():
     commands = ["from hotels.models import Hotel, WiFi, NoiseLevel, RestaurantsAttire, BYOBCorkage, Smoking, Alcohol;"]
 
     for h in hotels:
-        print(h)
         commands.append("h = Hotel(")
         for prop in properties:
             add_property(commands, prop, h[prop])
@@ -96,7 +120,7 @@ def add_hotels():
         commands.append("); h.save();")
 
     command = "".join(commands)
-    with open("g.py", "w") as f:
+    with open("insert_commands.txt", "w") as f:
         f.write(command)
 
 
