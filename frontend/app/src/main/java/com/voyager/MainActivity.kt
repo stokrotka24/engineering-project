@@ -1,13 +1,12 @@
 package com.voyager
 
 import android.os.Bundle
-import android.util.Log
+import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.drawerlayout.widget.DrawerLayout
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
-import com.voyager.api.DefaultCallback
 import com.voyager.databinding.ActivityMainBinding
-import retrofit2.Response
 
 private const val TAG = "MainActivity"
 
@@ -21,35 +20,15 @@ class MainActivity : AppCompatActivity() {
         val view = binding.root
         setContentView(view)
 
+        val toolbar = binding.toolbar
+        setSupportActionBar(toolbar)
+
+        val drawerLayout = binding.drawerLayout
+        val toggle = ActionBarDrawerToggle(this, drawerLayout, toolbar,
+            R.string.navigation_drawer_open, R.string.navigation_drawer_close)
+        drawerLayout.addDrawerListener(toggle)
+        toggle.syncState()
+
         api = ApiUtils.getApi()
-
-        binding.getButton.setOnClickListener {
-            getHello()
-        }
-        binding.postButton.setOnClickListener {
-            postHello()
-        }
-    }
-
-    private fun getHello() {
-        val getCall = api.getHello()
-        getCall.enqueue(object : DefaultCallback<ServerHello?>(this) {
-            override fun onSuccess(response: Response<ServerHello?>) {
-                Log.d(TAG, "onSuccess: getHello")
-                binding.serverTextView.text = response.body()!!.message
-            }
-        })
-    }
-
-    private fun postHello() {
-        val name = binding.editTextPersonName.text.toString()
-        val clientHello = ClientHello(name)
-        val postCall = api.postHello(clientHello)
-        postCall.enqueue(object : DefaultCallback<ServerHello?>(this) {
-            override fun onSuccess(response: Response<ServerHello?>) {
-                Log.d(TAG, "onSuccess: postHello")
-                binding.serverTextView.text = response.body()!!.message
-            }
-        })
     }
 }

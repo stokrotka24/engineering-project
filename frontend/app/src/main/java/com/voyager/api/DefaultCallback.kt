@@ -14,8 +14,9 @@ private const val TAG = "DefaultCallback"
 abstract class DefaultCallback<T>(private val context: Context): Callback<T> {
     override fun onResponse(call: Call<T>, response: Response<T>) {
         if (response.code() == HttpStatus.Unauthorized.code) {
-            val intent = Intent(context, LoginActivity::class.java)
-            intent.putExtra("afterAutoLogOut", true)
+            val intent = Intent(context, LoginActivity::class.java).apply {
+                putExtra("afterAutoLogOut", true)
+            }
             context.startActivity(intent)
         } else {
             onSuccess(response)
