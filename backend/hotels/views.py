@@ -11,3 +11,8 @@ class HotelView(generics.ListCreateAPIView):
     # TODO change permission
     permission_classes = [AllowAny]
 
+    # def get_queryset(self):
+    #     city = self.request.data['city']
+    #     return Hotel.objects.filter(city=city)
+
+
