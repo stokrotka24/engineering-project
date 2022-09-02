@@ -1,6 +1,5 @@
 package com.voyager.api
-
-import com.voyager.*
+import com.voyager.api.hotels.Hotel
 import com.voyager.api.login.LoginRequest
 import com.voyager.api.registration.RegisterRequest
 import com.voyager.api.registration.RegisterResponse
@@ -11,15 +10,12 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 
 interface ApiService {
-    @GET("hello/")
-    fun getHello(): Call<ServerHello>
-
-    @POST("hello/")
-    fun postHello(@Body clientHello: ClientHello): Call<ServerHello>
-
     @POST("register/")
     fun register(@Body registerRequest: RegisterRequest): Call<RegisterResponse>
 
     @POST("login/")
     fun login(@Body loginRequest: LoginRequest): Call<TokenResponse>
+
+    @GET("hotels/")
+    fun getHotels(): Call<List<Hotel>>
 }

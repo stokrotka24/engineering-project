@@ -3,10 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="navigation_view">
 
-    <item android:id="@+id/nav_hotels"
-        android:icon="@drawable/ic_baseline_hotel_24"
-        android:title="@string/nav_hotels"/>
-    <item android:id="@+id/nav_account"
-        android:icon="@drawable/ic_baseline_person_24"
-        android:title="@string/nav_account"/>
+    <group android:checkableBehavior="single">
+        <item android:id="@+id/nav_hotels"
+            android:icon="@drawable/ic_baseline_hotel_24"
+            android:title="@string/navigation_drawer_hotels"/>
+        <item android:id="@+id/nav_account"
+            android:icon="@drawable/ic_baseline_person_24"
+            android:title="@string/navigation_drawer_account"/>
+    </group>
 </menu>

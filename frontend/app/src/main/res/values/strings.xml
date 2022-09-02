@@ -19,7 +19,9 @@
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="navigation_drawer_hotels">Hotel recommendation</string>
+    <string name="navigation_drawer_account">My account</string>
 
-    <string name="nav_hotels">Hotel recommendation</string>
-    <string name="nav_account">My account</string>
+    <string name="search_view_template">Type city…</string>
+    <string name="hotel_name">Hotel name</string>
 </resources>
