@@ -193,3 +193,17 @@ class Hotel(models.Model):
         model_container=Attributes,
         null=True
     )
+
+
+class Review(models.Model):
+    id = models.CharField(max_length=ID_LEN, default=random_id, unique=True, primary_key=True)
+    user_id = models.CharField(max_length=ID_LEN)
+    hotel_id = models.CharField(max_length=ID_LEN)
+    stars = models.IntegerField(
+        validators=[
+            MinValueValidator(1),
+            MaxValueValidator(5)
+        ]
+    )
+    date = models.DateField()
+    content = models.CharField(max_length=5000)

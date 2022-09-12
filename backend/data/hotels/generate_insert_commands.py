@@ -1,9 +1,13 @@
 import json
 
-from parse import parse_hotels
+from data.hotels.parse import parse_hotels
 
 
-def select_hotels(businesses):
+def get_hotels_from_dataset(save_hotels_ids=False):
+    with open("data/yelp_dataset/yelp_academic_dataset_business.json") as file:
+        businesses = file.readlines()
+    print("No. businesses:", len(businesses))
+
     hotels = []
 
     for business in businesses:
@@ -14,6 +18,12 @@ def select_hotels(businesses):
 
             if "Hotels" in categories:
                 hotels.append(parsed_business)
+
+    if save_hotels_ids:
+        f = open("data/hotels/hotels_ids.txt", "w")
+        for hotel in hotels:
+            f.write(hotel["business_id"] + "\n")
+        f.close()
 
     return hotels
 
@@ -95,11 +105,7 @@ def add_attributes(commands, attributes):
 
 
 def add_hotels():
-    with open("../yelp_dataset/yelp_academic_dataset_business.json") as file:
-        businesses = file.readlines()
-    print("No. businesses:", len(businesses))
-
-    hotels = select_hotels(businesses)
+    hotels = get_hotels_from_dataset()
     print("No.hotels:", len(hotels))
 
     hotels = parse_hotels(hotels)
@@ -120,7 +126,7 @@ def add_hotels():
         commands.append("); h.save();")
 
     command = "".join(commands)
-    with open("insert_commands.txt", "w") as f:
+    with open("data/hotels/insert_commands.txt", "w") as f:
         f.write(command)
 
 
