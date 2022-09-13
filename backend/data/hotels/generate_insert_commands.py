@@ -120,7 +120,7 @@ def add_hotels():
         commands.append("h = Hotel(")
         for prop in properties:
             add_property(commands, prop, h[prop])
-        add_property(commands, "stars", int(h["stars"]))
+        add_property(commands, "stars", float(h["stars"]))
         add_categories(commands, h["categories"])
         add_attributes(commands, h["attributes"])
         commands.append("); h.save();")

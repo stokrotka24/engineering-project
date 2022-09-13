@@ -14,6 +14,7 @@ import com.voyager.api.ApiUtils
 import com.voyager.api.DefaultCallback
 import com.voyager.api.HttpStatus
 import com.voyager.api.hotels.Hotel
+import com.voyager.api.hotels.HotelPage
 import retrofit2.Call
 import retrofit2.Response
 
@@ -64,16 +65,16 @@ class HotelFragment : Fragment() {
     }
 
     private fun getHotels() {
-        val getHotelsCall: Call<List<Hotel>> = api.getHotels()
-        getHotelsCall.enqueue(object : DefaultCallback<List<Hotel>?>(requireContext()) {
+        val getHotelsCall: Call<HotelPage> = api.getHotels()
+        getHotelsCall.enqueue(object : DefaultCallback<HotelPage?>(requireContext()) {
             @SuppressLint("NotifyDataSetChanged")
-            override fun onSuccess(response: Response<List<Hotel>?>) {
+            override fun onSuccess(response: Response<HotelPage?>) {
                 val responseCode = response.code()
                 Log.d(TAG, "onSuccess: response.code = $responseCode")
 
                 when (responseCode) {
                     HttpStatus.OK.code -> {
-                        val hotels = response.body()!!
+                        val hotels = response.body()!!.results
                         hotelList.addAll(hotels)
                         hotelAdapter.notifyDataSetChanged()
                     }

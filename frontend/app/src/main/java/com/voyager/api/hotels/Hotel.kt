@@ -7,8 +7,7 @@ import kotlinx.parcelize.Parcelize
 data class Hotel(
     val name: String,
     val city: String,
-    val stars: Int,
+    val stars: Float,
     val review_count: Int,
-    //TODO make categories nested object
     val categories: String
 ) : Parcelable

@@ -179,12 +179,7 @@ class Hotel(models.Model):
     postal_code = models.CharField(max_length=8)
     latitude = models.DecimalField(max_digits=13, decimal_places=10)
     longitude = models.DecimalField(max_digits=13, decimal_places=10)
-    stars = models.IntegerField(
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(5)
-        ]
-    )
+    stars = models.DecimalField(max_digits=2, decimal_places=1)
     review_count = models.PositiveIntegerField(default=0)
     categories = models.ArrayField(
         model_container=Category
