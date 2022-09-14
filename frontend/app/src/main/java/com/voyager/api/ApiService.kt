@@ -18,5 +18,5 @@ interface ApiService {
     fun login(@Body loginRequest: LoginRequest): Call<TokenResponse>
 
     @GET("hotels/")
-    fun getHotels(@Query("offset") offset: Int, @Query("limit") limit: Int = 100): Call<HotelPage>
+    fun getHotels(): Call<HotelPage>
 }
