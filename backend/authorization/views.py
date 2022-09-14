@@ -7,6 +7,7 @@ from authorization.models import User
 from authorization.serializers import RegisterSerializer
 
 
+# TODO delete hello view
 class Hello(APIView):
     permission_classes = [IsAuthenticatedOrReadOnly]
 

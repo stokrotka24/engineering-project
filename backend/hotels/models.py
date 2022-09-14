@@ -188,6 +188,7 @@ class Hotel(models.Model):
         model_container=Attributes,
         null=True
     )
+    recommendation_score = models.PositiveIntegerField()
 
 
 class Review(models.Model):
