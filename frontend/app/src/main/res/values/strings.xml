@@ -22,7 +22,10 @@
     <string name="navigation_drawer_hotels">Hotel recommendation</string>
     <string name="navigation_drawer_account">My account</string>
 
+    <string name="search_fragment_title">Let us find the best hotels\njust for you!</string>
     <string name="search_by_city">Type city… (optional)</string>
+    <string name="no_recommendations">Number of recommendations</string>
+    <string name="let_s_voyage">LET\'S VOYAGE!</string>
     <string name="hotel_name">Hotel name</string>
     <string name="reviews">reviews</string>
     <string name="city">City</string>

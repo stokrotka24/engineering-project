@@ -4,6 +4,7 @@ from django.core.validators import int_list_validator, MinValueValidator, MaxVal
 from djongo import models
 from authorization.managers import UserManager
 from common.utils.id import ID_LEN, random_id
+from hotels.models import Recommendation
 
 
 class User(AbstractUser):
@@ -37,6 +38,9 @@ class User(AbstractUser):
     compliment_funny = models.PositiveIntegerField(default=0)
     compliment_writer = models.PositiveIntegerField(default=0)
     compliment_photos = models.PositiveIntegerField(default=0)
+    recommendations = models.ArrayField(
+        model_container=Recommendation,
+    )
 
     is_admin = models.BooleanField(default=False)
     is_staff = models.BooleanField(default=False)

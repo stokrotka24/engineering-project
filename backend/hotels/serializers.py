@@ -1,10 +1,10 @@
-import random
 from rest_framework import serializers
-from hotels.models import Hotel
+from hotels.models import Hotel, Recommendation
 
 
 class HotelSerializer(serializers.ModelSerializer):
     categories = serializers.SerializerMethodField()
+    recommendation_score = serializers.SerializerMethodField()
 
     def get_categories(self, hotel):
         parsed_categories = ""
@@ -13,6 +13,15 @@ class HotelSerializer(serializers.ModelSerializer):
             parsed_categories += f"{category['name']} \n"
         parsed_categories = parsed_categories[:-2]
         return parsed_categories
+
+    def get_recommendation_score(self, hotel):
+        # user_id = self.context['request'].user.id
+        # recommendation = Recommendation.objects.filter(user_id=user_id, hotel_id=hotel.id)
+        # score = list(recommendation.values_list('score', flat=True))[0]
+        # return score
+        user = self.context['request'].user
+        score = user.recommendations.index({"hotel_id": hotel.id})
+        return score
 
     class Meta:
         model = Hotel

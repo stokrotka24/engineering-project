@@ -31,7 +31,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         val navigationView = binding.navigationView
         navigationView.setNavigationItemSelectedListener(this)
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, HotelFragment()).commit()
+            supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, SearchFragment()).commit()
             navigationView.setCheckedItem(R.id.nav_hotels)
         }
     }
@@ -47,7 +47,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.nav_hotels -> {
-                supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, HotelFragment()).commit()
+                supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, SearchFragment()).commit()
             }
         }
         drawer.closeDrawer(GravityCompat.START)

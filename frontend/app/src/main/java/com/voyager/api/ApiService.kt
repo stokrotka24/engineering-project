@@ -1,5 +1,5 @@
 package com.voyager.api
-import com.voyager.api.hotels.HotelPage
+import com.voyager.api.hotels.Hotel
 import com.voyager.api.login.LoginRequest
 import com.voyager.api.registration.RegisterRequest
 import com.voyager.api.registration.RegisterResponse
@@ -18,5 +18,8 @@ interface ApiService {
     fun login(@Body loginRequest: LoginRequest): Call<TokenResponse>
 
     @GET("hotels/")
-    fun getHotels(): Call<HotelPage>
+    fun getHotels(@Query("no_recommendations") noRecommendations: Int): Call<List<Hotel>>
+
+    @GET("hotels/")
+    fun getHotels(@Query("city") city: String, @Query("no_recommendations") noRecommendations: Int): Call<List<Hotel>>
 }

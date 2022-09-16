@@ -64,13 +64,13 @@ def add_users():
     with open(users_file) as f:
         users = f.readlines()
     print("No. users with hotels reviews:", len(users))
-    users = [json.loads(user) for user in users]
+    users = [json.loads(user) for user in users[:500]]
 
     users = parse_users(users)
 
     properties = ["username", "email", "password", "id", "review_count",
                   "date_joined", "useful_votes", "funny_votes", "cool_votes",
-                  "fans", "elite", "average_stars", "compliment_hot",
+                  "fans", "elite", "compliment_hot",
                   "compliment_more", "compliment_profile", "compliment_cute",
                   "compliment_list", "compliment_note", "compliment_plain", "compliment_cool",
                   "compliment_funny", "compliment_writer", "compliment_photos"]
@@ -81,6 +81,7 @@ def add_users():
         commands.append("u = User.objects.create_user(")
         for prop in properties:
             add_property(commands, prop, u[prop])
+        commands.append(f"average_stars={float(u['average_stars'])},")
         commands.append(");")
 
     command = "".join(commands)

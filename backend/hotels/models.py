@@ -188,8 +188,6 @@ class Hotel(models.Model):
         model_container=Attributes,
         null=True
     )
-    # TODO remove
-    recommendation_score = models.PositiveIntegerField()
 
 
 class Review(models.Model):
@@ -204,3 +202,10 @@ class Review(models.Model):
     )
     date = models.DateField()
     content = models.CharField(max_length=5000)
+
+
+class Recommendation(models.Model):
+    hotel_id = models.CharField(max_length=ID_LEN)
+
+    class Meta:
+        abstract = True
