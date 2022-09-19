@@ -3,7 +3,7 @@ package com.voyager.api
 import android.content.Context
 import android.content.Intent
 import android.util.Log
-import com.voyager.LoginActivity
+import com.voyager.authorization.LoginActivity
 
 import retrofit2.Call
 import retrofit2.Callback

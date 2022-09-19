@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_hotel">
+<group android:checkableBehavior="single">
+    <item android:id="@+id/recommendationDec"
+        android:title="@string/recommendation_descending"
+        android:checked = "true" />
+    <item android:id="@+id/recommendationAsc"
+        android:title="@string/recommendation_ascending" />
+    <item android:id="@+id/usersRatingDesc"
+        android:title="@string/users_rating_descending" />
+    <item android:id="@+id/usersRatingAsc"
+        android:title="@string/users_rating_ascending" />
+    <item android:id="@+id/reviewsNumberDesc"
+        android:title="@string/reviews_number_descending" />
+    <item android:id="@+id/reviewsNumberAsc"
+        android:title="@string/reviews_number_ascending" />
+</group>
+</menu>

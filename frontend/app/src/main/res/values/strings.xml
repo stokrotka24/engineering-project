@@ -30,4 +30,20 @@
     <string name="reviews">reviews</string>
     <string name="city">City</string>
     <string name="categories">Categories</string>
+    <string name="filter">Filter</string>
+    <string name="sort">Sort</string>
+    <string name="recommendation_descending">Recommendation (descending)</string>
+    <string name="recommendation_ascending">Recommendation (ascending)</string>
+    <string name="users_rating_descending">Users\' rating (descending)</string>
+    <string name="users_rating_ascending">Users\' rating (ascending)</string>
+    <string name="reviews_number_descending">Reviews number (descending)</string>
+    <string name="reviews_number_ascending">Reviews number (ascending)</string>
+    <string-array name="filter_options">
+        <item>Rating: above 3.0</item>
+        <item>Rating: above 4.0</item>
+        <item>Reviews: above 100</item>
+        <item>Reviews: above 1000</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

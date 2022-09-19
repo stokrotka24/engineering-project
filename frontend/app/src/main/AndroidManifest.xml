@@ -17,16 +17,16 @@
         android:theme="@style/Theme.Voyager"
         tools:targetApi="31">
         <activity
-            android:name=".HotelActivity"
+            android:name=".hotels.HotelActivity"
             android:exported="false" />
         <activity
             android:name=".MainActivity"
             android:exported="false" />
         <activity
-            android:name=".RegisterActivity"
+            android:name=".authorization.RegisterActivity"
             android:exported="false" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".authorization.LoginActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -1,4 +1,4 @@
-package com.voyager
+package com.voyager.authorization
 
 import android.os.Bundle
 import android.util.Log
@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
+import com.voyager.R
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
 import com.voyager.api.HttpStatus

@@ -1,11 +1,13 @@
-package com.voyager
+package com.voyager.hotels
 
 import android.annotation.SuppressLint
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import android.widget.PopupMenu
+import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.voyager.R
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
 import com.voyager.api.hotels.Hotel
@@ -29,6 +31,35 @@ class HotelActivity : AppCompatActivity() {
         setContentView(view)
 
         api = ApiUtils.getApi()
+
+        val toolbar = binding.returnToolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
+
+        val filterBtn = binding.filterBtn
+        filterBtn.setOnClickListener {
+            val filterFragment = FilterFragment()
+            filterFragment.show(supportFragmentManager, "FilterFragment")
+        }
+
+        val sortBtn = binding.sortBtn
+        val sortMenu = PopupMenu(this, sortBtn)
+        sortMenu.menuInflater.inflate(R.menu.sort_menu, sortMenu.menu)
+        sortMenu.setOnMenuItemClickListener { item ->
+            Log.d(TAG, "onMenuItemClick: ")
+            item.isChecked = !item.isChecked
+            when (item.itemId) {
+                R.id.recommendationDec -> "d"
+            }
+
+            true
+        }
+        sortBtn.setOnClickListener {
+            sortMenu.show()
+        }
+
 
         lytManager = LinearLayoutManager(this)
         if (savedInstanceState != null) {

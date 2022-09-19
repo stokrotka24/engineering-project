@@ -1,4 +1,4 @@
-package com.voyager
+package com.voyager.hotels
 
 import androidx.recyclerview.widget.RecyclerView
 import android.view.LayoutInflater

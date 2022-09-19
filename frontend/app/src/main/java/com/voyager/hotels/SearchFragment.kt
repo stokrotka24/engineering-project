@@ -1,4 +1,4 @@
-package com.voyager
+package com.voyager.hotels
 
 
 import android.content.Intent
@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ProgressBar
+import com.voyager.R
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
 import com.voyager.api.DefaultCallback
@@ -48,12 +49,15 @@ class SearchFragment : Fragment() {
         bindComponents()
         progressBar.visibility = View.GONE
         setComponentsListeners()
+
+        // TODO remove
+        noRecommendationsEditText.setText("9")
     }
 
     private fun bindComponents() {
         cityEditText = view?.findViewById(R.id.cityEditText)!!
         noRecommendationsEditText = view?.findViewById(R.id.noRecommendationsEditText)!!
-        recommendationsButton = view?.findViewById(R.id.requestButton)!!
+        recommendationsButton = view?.findViewById(R.id.requestBtn)!!
         progressBar = view?.findViewById(R.id.progressBar)!!
     }
 

@@ -1,4 +1,4 @@
-package com.voyager
+package com.voyager.authorization
 
 import android.app.AlertDialog
 import android.content.Intent
@@ -11,6 +11,8 @@ import android.widget.Toast
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
 import com.google.gson.Gson
+import com.voyager.MainActivity
+import com.voyager.R
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
 import com.voyager.api.HttpStatus
@@ -51,6 +53,10 @@ class LoginActivity : AppCompatActivity() {
         afterAutoLogOut = intent.getBooleanExtra("afterAutoLogOut", false)
         Log.d(TAG, "onCreate: afterAutoLogOut = $afterAutoLogOut")
         if (afterAutoLogOut) { displayAutoLogOutDialog() }
+
+        // TODO remove
+        emailField.editText?.setText("t@t.com")
+        passwordField.editText?.setText("t")
     }
 
     private fun bindComponents() {

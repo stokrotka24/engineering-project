@@ -5,17 +5,15 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/main_background"
-    tools:context=".HotelActivity">
+    tools:context=".hotels.HotelActivity">
 
-    <android.widget.SearchView
-        android:id="@+id/hotelSearchView"
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/returnToolbar"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:background="@color/white"
-        android:queryHint="@string/search_by_city"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,9 +21,57 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:paddingBottom="?attr/actionBarSize"
+        android:background="@color/main_background"
+        android:paddingBottom="120dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/hotelSearchView"
+        app:layout_constraintTop_toBottomOf="@id/linearLayout"
         tools:listitem="@layout/hotel_item" />
+
+    <LinearLayout
+        android:id="@+id/linearLayout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/returnToolbar" >
+
+        <Button
+            android:id="@+id/filterBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/main_background_light"
+            android:drawableTint="@color/primary"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="0dp"
+            android:text="@string/filter"
+            android:textAllCaps="false"
+            android:textColor="@color/secondary_text"
+            app:icon="@drawable/ic_baseline_filter_list_24"
+            app:iconGravity="textStart"
+            app:iconTint="@color/secondary_text" />
+
+        <Button
+            android:id="@+id/sortBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:insetLeft="0dp"
+            android:insetTop="0dp"
+            android:insetRight="0dp"
+            android:insetBottom="0dp"
+            app:cornerRadius="0dp"
+            android:textColor="@color/secondary_text"
+            android:backgroundTint="@color/main_background_light"
+            android:text="@string/sort"
+            android:textAllCaps="false"
+            app:icon="@drawable/ic_baseline_sort_24"
+            app:iconGravity="textStart"
+            app:iconTint="@color/secondary_text" />
+    </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
