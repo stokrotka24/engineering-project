@@ -1,4 +1,5 @@
 import json
+import shelve
 from pathlib import Path
 
 from data.hotels.generate_insert_commands import add_property
@@ -64,11 +65,11 @@ def add_users():
     with open(users_file) as f:
         users = f.readlines()
     print("No. users with hotels reviews:", len(users))
-    users = [json.loads(user) for user in users[:500]]
+    users = [json.loads(user) for user in users]
 
     users = parse_users(users)
 
-    properties = ["username", "email", "password", "id", "review_count",
+    properties = ["username", "email", "password", "review_count",
                   "date_joined", "useful_votes", "funny_votes", "cool_votes",
                   "fans", "elite", "compliment_hot",
                   "compliment_more", "compliment_profile", "compliment_cute",
@@ -77,12 +78,17 @@ def add_users():
 
     commands = ["from authorization.models import User;"]
 
-    for u in users:
+    ids_map = {}
+    for (index, u) in enumerate(users):
+        ids_map[u["id"]] = index + 3  # bias = no_initial_users(=2) + 1
         commands.append("u = User.objects.create_user(")
         for prop in properties:
             add_property(commands, prop, u[prop])
         commands.append(f"average_stars={float(u['average_stars'])},")
         commands.append(");")
+
+    with shelve.open('data/users/ids_map') as f:
+        f['ids_map'] = ids_map
 
     command = "".join(commands)
     with open("data/users/insert_commands.txt", "w") as f:

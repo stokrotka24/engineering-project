@@ -25,4 +25,4 @@ class HotelSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Hotel
-        fields = ('name', 'city', 'stars', 'review_count', 'categories', 'recommendation_score')
+        fields = ('id', 'name', 'city', 'stars', 'review_count', 'categories', 'recommendation_score')

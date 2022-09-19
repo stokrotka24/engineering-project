@@ -1,4 +1,5 @@
 import json
+import shelve
 
 from data.hotels.parse import parse_hotels
 
@@ -110,13 +111,15 @@ def add_hotels():
 
     hotels = parse_hotels(hotels)
 
-    properties = ["id", "name", "address", "city",
+    properties = ["name", "address", "city",
                   "state", "postal_code", "latitude",
                   "longitude", "review_count"]
 
     commands = ["from hotels.models import Hotel, WiFi, NoiseLevel, RestaurantsAttire, BYOBCorkage, Smoking, Alcohol;"]
 
-    for h in hotels:
+    ids_map = {}
+    for (index, h) in enumerate(hotels):
+        ids_map[h["id"]] = index + 1
         commands.append("h = Hotel(")
         for prop in properties:
             add_property(commands, prop, h[prop])
@@ -124,6 +127,9 @@ def add_hotels():
         add_categories(commands, h["categories"])
         add_attributes(commands, h["attributes"])
         commands.append("); h.save();")
+
+    with shelve.open('data/hotels/ids_map') as f:
+        f['ids_map'] = ids_map
 
     command = "".join(commands)
     with open("data/hotels/insert_commands.txt", "w") as f:

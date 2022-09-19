@@ -3,14 +3,13 @@ from django.contrib.auth.models import AbstractUser
 from django.core.validators import int_list_validator, MinValueValidator, MaxValueValidator
 from djongo import models
 from authorization.managers import UserManager
-from common.utils.id import ID_LEN, random_id
 from hotels.models import Recommendation
 
 
 class User(AbstractUser):
     username = models.CharField(max_length=32, unique=False)
     email = models.EmailField(max_length=64, unique=True)
-    id = models.CharField(max_length=ID_LEN, default=random_id, unique=True, primary_key=True)
+    id = models.AutoField(unique=True, primary_key=True)
     review_count = models.PositiveIntegerField(default=0)
     # TODO: add friends
     useful_votes = models.PositiveIntegerField(default=0)
@@ -19,7 +18,7 @@ class User(AbstractUser):
     fans = models.PositiveIntegerField(default=0)
     elite = models.CharField(max_length=100, validators=[int_list_validator])
     average_stars = models.DecimalField(
-        default=2.5,
+        default=3.0,
         max_digits=3,
         decimal_places=2,
         validators=[

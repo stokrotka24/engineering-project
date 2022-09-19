@@ -1,7 +1,6 @@
 from django.core.validators import MinValueValidator, MaxValueValidator
 from djongo import models
 from enumchoicefield import ChoiceEnum, EnumChoiceField
-from common.utils.id import ID_LEN, random_id
 
 
 class WiFi(ChoiceEnum):
@@ -171,7 +170,6 @@ class Attributes(models.Model):
 
 
 class Hotel(models.Model):
-    id = models.CharField(max_length=ID_LEN, default=random_id, unique=True, primary_key=True)
     name = models.CharField(max_length=64, unique=False)
     address = models.CharField(max_length=64)
     city = models.CharField(max_length=32)
@@ -191,9 +189,8 @@ class Hotel(models.Model):
 
 
 class Review(models.Model):
-    id = models.CharField(max_length=ID_LEN, default=random_id, unique=True, primary_key=True)
-    user_id = models.CharField(max_length=ID_LEN)
-    hotel_id = models.CharField(max_length=ID_LEN)
+    user_id = models.PositiveIntegerField()
+    hotel_id = models.PositiveIntegerField()
     stars = models.IntegerField(
         validators=[
             MinValueValidator(1),
@@ -205,7 +202,7 @@ class Review(models.Model):
 
 
 class Recommendation(models.Model):
-    hotel_id = models.CharField(max_length=ID_LEN)
+    hotel_id = models.PositiveIntegerField()
 
     class Meta:
         abstract = True

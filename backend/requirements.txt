@@ -8,3 +8,4 @@ django_filter~=22.1
 django-enum choicefield-3.0.1
 djongo~=1.3.6
 pytz~=2022.1
+numpy~=1.23.3

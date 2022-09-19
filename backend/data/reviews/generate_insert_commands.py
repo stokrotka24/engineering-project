@@ -1,4 +1,5 @@
 import json
+import shelve
 from pathlib import Path
 
 from data.hotels.generate_insert_commands import get_hotels_from_dataset, add_property
@@ -52,18 +53,26 @@ def add_reviews():
     with open(hotel_reviews_file) as f:
         reviews = f.readlines()
     print("No. hotel reviews:", len(reviews))
-    reviews = [json.loads(review) for review in reviews]
+    reviews = [json.loads(review) for review in reviews[:1000]]
 
     reviews = parse_reviews(reviews)
 
-    properties = ["id", "user_id", "hotel_id", "date", "content"]
+    properties = ["date", "content"]
 
     commands = ["from hotels.models import Review;"]
+
+    with shelve.open('data/users/ids_map') as f:
+        user_ids_map = f['ids_map']
+
+    with shelve.open('data/hotels/ids_map') as f:
+        hotel_ids_map = f['ids_map']
 
     for r in reviews:
         commands.append("r = Review(")
         for prop in properties:
             add_property(commands, prop, r[prop])
+        add_property(commands, "user_id", user_ids_map.get(r["user_id"], 1))
+        add_property(commands, "hotel_id", hotel_ids_map.get(r["hotel_id"], 1))
         add_property(commands, "stars", int(r["stars"]))
         commands.append("); r.save();")
 
