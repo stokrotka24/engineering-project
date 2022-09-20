@@ -12,6 +12,8 @@ import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
 import com.voyager.api.hotels.Hotel
 import com.voyager.databinding.ActivityHotelBinding
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TAG = "HotelActivity"
 
@@ -48,12 +50,17 @@ class HotelActivity : AppCompatActivity() {
         val sortMenu = PopupMenu(this, sortBtn)
         sortMenu.menuInflater.inflate(R.menu.sort_menu, sortMenu.menu)
         sortMenu.setOnMenuItemClickListener { item ->
-            Log.d(TAG, "onMenuItemClick: ")
+            Log.d(TAG, "setOnMenuItemClickListener: ")
             item.isChecked = !item.isChecked
             when (item.itemId) {
-                R.id.recommendationDec -> "d"
+                R.id.recommDesc -> Collections.sort(hotelList, RecommendationComparator(SortOrder.DESC))
+                R.id.recommAsc -> Collections.sort(hotelList, RecommendationComparator(SortOrder.ASC))
+                R.id.starsDesc -> Collections.sort(hotelList, StarsComparator(SortOrder.DESC))
+                R.id.starsAsc -> Collections.sort(hotelList, StarsComparator(SortOrder.ASC))
+                R.id.reviewsNumDesc -> Collections.sort(hotelList, ReviewsNumComparator(SortOrder.DESC))
+                R.id.reviewsNumAsc-> Collections.sort(hotelList, ReviewsNumComparator(SortOrder.ASC))
             }
-
+            hotelAdapter.notifyDataSetChanged()
             true
         }
         sortBtn.setOnClickListener {

@@ -11,6 +11,7 @@ class FilterFragment : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val builder = AlertDialog.Builder(activity)
         val selectedFilterOptions = ArrayList<String>()
+
         val filterOptions = resources.getStringArray(R.array.filter_options)
         builder
             .setTitle("Select options")

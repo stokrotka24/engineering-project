@@ -3,18 +3,18 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:showIn="@layout/activity_hotel">
 <group android:checkableBehavior="single">
-    <item android:id="@+id/recommendationDec"
-        android:title="@string/recommendation_descending"
+    <item android:id="@+id/recommDesc"
+        android:title="@string/recomm_desc"
         android:checked = "true" />
-    <item android:id="@+id/recommendationAsc"
-        android:title="@string/recommendation_ascending" />
-    <item android:id="@+id/usersRatingDesc"
-        android:title="@string/users_rating_descending" />
-    <item android:id="@+id/usersRatingAsc"
-        android:title="@string/users_rating_ascending" />
-    <item android:id="@+id/reviewsNumberDesc"
-        android:title="@string/reviews_number_descending" />
-    <item android:id="@+id/reviewsNumberAsc"
-        android:title="@string/reviews_number_ascending" />
+    <item android:id="@+id/recommAsc"
+        android:title="@string/recomm_asc" />
+    <item android:id="@+id/starsDesc"
+        android:title="@string/stars_descending" />
+    <item android:id="@+id/starsAsc"
+        android:title="@string/stars_ascending" />
+    <item android:id="@+id/reviewsNumDesc"
+        android:title="@string/reviews_num_desc" />
+    <item android:id="@+id/reviewsNumAsc"
+        android:title="@string/reviews_num_asc" />
 </group>
 </menu>

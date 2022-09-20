@@ -9,5 +9,6 @@ data class Hotel(
     val city: String,
     val stars: Float,
     val review_count: Int,
-    val categories: String
+    val categories: String,
+    val recommendation_score: Int
 ) : Parcelable

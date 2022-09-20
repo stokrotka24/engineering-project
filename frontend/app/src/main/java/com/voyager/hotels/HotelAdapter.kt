@@ -9,7 +9,7 @@ import com.voyager.databinding.HotelItemBinding
 
 
 class HotelAdapter(
-    private val hotels: List<Hotel>
+    var hotels: List<Hotel>
 ) : RecyclerView.Adapter<HotelAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
