@@ -6,10 +6,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.voyager.api.hotels.Hotel
 import com.voyager.databinding.HotelItemBinding
+import kotlin.collections.ArrayList
 
+private const val TAG = "HotelAdapter"
 
-class HotelAdapter(
-    var hotels: List<Hotel>
+class HotelAdapter(var chosenHotels: ArrayList<Hotel>
 ) : RecyclerView.Adapter<HotelAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -23,7 +24,7 @@ class HotelAdapter(
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val hotel = hotels[position]
+        val hotel = chosenHotels[position]
         holder.name.text = hotel.name
         holder.city.text = hotel.city
         holder.rating.text = hotel.stars.toString()
@@ -31,7 +32,7 @@ class HotelAdapter(
         holder.categories.text = hotel.categories
     }
 
-    override fun getItemCount(): Int = hotels.size
+    override fun getItemCount(): Int = chosenHotels.size
 
     inner class ViewHolder(binding: HotelItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val name: TextView = binding.name
@@ -40,5 +41,4 @@ class HotelAdapter(
         val reviewCount: TextView = binding.reviewCount
         val categories: TextView = binding.categories
     }
-
 }

@@ -4,8 +4,7 @@
     tools:showIn="@layout/activity_hotel">
 <group android:checkableBehavior="single">
     <item android:id="@+id/recommDesc"
-        android:title="@string/recomm_desc"
-        android:checked = "true" />
+        android:title="@string/recomm_desc" />
     <item android:id="@+id/recommAsc"
         android:title="@string/recomm_asc" />
     <item android:id="@+id/starsDesc"
