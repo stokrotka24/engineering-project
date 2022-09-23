@@ -1,6 +1,7 @@
 package com.voyager.hotels
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.PopupMenu
@@ -10,14 +11,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.voyager.R
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
+import com.voyager.api.DefaultCallback
+import com.voyager.api.HttpStatus
 import com.voyager.api.hotels.Hotel
+import com.voyager.api.hotels.HotelDetails
 import com.voyager.databinding.ActivityHotelBinding
+import retrofit2.Call
+import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
 private const val TAG = "HotelActivity"
 
-class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickListener {
+class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickListener, HotelAdapter.RecyclerViewListener {
     private lateinit var binding: ActivityHotelBinding
     private lateinit var api: ApiService
     private lateinit var recyclerView: RecyclerView
@@ -32,8 +38,7 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         Log.d(TAG, "onCreate: ")
         super.onCreate(savedInstanceState)
         binding = ActivityHotelBinding.inflate(layoutInflater)
-        val view = binding.root
-        setContentView(view)
+        setContentView(binding.root)
 
         api = ApiUtils.getApi()
 
@@ -63,7 +68,7 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         Log.d(TAG, "onStart: ")
         super.onStart()
 
-        hotelAdapter = HotelAdapter(chosenHotels)
+        hotelAdapter = HotelAdapter(this, chosenHotels)
         recyclerView = binding.hotelRecyclerView
         recyclerView.apply {
             layoutManager = lytManager
@@ -156,5 +161,27 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         filterHotels(filters)
         sortHotels()
         hotelAdapter.notifyDataSetChanged()
+    }
+
+    override fun onItemClicked(id: Int) {
+        Log.d(TAG, "onClickRecyclerViewItem: $id")
+        val api = ApiUtils.getApi()
+        val getHotelDetailsCall: Call<HotelDetails> = api.getHotelDetails(id)
+        getHotelDetailsCall.enqueue(object : DefaultCallback<HotelDetails?>(this) {
+            override fun onSuccess(response: Response<HotelDetails?>) {
+                val responseCode = response.code()
+                Log.d(TAG, "onSuccess: response.code = $responseCode")
+
+                when (responseCode) {
+                    HttpStatus.OK.code -> {
+                        val hotel = response.body()!!
+                        val intent = Intent(applicationContext, HotelDetailsActivity::class.java)
+                        // TODO put as object not as an array
+                        intent.putParcelableArrayListExtra("hotel", arrayListOf(hotel))
+                        startActivity(intent)
+                    }
+                }
+            }
+        })
     }
 }

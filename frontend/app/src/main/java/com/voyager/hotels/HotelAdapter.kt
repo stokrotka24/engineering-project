@@ -10,8 +10,12 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "HotelAdapter"
 
-class HotelAdapter(var chosenHotels: ArrayList<Hotel>
+class HotelAdapter(private val listener: RecyclerViewListener, var chosenHotels: ArrayList<Hotel>
 ) : RecyclerView.Adapter<HotelAdapter.ViewHolder>() {
+    interface RecyclerViewListener {
+        fun onItemClicked(id: Int)
+    }
+
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -29,7 +33,9 @@ class HotelAdapter(var chosenHotels: ArrayList<Hotel>
         holder.city.text = hotel.city
         holder.rating.text = hotel.stars.toString()
         holder.reviewCount.text = hotel.review_count.toString()
-        holder.categories.text = hotel.categories
+        holder.categories.text = hotel.categories.joinToString(",\n")
+
+        holder.itemView.setOnClickListener { listener.onItemClicked(hotel.id) }
     }
 
     override fun getItemCount(): Int = chosenHotels.size

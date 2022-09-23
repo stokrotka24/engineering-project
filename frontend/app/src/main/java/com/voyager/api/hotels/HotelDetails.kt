@@ -4,12 +4,14 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-data class Hotel(
-    val id: Int,
+data class HotelDetails(
     val name: String,
+    val address: String,
     val city: String,
-    val stars: Float,
+    val state: String,
+    val postal_code: String,
+    val stars: String,
     val review_count: Int,
     val categories: List<String>,
-    val recommendation_score: Int
+    val attributes: List<Attribute>
 ) : Parcelable

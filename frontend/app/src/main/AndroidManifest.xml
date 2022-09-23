@@ -17,6 +17,9 @@
         android:theme="@style/Theme.Voyager"
         tools:targetApi="31">
         <activity
+            android:name=".hotels.HotelDetailsActivity"
+            android:exported="false" />
+        <activity
             android:name=".hotels.HotelActivity"
             android:exported="false" />
         <activity

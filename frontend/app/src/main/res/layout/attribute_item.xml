@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="8dp"
+    android:paddingVertical="4dp">
+
+    <ImageView
+        android:id="@+id/attrIcon"
+        android:layout_width="22sp"
+        android:layout_height="22sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/ic_baseline_wifi_24"
+        app:tint="@color/primary_dark" />
+
+    <TextView
+        android:id="@+id/attrName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="6dp"
+        android:textSize="16sp"
+        app:layout_constraintStart_toEndOf="@+id/attrIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="WiFi:" />
+    <TextView
+        android:id="@+id/attrValue"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toEndOf="@+id/attrName"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="free" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>
