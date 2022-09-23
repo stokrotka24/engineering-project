@@ -1,16 +1,13 @@
 from rest_framework import generics
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from hotels.models import Hotel
-from hotels.serializers import HotelSerializer
+from hotels.serializers import HotelSerializer, HotelDetailsSerializer
 
 
 class HotelView(generics.ListAPIView):
     serializer_class = HotelSerializer
-
-    # TODO change permission
     permission_classes = [IsAuthenticated]
-    # permission_classes = [AllowAny]
 
     # TODO delete prints
     def get_queryset(self):
@@ -53,3 +50,9 @@ class HotelView(generics.ListAPIView):
         recommendations = recommendations[:no_recommendations]
         hotel_ids = [r["hotel_id"] for r in recommendations]
         return hotels.filter(id__in=hotel_ids)
+
+
+class HotelDetailsView(generics.RetrieveAPIView):
+    queryset = Hotel.objects.all()
+    serializer_class = HotelDetailsSerializer
+    permission_classes = [AllowAny]
