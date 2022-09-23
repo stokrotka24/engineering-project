@@ -48,4 +48,9 @@
         <item>@string/reviews_100</item>
         <item>@string/reviews_1000</item>
     </string-array>
+
+
+    <string name="cityState">"%1s, %2s %3s"</string>
+    <string name="attrName">"%1s:"</string>
+
 </resources>
