@@ -3,3 +3,4 @@ kotlin~=1.7.0
 retrofit~=2.9.0
 converter-gson~=2.9.0
 mongodb~=3.6.8
+flexbox~=3.0.0

@@ -38,7 +38,7 @@ class HotelDetailsSerializer(serializers.ModelSerializer):
         for (attr_key, attr_val) in hotel.attributes.items():
             if attr_key in embedded_fields:
                 for (emb_attr_key, emb_attr_val) in hotel.attributes[attr_key].items():
-                    if emb_attr_val is not None:
+                    if emb_attr_val is True:
                         attributes[attr_key + "." + emb_attr_key] = str(emb_attr_val)
             else:
                 if attr_val is not None:
