@@ -41,9 +41,9 @@ def cosine_distance(a: np.array, b: np.array) -> float:
 
 
 # TODO remove
-x = np.array([4444, 0, 1, 0])
-y = np.array([1, 0, 0, 1])
-print(jaccard_distance(x, y))
-x = np.array([3, 4])
-y = np.array([1, 0])
-print(cosine_distance(x, y))
+# x = np.array([4444, 0, 1, 0])
+# y = np.array([1, 0, 0, 1])
+# print(jaccard_distance(x, y))
+# x = np.array([3, 4])
+# y = np.array([1, 0])
+# print(cosine_distance(x, y))

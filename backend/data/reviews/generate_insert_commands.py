@@ -26,22 +26,26 @@ def get_hotels_reviews_from_dataset():
 
     no_hotels_reviews = 0
     max_hotel_review_len = 0
-    f = open(hotel_reviews_file, "w")
+    hotel_reviews = set()
+
     for (index, review) in enumerate(reviews):
         r = json.loads(review)
         if index % 10000 == 0:
             print(index)
 
         if r["business_id"] in hotels_ids:
-            f.write(review)
+            hotel_reviews.add(review)
             no_hotels_reviews += 1
             review_len = len(r["text"])
             if review_len > max_hotel_review_len:
                 max_hotel_review_len = review_len
 
+    f = open(hotel_reviews_file, "w")
+    for review in hotel_reviews:
+        f.write(review)
     f.close()
     print("No. reviews:", len(reviews))
-    print("No. hotel reviews:", no_hotels_reviews)
+    print("No. hotel reviews:", len(hotel_reviews))
     print("Max hotel review length:", max_hotel_review_len)
 
 
@@ -53,7 +57,7 @@ def add_reviews():
     with open(hotel_reviews_file) as f:
         reviews = f.readlines()
     print("No. hotel reviews:", len(reviews))
-    reviews = [json.loads(review) for review in reviews[:1000]]
+    reviews = [json.loads(review) for review in reviews]
 
     reviews = parse_reviews(reviews)
 
@@ -71,8 +75,8 @@ def add_reviews():
         commands.append("r = Review(")
         for prop in properties:
             add_property(commands, prop, r[prop])
-        add_property(commands, "user_id", user_ids_map.get(r["user_id"], 1))
-        add_property(commands, "hotel_id", hotel_ids_map.get(r["hotel_id"], 1))
+        add_property(commands, "user_id", user_ids_map[r["user_id"]])
+        add_property(commands, "hotel_id", hotel_ids_map[r["hotel_id"]])
         add_property(commands, "stars", int(r["stars"]))
         commands.append("); r.save();")
 
