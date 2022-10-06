@@ -18,7 +18,7 @@ no_hotels = Hotel.objects.count()
 
 def create_utility_matrix():
     reviews = Review.objects.all()
-    um = dok_matrix((no_users, no_hotels), dtype=np.uint8)
+    um = dok_matrix((no_users, no_hotels), dtype=np.int32)
 
     for review in reviews:
         user_id = review.user_id
@@ -41,7 +41,7 @@ def get_utility_matrix():
 
 def create_binary_utility_matrix(positive_threshold):
     reviews = Review.objects.all()
-    bin_um = dok_matrix((no_users, no_hotels), dtype=np.uint8)
+    bin_um = dok_matrix((no_users, no_hotels), dtype=np.int32)
 
     for review in reviews:
         user_id = review.user_id
@@ -94,6 +94,7 @@ def create_normalized_utility_matrix():
 
 
 if __name__ == "__main__":
+    create_utility_matrix()
     create_binary_utility_matrix(3)
-    # create_normalized_utility_matrix_no_acceleration()
-    # create_normalized_utility_matrix()
+    create_normalized_utility_matrix_no_acceleration()
+    create_normalized_utility_matrix()
