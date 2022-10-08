@@ -19,6 +19,8 @@ def jaccard_similarity_no_acceleration(matrix: csr_matrix, axis) -> csc_matrix |
         intersection_a_b: csc_matrix = matrix_copy.T * matrix_copy
     else:
         intersection_a_b: csr_matrix = matrix_copy * matrix_copy.T
+    # dim1 = row if axis = 0 else col
+    # dim2 = col if axis = 0 else row
     dim1_indices = intersection_a_b.indices  # dim1 indexes for subsequent data in intersection_a_b.data
     size_a = sum_by_axis[dim1_indices]
     num_nnz_per_dim2 = intersection_a_b.getnnz(axis=0)  # number of nonzero elements in every dim2
@@ -69,17 +71,3 @@ def cosine_similarity(matrix, axis) -> csr_matrix:
         return normalized_matrix_by_axis.T * normalized_matrix_by_axis
     return normalized_matrix_by_axis * normalized_matrix_by_axis.T
 
-# um = load_npz("matrices/utility_matrix.npz")
-# cos_um = my_cosine_similarity(um, 0)
-# for i in cos_um.data:
-#     if i > 0.1 and i < 0.9:
-#         print(i)
-# print(cos_um.data)
-# print(cos_um.shape)
-
-# cos_um = my_cosine_similarity(um, 1)
-# for i in cos_um.data:
-#     if 0.8 < i < 0.9:
-#         print(i)
-# print(cos_um.data)
-# print(cos_um.shape)
