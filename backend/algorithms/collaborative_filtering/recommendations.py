@@ -1,4 +1,7 @@
+import sys
+
 import numpy as np
+from scipy.sparse import csr_matrix
 
 from algorithms.collaborative_filtering.similarities import jaccard_similarity, cosine_similarity
 from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, \
@@ -76,26 +79,46 @@ def centered_cosine_collaborative_filtering(axis, n, weighted_average):
     return predict_ratings(normalized_utility_matrix, similarities, axis, n, weighted_average)
 
 
+def update_recommendations():
+    predicted_ratings = cosine_collaborative_filtering(0, 1000, True)
+    print(type(predicted_ratings))
+    utility_matrix = get_utility_matrix()
+    num_users = utility_matrix.shape[0]
+    for user_id in range(372, num_users):
+        ratings_indices = utility_matrix[user_id, :].indices
+        print(ratings_indices)
+        predictions = predicted_ratings[user_id].A1
+        print(predictions)
+        predictions_indices = np.squeeze(np.argwhere(~np.isnan(predictions)))
+        predictions_indices = [hotel_id for hotel_id in predictions_indices if hotel_id not in ratings_indices]
+        hotel_id_to_prediction = [(index, predictions[index]) for index in predictions_indices]
+        hotel_id_to_prediction.sort(key=lambda t: t[1], reverse=True)
+        print(hotel_id_to_prediction)
+
+        sys.exit()
+
+
 if __name__ == "__main__":
+    update_recommendations()
     # um = load_npz("matrices/utility_matrix.npz")
     # um[372, 680] = 0
     # um.eliminate_zeros()
     # save_npz("matrices/utility_matrix.npz", um, True)
     # create_normalized_utility_matrix()
 
-    n = 15000
+    # n = 15000
     # r = jaccard_collaborative_filtering(1, n, True, 3)
     # print(r[372, 680])
 
     # r = cosine_collaborative_filtering(1, n, False)
     # print(r[372, 680])
-    utility_matrix = get_utility_matrix()
-    rating_sum = utility_matrix.sum(axis=1).A1
-    rating_num = np.diff(utility_matrix.indptr)
-    rating_num[rating_num == 0] = 1  # to avoid division by 0
-    rating_mean = rating_sum / rating_num
-    #
-    r = centered_cosine_collaborative_filtering(1, n, False)
-    print(r[372, 680])
-    print(rating_mean[372])
-    print(r[372, 680] + rating_mean[372])
+    # utility_matrix = get_utility_matrix()
+    # rating_sum = utility_matrix.sum(axis=1).A1
+    # rating_num = np.diff(utility_matrix.indptr)
+    # rating_num[rating_num == 0] = 1  # to avoid division by 0
+    # rating_mean = rating_sum / rating_num
+    # #
+    # r = centered_cosine_collaborative_filtering(1, n, False)
+    # print(r[372, 680])
+    # print(rating_mean[372])
+    # print(r[372, 680] + rating_mean[372])
