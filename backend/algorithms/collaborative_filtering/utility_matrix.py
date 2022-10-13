@@ -36,7 +36,7 @@ def get_utility_matrix():
     if not Path(um_file).is_file():
         create_utility_matrix()
 
-    return load_npz(f"{MATRICES_DIR}/utility_matrix.npz")
+    return load_npz(um_file)
 
 
 def create_binary_utility_matrix(positive_threshold):
@@ -52,6 +52,14 @@ def create_binary_utility_matrix(positive_threshold):
     bin_um = bin_um.tocsr()
     save_npz(f"{MATRICES_DIR}/binary_utility_matrix_{positive_threshold}", bin_um, True)
     print("Binary utility matrix saved")
+
+
+def get_binary_utility_matrix(positive_threshold):
+    bin_um_file = f"{MATRICES_DIR}/binary_utility_matrix_{positive_threshold}.npz"
+    if not Path(bin_um_file).is_file():
+        create_binary_utility_matrix(positive_threshold)
+
+    return load_npz(bin_um_file)
 
 
 def create_normalized_utility_matrix_no_acceleration():
@@ -91,6 +99,14 @@ def create_normalized_utility_matrix():
     print("Normalized utility matrix created")
     save_npz(f"{MATRICES_DIR}/normalized_utility_matrix", normalized_um, True)
     print("Normalized utility matrix saved")
+
+
+def get_normalized_utility_matrix():
+    normalized_um_file = f"{MATRICES_DIR}/normalized_utility_matrix.npz"
+    if not Path(normalized_um_file).is_file():
+        create_normalized_utility_matrix()
+
+    return load_npz(normalized_um_file)
 
 
 if __name__ == "__main__":

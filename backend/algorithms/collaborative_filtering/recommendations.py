@@ -1,12 +1,12 @@
-import time
-
 import numpy as np
-from scipy.sparse import load_npz
-from similarities import cosine_similarity
+
+from algorithms.collaborative_filtering.similarities import jaccard_similarity, cosine_similarity
+from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, \
+    get_binary_utility_matrix, get_normalized_utility_matrix
 
 
-def cosine(utility_matrix, axis, n, weighted_average=True):
-    similarities = cosine_similarity(utility_matrix, axis).tolil()
+def predict_ratings(utility_matrix, similarities, axis, n, weighted_average=True):
+    similarities = similarities.tolil()
     no_rows = similarities.shape[0]
 
     for row_index in range(no_rows):
@@ -45,88 +45,57 @@ def cosine(utility_matrix, axis, n, weighted_average=True):
     return ratings_sum / weights_sum
 
 
-def cosine_item_based(utility_matrix, n, weighted_average=True):
-    hotel_similarities = cosine_similarity(utility_matrix, 0).tolil()
-    no_rows = hotel_similarities.shape[0]
+def jaccard_collaborative_filtering(axis, n, weighted_average, threshold):
+    binary_utility_matrix = get_binary_utility_matrix(threshold)
+    #
+    # binary_utility_matrix[372, 680] = 0
+    # binary_utility_matrix.eliminate_zeros()
 
-    for row_index in range(no_rows):
-        row_data = np.array(hotel_similarities.data[row_index])
-        column_indices = np.array(hotel_similarities.rows[row_index])
-        # get indices of n similar hotels (n+1 because we'll get also the same hotel - similarity(A,A) = 1.0)
-        sorted_data_indices = row_data.argsort()[-(n + 1):]
-        hotel_similarities.data[row_index] = row_data[sorted_data_indices].tolist()
-        hotel_similarities.rows[row_index] = column_indices[sorted_data_indices].tolist()
+    similarities = jaccard_similarity(binary_utility_matrix, axis)
+    utility_matrix = get_utility_matrix()
+    #
+    # utility_matrix[372, 680] = 0
+    # utility_matrix.eliminate_zeros()
 
-    hotel_similarities = hotel_similarities.tocsr()
-    hotel_similarities = hotel_similarities.T
-
-    utility_matrix_ones = utility_matrix.copy()
-    utility_matrix_ones.data = np.ones_like(utility_matrix.data)
-
-    if weighted_average:
-        ratings_sum = utility_matrix * hotel_similarities
-        weights_sum = utility_matrix_ones * hotel_similarities
-    else:
-        hotel_similarities_ones = hotel_similarities.copy()
-        hotel_similarities_ones.data = np.ones_like(hotel_similarities.data)
-
-        ratings_sum = utility_matrix * hotel_similarities_ones
-        weights_sum = utility_matrix_ones * hotel_similarities_ones
-
-    return ratings_sum / weights_sum
+    return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
 
 
-def cosine_user_based(utility_matrix, n, weighted_average=True):
-    print(time.time())
-    user_similarities = cosine_similarity(utility_matrix, 1).tolil()
-    no_rows = user_similarities.shape[0]
+def cosine_collaborative_filtering(axis, n, weighted_average):
+    utility_matrix = get_utility_matrix()
+    #
+    # utility_matrix[372, 680] = 0
+    # utility_matrix.eliminate_zeros()
 
-    print(time.time())
-    for row_index in range(no_rows):
-        row_data = np.array(user_similarities.data[row_index])
-        column_indices = np.array(user_similarities.rows[row_index])
-        # get indices of n similar users (n+1 because we'll get also the same user - similarity(A,A) = 1.0)
-        sorted_data_indices = row_data.argsort()[-(n + 1):]
-        user_similarities.data[row_index] = row_data[sorted_data_indices].tolist()
-        user_similarities.rows[row_index] = column_indices[sorted_data_indices].tolist()
+    similarities = cosine_similarity(utility_matrix, axis)
+    return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
 
-    user_similarities = user_similarities.tocsr()
-    print(time.time())
 
-    utility_matrix_ones = utility_matrix.copy()
-    utility_matrix_ones.data = np.ones_like(utility_matrix.data)
-
-    if weighted_average:
-        ratings_sum = user_similarities * utility_matrix
-        weights_sum = user_similarities * utility_matrix_ones
-    else:
-        user_similarities_ones = user_similarities.copy()
-        user_similarities_ones.data = np.ones_like(user_similarities.data)
-
-        ratings_sum = user_similarities_ones * utility_matrix
-        weights_sum = user_similarities_ones * utility_matrix_ones
-
-    print(time.time())
-    return ratings_sum / weights_sum
+def centered_cosine_collaborative_filtering(axis, n, weighted_average):
+    normalized_utility_matrix = get_normalized_utility_matrix()
+    similarities = cosine_similarity(normalized_utility_matrix, axis)
+    return predict_ratings(normalized_utility_matrix, similarities, axis, n, weighted_average)
 
 
 if __name__ == "__main__":
-    um = load_npz("matrices/utility_matrix.npz")
-    print(um[372, 680])
-    um[372, 680] = 0
-    um.eliminate_zeros()
-    # num_ratings = len(um.getrow(372).data)
-    # print(num_ratings)
-    # predicted_rating = cosine_item_based(um, 2997, False)
-    # print(predicted_rating[372, 680])
-    # x = predicted_rating[372, :]
-    # x = x[~np.isnan(x)]
-    # x = csr_matrix(x)
+    # um = load_npz("matrices/utility_matrix.npz")
+    # um[372, 680] = 0
+    # um.eliminate_zeros()
+    # save_npz("matrices/utility_matrix.npz", um, True)
+    # create_normalized_utility_matrix()
+
+    n = 15000
+    # r = jaccard_collaborative_filtering(1, n, True, 3)
+    # print(r[372, 680])
+
+    # r = cosine_collaborative_filtering(1, n, False)
+    # print(r[372, 680])
+    utility_matrix = get_utility_matrix()
+    rating_sum = utility_matrix.sum(axis=1).A1
+    rating_num = np.diff(utility_matrix.indptr)
+    rating_num[rating_num == 0] = 1  # to avoid division by 0
+    rating_mean = rating_sum / rating_num
     #
-    # print(type(predicted_rating))
-    # print(type(x))
-    # print(x)
-    # print(len(x.data) - num_ratings)
-    # # print([~numpy .isnan(x)])
-    predicted_rating = cosine(um, 1, 5500, True)
-    print(predicted_rating[372, 680])
+    r = centered_cosine_collaborative_filtering(1, n, False)
+    print(r[372, 680])
+    print(rating_mean[372])
+    print(r[372, 680] + rating_mean[372])

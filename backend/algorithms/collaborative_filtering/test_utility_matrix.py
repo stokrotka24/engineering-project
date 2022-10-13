@@ -4,7 +4,7 @@ import unittest
 from scipy.sparse import load_npz
 
 from utility_matrix import create_normalized_utility_matrix_no_acceleration, \
-    create_normalized_utility_matrix
+    create_normalized_utility_matrix, get_utility_matrix, get_binary_utility_matrix
 
 
 def func_name(f):
@@ -17,11 +17,11 @@ def func_name(f):
 
 class TestUtilityMatrices(unittest.TestCase):
     def test_utility_matrix(self):
-        utility_matrix = load_npz("matrices/utility_matrix.npz")
+        utility_matrix = get_utility_matrix()
         self.assertEqual(utility_matrix[2, 908], 2)
 
     def test_binary_utility_matrix(self):
-        binary_utility_matrix = load_npz("matrices/binary_utility_matrix_3.npz")
+        binary_utility_matrix = get_binary_utility_matrix(3)
         self.assertEqual(binary_utility_matrix[2, 908], 0)
 
     def test_normalized_utility_matrix(self):
