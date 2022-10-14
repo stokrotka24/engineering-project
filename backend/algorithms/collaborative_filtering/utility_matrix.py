@@ -109,6 +109,11 @@ def get_normalized_utility_matrix():
     return load_npz(normalized_um_file)
 
 
+def delete_matrices():
+    for file in os.listdir(MATRICES_DIR):
+        os.remove(os.path.join(MATRICES_DIR, file))
+
+
 if __name__ == "__main__":
     create_utility_matrix()
     create_binary_utility_matrix(3)

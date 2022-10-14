@@ -1,11 +1,10 @@
-import sys
-
+import os
 import numpy as np
-from scipy.sparse import csr_matrix
 
 from algorithms.collaborative_filtering.similarities import jaccard_similarity, cosine_similarity
 from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, \
-    get_binary_utility_matrix, get_normalized_utility_matrix
+    get_binary_utility_matrix, get_normalized_utility_matrix, delete_matrices
+from authorization.models import User
 
 
 def predict_ratings(utility_matrix, similarities, axis, n, weighted_average=True):
@@ -50,25 +49,13 @@ def predict_ratings(utility_matrix, similarities, axis, n, weighted_average=True
 
 def jaccard_collaborative_filtering(axis, n, weighted_average, threshold):
     binary_utility_matrix = get_binary_utility_matrix(threshold)
-    #
-    # binary_utility_matrix[372, 680] = 0
-    # binary_utility_matrix.eliminate_zeros()
-
     similarities = jaccard_similarity(binary_utility_matrix, axis)
     utility_matrix = get_utility_matrix()
-    #
-    # utility_matrix[372, 680] = 0
-    # utility_matrix.eliminate_zeros()
-
     return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
 
 
 def cosine_collaborative_filtering(axis, n, weighted_average):
     utility_matrix = get_utility_matrix()
-    #
-    # utility_matrix[372, 680] = 0
-    # utility_matrix.eliminate_zeros()
-
     similarities = cosine_similarity(utility_matrix, axis)
     return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
 
@@ -80,45 +67,31 @@ def centered_cosine_collaborative_filtering(axis, n, weighted_average):
 
 
 def update_recommendations():
+    os.chdir(os.path.dirname(os.path.realpath(__file__)))
+    delete_matrices()
+
     predicted_ratings = cosine_collaborative_filtering(0, 1000, True)
-    print(type(predicted_ratings))
     utility_matrix = get_utility_matrix()
-    num_users = utility_matrix.shape[0]
-    for user_id in range(372, num_users):
-        ratings_indices = utility_matrix[user_id, :].indices
-        print(ratings_indices)
-        predictions = predicted_ratings[user_id].A1
-        print(predictions)
+
+    users = User.objects.all()
+    # TODO update recommendations for every user
+    for user in users[:3]:
+        ratings_indices = utility_matrix[user.id - 1, :].indices
+        predictions = predicted_ratings[user.id - 1].A1
         predictions_indices = np.squeeze(np.argwhere(~np.isnan(predictions)))
+        if predictions_indices.shape == ():  # case where we have prediction for one hotel
+            predictions_indices = np.array([predictions_indices])
+
         predictions_indices = [hotel_id for hotel_id in predictions_indices if hotel_id not in ratings_indices]
         hotel_id_to_prediction = [(index, predictions[index]) for index in predictions_indices]
         hotel_id_to_prediction.sort(key=lambda t: t[1], reverse=True)
-        print(hotel_id_to_prediction)
+        recommendations = [{"hotel_id": hotel_id + 1} for (hotel_id, _) in hotel_id_to_prediction]
 
-        sys.exit()
+        if len(recommendations) > 0:
+            user.average_stars = float(str(user.average_stars))
+            user.recommendations = recommendations
+            user.save()
 
 
 if __name__ == "__main__":
     update_recommendations()
-    # um = load_npz("matrices/utility_matrix.npz")
-    # um[372, 680] = 0
-    # um.eliminate_zeros()
-    # save_npz("matrices/utility_matrix.npz", um, True)
-    # create_normalized_utility_matrix()
-
-    # n = 15000
-    # r = jaccard_collaborative_filtering(1, n, True, 3)
-    # print(r[372, 680])
-
-    # r = cosine_collaborative_filtering(1, n, False)
-    # print(r[372, 680])
-    # utility_matrix = get_utility_matrix()
-    # rating_sum = utility_matrix.sum(axis=1).A1
-    # rating_num = np.diff(utility_matrix.indptr)
-    # rating_num[rating_num == 0] = 1  # to avoid division by 0
-    # rating_mean = rating_sum / rating_num
-    # #
-    # r = centered_cosine_collaborative_filtering(1, n, False)
-    # print(r[372, 680])
-    # print(rating_mean[372])
-    # print(r[372, 680] + rating_mean[372])

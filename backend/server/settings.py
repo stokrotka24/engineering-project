@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'django_extensions',
     'django_filters',
+    'django_crontab',
 ]
 
 AUTH_USER_MODEL = "authorization.User"
@@ -142,3 +143,8 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CRONTAB_COMMAND_SUFFIX = '2>&1'
+CRONJOBS = [
+    ('0 * * * * ', 'algorithms.collaborative_filtering.recommendations.update_recommendations', '>> cron_tab.txt')
+]
