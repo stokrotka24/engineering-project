@@ -146,5 +146,5 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
-    ('0 * * * * ', 'algorithms.collaborative_filtering.recommendations.update_recommendations', '>> cron_tab.txt')
+    ('0 * * * * ', 'algorithms.collaborative_filtering.recommendations.update_recommendations',  f'>> {BASE_DIR}/cron_logs.txt')
 ]
