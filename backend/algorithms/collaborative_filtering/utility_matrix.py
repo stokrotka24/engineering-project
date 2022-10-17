@@ -75,6 +75,13 @@ def get_binary_utility_matrix(positive_threshold):
     return load_npz(bin_um_file)
 
 
+def get_rating_mean_per_user(utility_matrix):
+    rating_sum = utility_matrix.sum(axis=1).A1
+    rating_num = np.diff(utility_matrix.indptr)
+    rating_num[rating_num == 0] = 1  # to avoid division by 0
+    return rating_sum / rating_num
+
+
 def create_normalized_utility_matrix_no_acceleration():
     """
         Creates and saves normalized utility matrix (subtracting user's average).
@@ -84,11 +91,7 @@ def create_normalized_utility_matrix_no_acceleration():
             -
         """
     um = get_utility_matrix()
-
-    rating_sum = um.sum(axis=1).A1
-    rating_num = np.diff(um.indptr)
-    rating_num[rating_num == 0] = 1  # to avoid division by 0
-    rating_mean = rating_sum / rating_num
+    rating_mean = get_rating_mean_per_user(um)
 
     normalized_um = dok_matrix((no_users, no_hotels), dtype=np.float64)
     for user_id in range(no_users):
@@ -106,11 +109,7 @@ def create_normalized_utility_matrix_no_acceleration():
 
 def create_normalized_utility_matrix():
     um = get_utility_matrix()
-
-    rating_sum = um.sum(axis=1).A1
-    rating_num = np.diff(um.indptr)
-    rating_num[rating_num == 0] = 1  # to avoid division by 0
-    rating_mean = rating_sum / rating_num
+    rating_mean = get_rating_mean_per_user(um)
 
     rating_mean = diags(diagonals=rating_mean, offsets=0)
     ones = um.copy()
