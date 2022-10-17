@@ -5,7 +5,7 @@ from scipy.sparse import dok_matrix, save_npz, load_npz
 
 from algorithms.collaborative_filtering.utility_matrix import get_normalized_utility_matrix
 from algorithms.content_based.map_attributes_to_index import create_map_attributes_to_index, enum_name_to_class, \
-    embedded_attr_name_to_class, null_boolean_values
+    embedded_attr_name_to_class, boolean_values
 from authorization.models import User
 from hotels.models import Hotel, Review
 
@@ -24,17 +24,16 @@ def create_hotel_matrix():
             for (attr_key, attr_val) in attrs.items():
                 if attr_key in embedded_attr_name_to_class.keys():
                     for (emb_attr_key, emb_attr_val) in attr_val.items():
-                        column_index = map_attribute_to_index[attr_key][emb_attr_key][emb_attr_val]
-                        hotel_matrix[hotel_index, column_index] = 1
+                        if emb_attr_val is not None:
+                            column_index = map_attribute_to_index[attr_key][emb_attr_key][emb_attr_val]
+                            hotel_matrix[hotel_index, column_index] = 1
 
                 elif attr_key in enum_name_to_class.keys():
-                    if attr_val is None:
-                        column_index = map_attribute_to_index[attr_key][None]
-                    else:
+                    if attr_val is not None:
                         column_index = map_attribute_to_index[attr_key][attr_val.name]
-                    hotel_matrix[hotel_index, column_index] = 1
+                        hotel_matrix[hotel_index, column_index] = 1
 
-                elif attr_val in null_boolean_values:
+                elif attr_val in boolean_values:
                     try:
                         column_index = map_attribute_to_index[attr_key][attr_val]
                         hotel_matrix[hotel_index, column_index] = 1

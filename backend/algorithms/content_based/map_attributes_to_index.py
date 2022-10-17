@@ -20,14 +20,14 @@ enum_name_to_class = {"wiFi": WiFi, "noiseLevel": NoiseLevel, "restaurantsAttire
                       "BYOBCorkage": BYOBCorkage, "smoking": Smoking, "alcohol": Alcohol}
 embedded_attr_name_to_class = {"music": Music, "businessParking": Parking, "goodForMeal": GoodForMeal,
                                "bestNights": BestNights, "ambience": Ambience}
-null_boolean_values = [None, True, False]
+boolean_values = [True, False]
 
 
 def add_null_boolean_field(field_name):
     global curr_col_index
 
     map_attribute_to_index[field_name] = dict()
-    for val in null_boolean_values:
+    for val in boolean_values:
         map_attribute_to_index[field_name][val] = curr_col_index
         curr_col_index += 1
 
@@ -50,7 +50,6 @@ def add_enum_choices(enum_name):
         map_attribute_to_index[enum_name][enum_key] = curr_col_index
         curr_col_index += 1
 
-    map_attribute_to_index[enum_name][None] = curr_col_index
     curr_col_index += 1
 
 
@@ -62,7 +61,7 @@ def add_embedded_attr(embedded_attr_name):
 
     for embedded_key in embedded_keys:
         map_attribute_to_index[embedded_attr_name][embedded_key] = dict()
-        for val in null_boolean_values:
+        for val in boolean_values:
             map_attribute_to_index[embedded_attr_name][embedded_key][val] = curr_col_index
             curr_col_index += 1
 
