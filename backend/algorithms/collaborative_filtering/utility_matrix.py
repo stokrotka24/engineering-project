@@ -40,13 +40,26 @@ def get_utility_matrix():
 
 
 def create_binary_utility_matrix(positive_threshold):
+    """
+    Creates and saves binary utility matrix:
+        1 if rating is greater or equal to positive_threshold
+        0 otherwise
+    Binary utility matrix doesn't store explicit zeroes (even for items rated less than positive_threshold).
+
+    Args:
+        positive_threshold: number, above which rating will be treated as positive
+
+    Returns:
+        -
+    """
     reviews = Review.objects.all()
     bin_um = dok_matrix((no_users, no_hotels), dtype=np.int32)
 
     for review in reviews:
         user_id = review.user_id
         hotel_id = review.hotel_id
-        bin_um[user_id - 1, hotel_id - 1] = 1 if review.stars >= positive_threshold else 0
+        if review.stars >= positive_threshold:
+            bin_um[user_id - 1, hotel_id - 1] = 1
 
     print("Binary utility matrix created")
     bin_um = bin_um.tocsr()
@@ -63,6 +76,13 @@ def get_binary_utility_matrix(positive_threshold):
 
 
 def create_normalized_utility_matrix_no_acceleration():
+    """
+        Creates and saves normalized utility matrix (subtracting user's average).
+        Normalized utility matrix doesn't store explicit zeroes (even for items rated equal to user's average).
+
+        Returns:
+            -
+        """
     um = get_utility_matrix()
 
     rating_sum = um.sum(axis=1).A1
