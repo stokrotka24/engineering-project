@@ -78,17 +78,17 @@ def update_recommendations():
 
     users = User.objects.all()
     # TODO update recommendations for every user
-    for user in users[:3]:
-        ratings_indices = utility_matrix[user.id - 1, :].indices
-        predictions = predicted_ratings[user.id - 1].A1
+    for (user_index, user) in enumerate(users[:3]):
+        ratings_indices = utility_matrix.getrow(user_index).indices
+        predictions = predicted_ratings[user_index].A1
         predictions_indices = np.squeeze(np.argwhere(~np.isnan(predictions)))
         if predictions_indices.shape == ():  # case where we have prediction for one hotel
             predictions_indices = np.array([predictions_indices])
 
-        predictions_indices = [hotel_id for hotel_id in predictions_indices if hotel_id not in ratings_indices]
-        hotel_id_to_prediction = [(index, predictions[index]) for index in predictions_indices]
-        hotel_id_to_prediction.sort(key=lambda t: t[1], reverse=True)
-        recommendations = [{"hotel_id": hotel_id + 1} for (hotel_id, _) in hotel_id_to_prediction]
+        predictions_indices = [hotel_index for hotel_index in predictions_indices if hotel_index not in ratings_indices]
+        hotel_index_to_prediction = [(index, predictions[index]) for index in predictions_indices]
+        hotel_index_to_prediction.sort(key=lambda t: t[1], reverse=True)
+        recommendations = [{"hotel_id": hotel_index + 1} for (hotel_index, _) in hotel_index_to_prediction]
 
         if len(recommendations) > 0:
             user.average_stars = float(str(user.average_stars))

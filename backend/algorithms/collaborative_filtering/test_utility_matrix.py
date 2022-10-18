@@ -4,7 +4,7 @@ import unittest
 from scipy.sparse import load_npz
 
 from utility_matrix import create_normalized_utility_matrix_no_acceleration, \
-    create_normalized_utility_matrix, get_utility_matrix, get_binary_utility_matrix
+    create_normalized_utility_matrix, get_utility_matrix, get_binary_utility_matrix, get_normalized_utility_matrix
 
 
 def func_name(f):
@@ -43,6 +43,19 @@ class TestUtilityMatrices(unittest.TestCase):
 
         print("no acc/with acc implementation time =",
               elapsed_no_acc / elapsed)
+
+        user_id = 2
+
+        um = get_utility_matrix()
+        user_row = um.getrow(user_id)
+        ratings_sum = sum(user_row.data)
+        ratings_num = len(user_row.data)
+        rating_mean = ratings_sum / ratings_num
+        normalized_user_row = user_row.copy()
+        normalized_user_row.astype(float)
+        normalized_user_row.data = normalized_user_row.data - rating_mean
+        normalized_um = get_normalized_utility_matrix()
+        self.assertTrue((normalized_user_row != normalized_um[user_id]).nnz == 0)
 
 
 if __name__ == '__main__':

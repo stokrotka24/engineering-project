@@ -11,10 +11,10 @@ sys.path.append(Path(__file__).parent.parent.parent.__str__())
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'server.settings')
 django.setup()
 from hotels.models import WiFi, NoiseLevel, RestaurantsAttire, BYOBCorkage, Smoking, Alcohol, Attributes, Music, \
-    Parking, GoodForMeal, BestNights, Ambience
+    Parking, GoodForMeal, BestNights, Ambience, Hotel
 
-map_attribute_to_index = dict()
-curr_col_index = 0
+map_feature_to_index = dict()
+current_column_index = 0
 
 enum_name_to_class = {"wiFi": WiFi, "noiseLevel": NoiseLevel, "restaurantsAttire": RestaurantsAttire,
                       "BYOBCorkage": BYOBCorkage, "smoking": Smoking, "alcohol": Alcohol}
@@ -23,13 +23,27 @@ embedded_attr_name_to_class = {"music": Music, "businessParking": Parking, "good
 boolean_values = [True, False]
 
 
-def add_null_boolean_field(field_name):
-    global curr_col_index
+def map_categories_to_index():
+    global current_column_index
 
-    map_attribute_to_index[field_name] = dict()
+    hotels = Hotel.objects.all()
+    categories = set()
+    for hotel in hotels:
+        for category in hotel.categories:
+            categories.add(category['name'])
+
+    for category in categories:
+        map_feature_to_index[category] = current_column_index
+        current_column_index += 1
+
+
+def add_null_boolean_field(field_name):
+    global current_column_index
+
+    map_feature_to_index[field_name] = dict()
     for val in boolean_values:
-        map_attribute_to_index[field_name][val] = curr_col_index
-        curr_col_index += 1
+        map_feature_to_index[field_name][val] = current_column_index
+        current_column_index += 1
 
 
 def get_embedded_keys(embedded_class):
@@ -41,32 +55,32 @@ def get_embedded_keys(embedded_class):
 
 
 def add_enum_choices(enum_name):
-    global curr_col_index
-    map_attribute_to_index[enum_name] = dict()
+    global current_column_index
+    map_feature_to_index[enum_name] = dict()
     enum_class = enum_name_to_class[enum_name]
     enum_keys = get_embedded_keys(enum_class)
 
     for enum_key in enum_keys:
-        map_attribute_to_index[enum_name][enum_key] = curr_col_index
-        curr_col_index += 1
+        map_feature_to_index[enum_name][enum_key] = current_column_index
+        current_column_index += 1
 
-    curr_col_index += 1
+    current_column_index += 1
 
 
 def add_embedded_attr(embedded_attr_name):
-    global curr_col_index
-    map_attribute_to_index[embedded_attr_name] = dict()
+    global current_column_index
+    map_feature_to_index[embedded_attr_name] = dict()
     embedded_class = embedded_attr_name_to_class[embedded_attr_name]
     embedded_keys = get_embedded_keys(embedded_class)
 
     for embedded_key in embedded_keys:
-        map_attribute_to_index[embedded_attr_name][embedded_key] = dict()
+        map_feature_to_index[embedded_attr_name][embedded_key] = dict()
         for val in boolean_values:
-            map_attribute_to_index[embedded_attr_name][embedded_key][val] = curr_col_index
-            curr_col_index += 1
+            map_feature_to_index[embedded_attr_name][embedded_key][val] = current_column_index
+            current_column_index += 1
 
 
-def create_map_attributes_to_index():
+def map_attributes_to_index():
     attributes_fields = Attributes._meta.fields
 
     for attr_field in attributes_fields:
@@ -79,9 +93,14 @@ def create_map_attributes_to_index():
         else:
             print("Unsupported type:", type(attr_field))
 
-    return map_attribute_to_index, curr_col_index
+
+# TODO add choice categories/attributes/both
+def create_map_feature_to_index():
+    map_categories_to_index()
+    map_attributes_to_index()
+    return map_feature_to_index, current_column_index
 
 
 if __name__ == "__main__":
-    create_map_attributes_to_index()
-    print(map_attribute_to_index)
+    create_map_feature_to_index()
+    print(map_feature_to_index)
