@@ -9,7 +9,7 @@ import okhttp3.*
 
 private const val TAG = "TokenAuthenticator"
 
-class TokenAuthenticator(context: Context): Authenticator {
+class TokenAuthenticator(val context: Context): Authenticator {
     private val tokenManager = TokenManager(context)
     private val tokenRefreshApi = buildTokenRefreshApi()
 
@@ -32,8 +32,7 @@ class TokenAuthenticator(context: Context): Authenticator {
                 .header(ApiUtils.AUTHORIZATION_HEADER, "Bearer $renewedAccessToken")
                 .build()
         } catch (ex: RefreshTokenExpiredException) {
-            tokenManager.removeTokens()
-            ApiUtils.loggedOut()
+            ApiUtils.loggedOut(context)
             null
         }
     }

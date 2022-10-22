@@ -72,7 +72,9 @@ class SearchFragment : Fragment() {
         val noRecommendationsText = noRecommendationsEditText.text.toString()
         var noRecommendations = 0
         if (noRecommendationsText.isNotBlank()) {
-            noRecommendations = noRecommendationsText.toInt()
+            try {
+                noRecommendations = noRecommendationsText.toInt()
+            } catch (ex: NumberFormatException) { } // if noRecommendations is bigger then Int limit
         }
 
         if (noRecommendations == 0 || noRecommendations> MAX_RECOMMENDATIONS) {

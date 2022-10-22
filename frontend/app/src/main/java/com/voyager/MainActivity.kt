@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.google.android.material.navigation.NavigationView
+import com.voyager.api.ApiUtils
 import com.voyager.databinding.ActivityMainBinding
 import com.voyager.hotels.SearchFragment
 
@@ -41,7 +42,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
         } else {
-            // TODO logout??
+            ApiUtils.loggedOut(applicationContext)
             super.onBackPressed()
         }
     }
@@ -50,6 +51,10 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when(item.itemId) {
             R.id.nav_hotels -> {
                 supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, SearchFragment()).commit()
+            }
+            R.id.nav_log_out -> {
+                ApiUtils.loggedOut(applicationContext)
+                finish()
             }
         }
         drawer.closeDrawer(GravityCompat.START)

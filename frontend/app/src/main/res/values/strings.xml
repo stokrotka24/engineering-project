@@ -21,6 +21,7 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="navigation_drawer_hotels">Hotel recommendation</string>
     <string name="navigation_drawer_account">My account</string>
+    <string name="navigation_drawer_log_out">Log out</string>
 
     <string name="search_fragment_title">Let us find the best hotels\njust for you!</string>
     <string name="search_by_city">Type city… (optional)</string>

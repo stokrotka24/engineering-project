@@ -30,7 +30,6 @@ private const val TAG = "LoginActivity"
 class LoginActivity : AppCompatActivity() {
     private lateinit var binding: ActivityLoginBinding
     private lateinit var api: ApiService
-    private lateinit var tokenManager: TokenManager
     private lateinit var errorTextView: TextView
     private lateinit var emailField: TextInputLayout
     private lateinit var emailInnerField: TextInputEditText
@@ -49,7 +48,6 @@ class LoginActivity : AppCompatActivity() {
         bindComponents()
         setComponentsListeners()
         api = ApiUtils.getApi()
-        tokenManager = TokenManager(this)
         afterAutoLogOut = intent.getBooleanExtra("afterAutoLogOut", false)
         Log.d(TAG, "onCreate: afterAutoLogOut = $afterAutoLogOut")
         if (afterAutoLogOut) { displayAutoLogOutDialog() }
@@ -112,8 +110,7 @@ class LoginActivity : AppCompatActivity() {
                     HttpStatus.OK.code -> {
                         Log.d(TAG, "onResponse: response.body = ${response.body()}")
                         val tokenResponse = response.body()!!
-                        tokenManager.saveTokens(tokenResponse.access, tokenResponse.refresh)
-                        ApiUtils.loggedIn(applicationContext)
+                        ApiUtils.loggedIn(applicationContext, tokenResponse)
                         Toast.makeText(applicationContext, getString(R.string.logged_in), Toast.LENGTH_LONG).show()
                         val intent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(intent)

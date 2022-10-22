@@ -4,6 +4,8 @@ import android.content.Context
 import android.util.Log
 import com.voyager.api.tokens.TokenAuthenticator
 import com.voyager.api.tokens.TokenInterceptor
+import com.voyager.api.tokens.TokenManager
+import com.voyager.api.tokens.TokenResponse
 import okhttp3.OkHttpClient
 
 private const val TAG = "ApiUtils"
@@ -24,8 +26,10 @@ object ApiUtils {
             .build()
     }
 
-    fun loggedIn(context: Context) {
+    fun loggedIn(context: Context, tokenResponse: TokenResponse) {
         Log.d(TAG, "loggedIn: ")
+        TokenManager(context).saveTokens(tokenResponse.access, tokenResponse.refresh)
+
 
         val loggedClient = OkHttpClient.Builder()
             .addInterceptor(TokenInterceptor(context))
@@ -36,8 +40,9 @@ object ApiUtils {
             .build()
     }
 
-    fun loggedOut() {
+    fun loggedOut(context: Context) {
         Log.d(TAG, "loggedOut: ")
+        TokenManager(context).removeTokens()
 
         api = apiBuilder
             .client(client)
