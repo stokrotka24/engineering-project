@@ -1,8 +1,9 @@
-from rest_framework import generics
+from rest_framework import generics, status, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.response import Response
 
-from hotels.models import Hotel
-from hotels.serializers import HotelSerializer, HotelDetailsSerializer
+from hotels.models import Hotel, Review
+from hotels.serializers import HotelSerializer, HotelDetailsSerializer, ReviewSerializer
 
 
 class HotelView(generics.ListAPIView):
@@ -55,4 +56,17 @@ class HotelView(generics.ListAPIView):
 class HotelDetailsView(generics.RetrieveAPIView):
     queryset = Hotel.objects.all()
     serializer_class = HotelDetailsSerializer
+    permission_classes = [IsAuthenticated]
+
+
+class CreateReviewView(mixins.CreateModelMixin,
+                       generics.GenericAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewSerializer
     permission_classes = [AllowAny]
+
+    def post(self, request, *args, **kwargs):
+        request.data._mutable = True
+        request.data["user_id"] = request.user.id
+        request.data._mutable = False
+        return self.create(request, *args, **kwargs)

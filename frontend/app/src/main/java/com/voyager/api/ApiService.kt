@@ -1,6 +1,7 @@
 package com.voyager.api
 import com.voyager.api.hotels.Hotel
 import com.voyager.api.hotels.HotelDetails
+import com.voyager.api.hotels.Review
 import com.voyager.api.login.LoginRequest
 import com.voyager.api.registration.RegisterRequest
 import com.voyager.api.registration.RegisterResponse
@@ -23,4 +24,7 @@ interface ApiService {
 
     @GET("hotels/{id}")
     fun getHotelDetails(@Path("id") id: Int): Call<HotelDetails>
+
+    @POST("create_review")
+    fun createReview(@Body review: Review): Call<Review>
 }

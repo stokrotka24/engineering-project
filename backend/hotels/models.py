@@ -1,3 +1,5 @@
+import datetime
+
 from django.core.validators import MinValueValidator, MaxValueValidator
 from djongo import models
 from enumchoicefield import ChoiceEnum, EnumChoiceField
@@ -197,7 +199,7 @@ class Review(models.Model):
             MaxValueValidator(5)
         ]
     )
-    date = models.DateField()
+    date = models.DateField(default=datetime.date.today)
     content = models.CharField(max_length=5000)
 
 
