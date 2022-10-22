@@ -60,8 +60,7 @@ REST_FRAMEWORK = {
 }
 
 SIMPLE_JWT = {
-    # 'ACCESS_TOKEN_LIFETIME': timedelta(seconds=10),
-    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),
+    'REFRESH_TOKEN_LIFETIME': timedelta(days=15),  # default : days=7
     'ROTATE_REFRESH_TOKENS': True,
 }
 
@@ -146,5 +145,6 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CRONTAB_COMMAND_SUFFIX = '2>&1'
 CRONJOBS = [
-    ('0 * * * * ', 'algorithms.collaborative_filtering.recommendations.update_recommendations',  f'>> {BASE_DIR}/cron_logs.txt')
+    ('0 * * * * ', 'algorithms.collaborative_filtering.recommendations.update_recommendations',
+     f'>> {BASE_DIR}/cron_logs.txt')
 ]
