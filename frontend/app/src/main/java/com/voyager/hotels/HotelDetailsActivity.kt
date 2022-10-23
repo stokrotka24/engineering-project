@@ -1,9 +1,14 @@
 package com.voyager.hotels
 
+import android.content.Intent
+import android.opengl.Visibility
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.Log
+import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.flexbox.FlexDirection
 import com.voyager.R
 import com.voyager.api.hotels.HotelDetails
@@ -15,12 +20,14 @@ import com.voyager.api.DefaultCallback
 import com.voyager.api.HttpStatus
 import com.voyager.api.hotels.Attribute
 import com.voyager.api.hotels.Review
+import com.voyager.api.hotels.ReviewDetails
 import retrofit2.Call
 import retrofit2.Response
 
 
 private const val TAG = "HotelDetailsActivity"
 private const val MAX_REVIEW_LEN = 5000
+private const val MAX_REVIEW_NUM = 3
 
 class HotelDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHotelDetailsBinding
@@ -32,6 +39,7 @@ class HotelDetailsActivity : AppCompatActivity() {
         binding = ActivityHotelDetailsBinding.inflate(layoutInflater)
         binding.submitReviewButton.setOnClickListener { submitReviewButtonClicked() }
         setContentView(binding.root)
+        setToolbar()
         hotel = intent.getParcelableArrayListExtra<HotelDetails>("hotel")!![0]
 
         binding.name.text = hotel.name
@@ -45,7 +53,44 @@ class HotelDetailsActivity : AppCompatActivity() {
     override fun onStart() {
         Log.d(TAG, "onStart: ")
         super.onStart()
+        setCategories()
+        setAttributes()
 
+
+        val api = ApiUtils.getApi()
+        val getReviewDetailsCall: Call<List<ReviewDetails>> = api.getReviewDetails(hotel.id, MAX_REVIEW_NUM)
+        getReviewDetailsCall.enqueue(object : DefaultCallback<List<ReviewDetails>?>(this) {
+            override fun onSuccess(response: Response<List<ReviewDetails>?>) {
+                val responseCode = response.code()
+                Log.d(TAG, "onSuccess: response.code = $responseCode")
+
+                when (responseCode) {
+                    HttpStatus.OK.code -> {
+                        val reviews = response.body()!!
+
+                        if (reviews.isEmpty()) {
+                            binding.noReviewsTextView.visibility = View.VISIBLE
+                            binding.seeMoreButton.visibility = View.GONE
+                        } else {
+                            binding.noReviewsTextView.visibility = View.GONE
+                            binding.seeMoreButton.visibility = View.VISIBLE
+                            setReviews(reviews)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun setToolbar() {
+        val toolbar = binding.returnToolbar
+        setSupportActionBar(toolbar)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayShowHomeEnabled(true)
+        toolbar.setNavigationOnClickListener { onBackPressed() }
+    }
+
+    private fun setCategories() {
         val categoryManager = FlexboxLayoutManager(this)
         categoryManager.flexDirection = FlexDirection.ROW
         categoryManager.justifyContent = JustifyContent.FLEX_START
@@ -55,7 +100,9 @@ class HotelDetailsActivity : AppCompatActivity() {
             adapter = categoryAdapter
         }
         categoryAdapter.notifyDataSetChanged()
+    }
 
+    private fun setAttributes() {
         val attributeManager = FlexboxLayoutManager(this)
         attributeManager.flexDirection = FlexDirection.ROW
         attributeManager.justifyContent = JustifyContent.FLEX_START
@@ -66,6 +113,17 @@ class HotelDetailsActivity : AppCompatActivity() {
             adapter = attributeAdapter
         }
         attributeAdapter.notifyDataSetChanged()
+
+    }
+
+    private fun setReviews(reviews: List<ReviewDetails>) {
+        val reviewManager = LinearLayoutManager(this)
+        val reviewAdapter = ReviewAdapter(reviews as ArrayList<ReviewDetails>)
+        binding.reviewRecyclerView.apply {
+            layoutManager = reviewManager
+            adapter = reviewAdapter
+        }
+        reviewAdapter.notifyDataSetChanged()
     }
 
     private fun submitReviewButtonClicked() {

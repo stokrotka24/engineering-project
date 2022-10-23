@@ -1,9 +1,8 @@
-from rest_framework import generics, status, mixins
+from rest_framework import generics, mixins
 from rest_framework.permissions import IsAuthenticated, AllowAny
-from rest_framework.response import Response
 
 from hotels.models import Hotel, Review
-from hotels.serializers import HotelSerializer, HotelDetailsSerializer, ReviewSerializer
+from hotels.serializers import HotelSerializer, HotelDetailsSerializer, ReviewSerializer, ReviewDetailsSerializer
 
 
 class HotelView(generics.ListAPIView):
@@ -12,25 +11,6 @@ class HotelView(generics.ListAPIView):
 
     # TODO delete prints
     def get_queryset(self):
-        # user_id = self.request.user.id
-        # recommendations_list = Recommendation.objects
-        # print(recommendations_list.all())
-        # recommendations_list = recommendations_list.filter(user_id=user_id)
-        # print(recommendations_list)
-        #
-        # city = self.request.query_params.get('city')
-        # print(city)
-        # no_recommendations = int(self.request.query_params.get('no_recommendations'))
-        # if city:
-        #     hotels_in_city = list(Hotel.objects.filter(city=city).values_list('id', flat=True))
-        #     print('if: hotels_in_city', hotels_in_city)
-        #     recommendations_list = recommendations_list.filter(hotel_id__in=hotels_in_city)
-        #     print('recommendations_list', recommendations_list.values_list('hotel_id', flat=True))
-        #
-        # recommendations_list = list(recommendations_list.order_by('-score').values_list('hotel_id', flat=True))
-        # recommendations_list = recommendations_list[:no_recommendations]
-        # print("list", recommendations_list)
-        # return Hotel.objects.all().filter(id__in=recommendations_list)
         user = self.request.user
         hotels = Hotel.objects
         recommendations = user.recommendations
@@ -70,3 +50,21 @@ class CreateReviewView(mixins.CreateModelMixin,
         request.data["user_id"] = request.user.id
         # request.data._mutable = False
         return self.create(request, *args, **kwargs)
+
+
+class ReviewsView(generics.ListAPIView):
+    serializer_class = ReviewDetailsSerializer
+    # TODO change permission
+    permission_classes = [AllowAny]
+
+    def get_queryset(self):
+        hotel_id = self.request.query_params["hotel_id"]
+        try:
+            limit = int(self.request.query_params["limit"])
+        except Exception:
+            limit = None
+
+        queryset = Review.objects.filter(hotel_id=hotel_id)
+        if limit is not None:
+            return queryset[:limit]
+        return queryset

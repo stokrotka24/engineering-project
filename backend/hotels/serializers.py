@@ -1,4 +1,6 @@
 from rest_framework import serializers
+
+from authorization.models import User
 from hotels.models import Hotel, Recommendation, Review
 
 
@@ -10,10 +12,6 @@ class HotelSerializer(serializers.ModelSerializer):
         return [category["name"] for category in hotel.categories[:3]]
 
     def get_recommendation_score(self, hotel):
-        # user_id = self.context['request'].user.id
-        # recommendation = Recommendation.objects.filter(user_id=user_id, hotel_id=hotel.id)
-        # score = list(recommendation.values_list('score', flat=True))[0]
-        # return score
         user = self.context['request'].user
         score = user.recommendations.index({"hotel_id": hotel.id})
         return score
@@ -63,3 +61,15 @@ class ReviewSerializer(serializers.ModelSerializer):
     class Meta:
         model = Review
         fields = ('user_id', 'hotel_id', 'stars', 'content')
+
+
+class ReviewDetailsSerializer(serializers.ModelSerializer):
+    username = serializers.SerializerMethodField()
+
+    def get_username(self, review):
+        username = User.objects.get(pk=review.user_id).username
+        return username
+
+    class Meta:
+        model = Review
+        fields = ('username', 'stars', 'content', 'date')
