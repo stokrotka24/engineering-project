@@ -200,7 +200,7 @@ class Review(models.Model):
         ]
     )
     date = models.DateField(default=datetime.date.today)
-    content = models.CharField(max_length=5000)
+    content = models.CharField(max_length=5000, blank=True)
 
 
 class Recommendation(models.Model):
