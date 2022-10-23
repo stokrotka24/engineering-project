@@ -66,7 +66,7 @@ class CreateReviewView(mixins.CreateModelMixin,
     permission_classes = [AllowAny]
 
     def post(self, request, *args, **kwargs):
-        request.data._mutable = True
+        # request.data._mutable = True
         request.data["user_id"] = request.user.id
-        request.data._mutable = False
+        # request.data._mutable = False
         return self.create(request, *args, **kwargs)

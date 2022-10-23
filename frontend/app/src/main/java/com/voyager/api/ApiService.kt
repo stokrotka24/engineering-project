@@ -25,6 +25,6 @@ interface ApiService {
     @GET("hotels/{id}")
     fun getHotelDetails(@Path("id") id: Int): Call<HotelDetails>
 
-    @POST("create_review")
+    @POST("create_review/")
     fun createReview(@Body review: Review): Call<Review>
 }
