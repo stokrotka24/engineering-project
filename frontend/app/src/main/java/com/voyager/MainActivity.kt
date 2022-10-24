@@ -49,6 +49,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             R.id.nav_hotels -> {
                 supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, SearchFragment()).commit()
             }
+            R.id.nav_account -> {
+                supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, UserFragment()).commit()
+            }
             R.id.nav_log_out -> {
                 ApiUtils.loggedOut(applicationContext)
                 finish()
