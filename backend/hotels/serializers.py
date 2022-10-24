@@ -29,11 +29,11 @@ class HotelDetailsSerializer(serializers.ModelSerializer):
         return [category["name"] for category in hotel.categories]
 
     def get_attributes(self, hotel):
-        attributes = {}
-        enum_fields = {"wiFi", "noiseLevel", "restaurantsAttire", "BYOBCorkage", "smoking", "alcohol"}
-        embedded_fields = {"music", "businessParking", "goodForMeal", "bestNights", "ambience"}
-
         if hotel.attributes is not None:
+            attributes = {}
+            enum_fields = {"wiFi", "noiseLevel", "restaurantsAttire", "BYOBCorkage", "smoking", "alcohol"}
+            embedded_fields = {"music", "businessParking", "goodForMeal", "bestNights", "ambience"}
+
             for (attr_key, attr_val) in hotel.attributes.items():
                 if attr_key in embedded_fields:
                     for (emb_attr_key, emb_attr_val) in hotel.attributes[attr_key].items():
