@@ -16,7 +16,6 @@ class HotelAdapter(private val listener: RecyclerViewListener, var chosenHotels:
         fun onItemClicked(id: Int)
     }
 
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
             HotelItemBinding.inflate(

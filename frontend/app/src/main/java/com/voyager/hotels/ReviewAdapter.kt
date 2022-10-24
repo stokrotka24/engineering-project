@@ -1,13 +1,15 @@
 package com.voyager.hotels
 
+import android.text.TextUtils
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.voyager.api.hotels.ReviewDetails
 import com.voyager.databinding.ReviewItemBinding
+
+private const val MAX_LINES = 6
 
 class ReviewAdapter(private val reviews: ArrayList<ReviewDetails>
 ) : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
@@ -27,6 +29,21 @@ class ReviewAdapter(private val reviews: ArrayList<ReviewDetails>
         holder.ratingBar.rating = review.stars.toFloat()
         holder.userName.text = review.username
         holder.content.text = review.content
+        holder.content.maxLines = MAX_LINES
+        holder.content.ellipsize = TextUtils.TruncateAt.END
+
+        holder.itemView.setOnClickListener { onItemClicked(holder) }
+    }
+
+    private fun onItemClicked(holder: ViewHolder) {
+        val ellipsize = holder.content.ellipsize
+        if (ellipsize == null) {
+            holder.content.ellipsize = TextUtils.TruncateAt.END
+            holder.content.maxLines = MAX_LINES
+        } else {
+            holder.content.ellipsize = null
+            holder.content.maxLines = Int.MAX_VALUE
+        }
     }
 
     override fun getItemCount(): Int = reviews.size
