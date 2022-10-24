@@ -54,6 +54,7 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
             chosenHotels = ArrayList()
             chosenHotels.addAll(allHotels)
             sortType = R.id.recommDesc
+            sortHotels()
             val filterOptions =  resources.getStringArray(R.array.filter_options)
             selectedFilterOptions = BooleanArray(filterOptions.size) { false }
         }

@@ -4,6 +4,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 from djongo import models
 from enumchoicefield import ChoiceEnum, EnumChoiceField
 
+from common.utils import round_float_to_half
+
 
 class WiFi(ChoiceEnum):
     no = "no"
@@ -190,6 +192,18 @@ class Hotel(models.Model):
     )
 
 
+def update_hotel_statistics(hotel_id):
+    stars_list = list(Review.objects.filter(hotel_id=hotel_id).values_list('stars', flat=True))
+    stars_sum = sum(stars_list)
+    stars_num = len(stars_list)
+    hotel = Hotel.objects.get(pk=hotel_id)
+    hotel.latitude = str(hotel.latitude)
+    hotel.longitude = str(hotel.longitude)
+    hotel.stars = round_float_to_half(stars_sum / stars_num)
+    hotel.review_count = stars_num
+    hotel.save()
+
+
 class Review(models.Model):
     user_id = models.PositiveIntegerField()
     hotel_id = models.PositiveIntegerField()
@@ -202,9 +216,22 @@ class Review(models.Model):
     date = models.DateField(default=datetime.date.today)
     content = models.CharField(max_length=5000, blank=True)
 
+    def save(self, *args, **kwargs):
+        super(Review, self).save(*args, **kwargs)
+        update_hotel_statistics(self.hotel_id)
+
+    def delete(self, *args, **kwargs):
+        super(Review, self).delete()
+        update_hotel_statistics(self.hotel_id)
+
 
 class Recommendation(models.Model):
     hotel_id = models.PositiveIntegerField()
 
     class Meta:
         abstract = True
+
+
+def get_recommendations_for_new_user():
+    hotel_ids = list(Hotel.objects.order_by('-stars').values_list('id', flat=True))
+    return [{"hotel_id": hotel_id} for hotel_id in hotel_ids]

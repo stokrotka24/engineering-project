@@ -14,5 +14,5 @@ data class HotelDetails(
     val stars: String,
     val review_count: Int,
     val categories: List<String>,
-    val attributes: List<Attribute>
+    val attributes: List<Attribute>?
 ) : Parcelable

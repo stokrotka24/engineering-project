@@ -1,7 +1,7 @@
 from rest_framework import serializers
 
 from authorization.models import User
-from hotels.models import Hotel, Recommendation, Review
+from hotels.models import Hotel, Review
 
 
 class HotelSerializer(serializers.ModelSerializer):
@@ -33,23 +33,25 @@ class HotelDetailsSerializer(serializers.ModelSerializer):
         enum_fields = {"wiFi", "noiseLevel", "restaurantsAttire", "BYOBCorkage", "smoking", "alcohol"}
         embedded_fields = {"music", "businessParking", "goodForMeal", "bestNights", "ambience"}
 
-        for (attr_key, attr_val) in hotel.attributes.items():
-            if attr_key in embedded_fields:
-                for (emb_attr_key, emb_attr_val) in hotel.attributes[attr_key].items():
-                    if emb_attr_val is True:
-                        attributes[attr_key + "." + emb_attr_key] = str(emb_attr_val)
-            else:
-                if attr_val is not None:
-                    if attr_key in enum_fields:
-                        attributes[attr_key] = attr_val.name
-                    else:
-                        attributes[attr_key] = str(attr_val)
+        if hotel.attributes is not None:
+            for (attr_key, attr_val) in hotel.attributes.items():
+                if attr_key in embedded_fields:
+                    for (emb_attr_key, emb_attr_val) in hotel.attributes[attr_key].items():
+                        if emb_attr_val is True:
+                            attributes[attr_key + "." + emb_attr_key] = str(emb_attr_val)
+                else:
+                    if attr_val is not None:
+                        if attr_key in enum_fields:
+                            attributes[attr_key] = attr_val.name
+                        else:
+                            attributes[attr_key] = str(attr_val)
 
-        attributes_as_list = []
-        for (attr_key, attr_val) in attributes.items():
-            attributes_as_list.append({"name": attr_key, "value": attr_val})
+            attributes_as_list = []
+            for (attr_key, attr_val) in attributes.items():
+                attributes_as_list.append({"name": attr_key, "value": attr_val})
 
-        return attributes_as_list
+            return attributes_as_list
+        return None
 
     class Meta:
         model = Hotel

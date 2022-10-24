@@ -1,5 +1,7 @@
 from django.contrib.auth.base_user import BaseUserManager
 
+from hotels.models import get_recommendations_for_new_user
+
 
 class UserManager(BaseUserManager):
     def create_user(self, username, email, password, **other_attrs):
@@ -12,6 +14,7 @@ class UserManager(BaseUserManager):
             password=password,
             **other_attrs)
         user.set_password(password)
+        user.recommendations = get_recommendations_for_new_user()
         user.save(using=self._db)
         return user
 

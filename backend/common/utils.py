@@ -1,5 +1,2 @@
-from pathlib import Path
-
-
-def get_project_root() -> Path:
-    return Path(__file__).parent.parent
+def round_float_to_half(number):
+    return round(number * 2) / 2

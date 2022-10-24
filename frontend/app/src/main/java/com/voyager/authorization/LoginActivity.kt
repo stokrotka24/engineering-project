@@ -18,7 +18,6 @@ import com.voyager.api.ApiUtils
 import com.voyager.api.HttpStatus
 import com.voyager.api.login.LoginRequest
 import com.voyager.api.registration.RegisterErrors
-import com.voyager.api.tokens.TokenManager
 import com.voyager.api.tokens.TokenResponse
 import com.voyager.databinding.ActivityLoginBinding
 import retrofit2.Call

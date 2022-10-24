@@ -41,9 +41,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
     override fun onBackPressed() {
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START)
-        } else {
-            ApiUtils.loggedOut(applicationContext)
-            super.onBackPressed()
         }
     }
 

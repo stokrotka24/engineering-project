@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.flexbox.FlexDirection
 import com.voyager.R
@@ -28,7 +29,7 @@ import retrofit2.Response
 
 private const val TAG = "HotelDetailsActivity"
 private const val MAX_REVIEW_LEN = 5000
-private const val MAX_REVIEW_NUM = 3
+private const val MAX_REVIEW_NUM = 2
 
 class HotelDetailsActivity : AppCompatActivity() {
     private lateinit var binding: ActivityHotelDetailsBinding
@@ -80,17 +81,18 @@ class HotelDetailsActivity : AppCompatActivity() {
     }
 
     private fun setAttributes() {
-        val attributeManager = FlexboxLayoutManager(this)
-        attributeManager.flexDirection = FlexDirection.ROW
-        attributeManager.justifyContent = JustifyContent.FLEX_START
-        val attributeAdapter =
-            AttributeAdapter(applicationContext, hotel.attributes as ArrayList<Attribute>)
-        binding.attributesRecyclerView.apply {
-            layoutManager = attributeManager
-            adapter = attributeAdapter
+        if (hotel.attributes != null) {
+            val attributeManager = FlexboxLayoutManager(this)
+            attributeManager.flexDirection = FlexDirection.ROW
+            attributeManager.justifyContent = JustifyContent.FLEX_START
+            val attributeAdapter =
+                AttributeAdapter(applicationContext, hotel.attributes as ArrayList<Attribute>)
+            binding.attributesRecyclerView.apply {
+                layoutManager = attributeManager
+                adapter = attributeAdapter
+            }
+            attributeAdapter.notifyDataSetChanged()
         }
-        attributeAdapter.notifyDataSetChanged()
-
     }
 
     private fun setReviews(reviews: List<ReviewDetails>) {
