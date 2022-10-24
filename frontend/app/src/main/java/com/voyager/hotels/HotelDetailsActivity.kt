@@ -1,9 +1,7 @@
 package com.voyager.hotels
 
 import android.content.Intent
-import android.opengl.Visibility
 import android.os.Bundle
-import android.os.Parcelable
 import android.util.Log
 import android.view.View
 import android.widget.Toast
@@ -19,8 +17,11 @@ import com.voyager.api.ApiUtils
 import com.voyager.api.DefaultCallback
 import com.voyager.api.HttpStatus
 import com.voyager.api.hotels.Attribute
-import com.voyager.api.hotels.Review
-import com.voyager.api.hotels.ReviewDetails
+import com.voyager.api.reviews.Review
+import com.voyager.api.reviews.ReviewDetails
+import com.voyager.api.reviews.ReviewPage
+import com.voyager.reviews.ReviewActivity
+import com.voyager.reviews.ReviewAdapter
 import retrofit2.Call
 import retrofit2.Response
 
@@ -37,49 +38,16 @@ class HotelDetailsActivity : AppCompatActivity() {
         Log.d(TAG, "onCreate: ")
         super.onCreate(savedInstanceState)
         binding = ActivityHotelDetailsBinding.inflate(layoutInflater)
-        binding.submitReviewButton.setOnClickListener { submitReviewButtonClicked() }
         setContentView(binding.root)
         setToolbar()
+        binding.submitReviewButton.setOnClickListener { submitReviewButtonClicked() }
+        binding.seeAllReviewsButton.setOnClickListener { seeAllReviewsButtonClicked() }
         hotel = intent.getParcelableArrayListExtra<HotelDetails>("hotel")!![0]
 
-        binding.name.text = hotel.name
-        binding.rating.text = hotel.stars
-        binding.reviewCount.text = hotel.review_count.toString()
-        binding.street.text = hotel.address
-        binding.cityState.text =
-            getString(R.string.cityState, hotel.city, hotel.state, hotel.postal_code)
-    }
-
-    override fun onStart() {
-        Log.d(TAG, "onStart: ")
-        super.onStart()
+        setHotelBaseInfo()
         setCategories()
         setAttributes()
-
-
-        val api = ApiUtils.getApi()
-        val getReviewDetailsCall: Call<List<ReviewDetails>> = api.getReviewDetails(hotel.id, MAX_REVIEW_NUM)
-        getReviewDetailsCall.enqueue(object : DefaultCallback<List<ReviewDetails>?>(this) {
-            override fun onSuccess(response: Response<List<ReviewDetails>?>) {
-                val responseCode = response.code()
-                Log.d(TAG, "onSuccess: response.code = $responseCode")
-
-                when (responseCode) {
-                    HttpStatus.OK.code -> {
-                        val reviews = response.body()!!
-
-                        if (reviews.isEmpty()) {
-                            binding.noReviewsTextView.visibility = View.VISIBLE
-                            binding.seeMoreButton.visibility = View.GONE
-                        } else {
-                            binding.noReviewsTextView.visibility = View.GONE
-                            binding.seeMoreButton.visibility = View.VISIBLE
-                            setReviews(reviews)
-                        }
-                    }
-                }
-            }
-        })
+        setReviews()
     }
 
     private fun setToolbar() {
@@ -88,6 +56,15 @@ class HotelDetailsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
+    }
+
+    private fun setHotelBaseInfo() {
+        binding.name.text = hotel.name
+        binding.rating.text = hotel.stars
+        binding.reviewCount.text = hotel.review_count.toString()
+        binding.street.text = hotel.address
+        binding.cityState.text =
+            getString(R.string.cityState, hotel.city, hotel.state, hotel.postal_code)
     }
 
     private fun setCategories() {
@@ -156,5 +133,39 @@ class HotelDetailsActivity : AppCompatActivity() {
                 }
             })
         }
+    }
+
+    private fun setReviews() {
+        val api = ApiUtils.getApi()
+        val getReviewDetailsCall: Call<ReviewPage> = api.getReviewDetails(hotel.id, null, 0, MAX_REVIEW_NUM)
+        getReviewDetailsCall.enqueue(object : DefaultCallback<ReviewPage?>(this) {
+            override fun onSuccess(response: Response<ReviewPage?>) {
+                val responseCode = response.code()
+                Log.d(TAG, "onSuccess: response.code = $responseCode")
+
+                when (responseCode) {
+                    HttpStatus.OK.code -> {
+                        val reviews = response.body()!!.results
+
+                        if (reviews.isEmpty()) {
+                            binding.noReviewsTextView.visibility = View.VISIBLE
+                            binding.seeAllReviewsButton.visibility = View.GONE
+                        } else {
+                            binding.noReviewsTextView.visibility = View.GONE
+                            binding.seeAllReviewsButton.visibility = View.VISIBLE
+                            setReviews(reviews)
+                        }
+                    }
+                }
+            }
+        })
+    }
+
+    private fun seeAllReviewsButtonClicked() {
+        Log.d(TAG, "seeAllReviewsButtonClicked: ")
+        val intent = Intent(this, ReviewActivity::class.java)
+        // TODO put as object not as an array
+        intent.putParcelableArrayListExtra("hotel", arrayListOf(hotel))
+        startActivity(intent)
     }
 }

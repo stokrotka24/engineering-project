@@ -1,11 +1,12 @@
 package com.voyager.api
 import com.voyager.api.hotels.Hotel
 import com.voyager.api.hotels.HotelDetails
-import com.voyager.api.hotels.Review
-import com.voyager.api.hotels.ReviewDetails
+import com.voyager.api.reviews.Review
+import com.voyager.api.reviews.ReviewDetails
 import com.voyager.api.login.LoginRequest
 import com.voyager.api.registration.RegisterRequest
 import com.voyager.api.registration.RegisterResponse
+import com.voyager.api.reviews.ReviewPage
 import com.voyager.api.tokens.TokenResponse
 import retrofit2.Call
 import retrofit2.http.*
@@ -30,5 +31,5 @@ interface ApiService {
     fun createReview(@Body review: Review): Call<Review>
 
     @GET("reviews/")
-    fun getReviewDetails(@Query("hotel_id") hotelId: Int, @Query("limit") limit: Int): Call<List<ReviewDetails>>
+    fun getReviewDetails(@Query("hotel_id") hotelId: Int, @Query("sort_type") sortType: String?, @Query("offset") offset: Int, @Query("limit") limit: Int = 10): Call<ReviewPage>
 }

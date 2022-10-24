@@ -39,6 +39,8 @@
     <string name="stars_ascending">Worst users\' rating</string>
     <string name="reviews_num_desc">Reviews number (descending)</string>
     <string name="reviews_num_asc">Reviews number (ascending)</string>
+    <string name="date_num_desc">Newest</string>
+    <string name="date_num_asc">Oldest</string>
     <string name="rating_3">Rating: at least 3.0</string>
     <string name="rating_4">Rating: at least 4.0</string>
     <string name="reviews_100">Reviews: at least 100</string>
@@ -50,8 +52,6 @@
         <item>@string/reviews_1000</item>
     </string-array>
 
-
     <string name="cityState">"%1s, %2s %3s"</string>
     <string name="attrName">"%1s:"</string>
-
 </resources>

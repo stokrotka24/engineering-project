@@ -1,4 +1,5 @@
 from rest_framework import generics, mixins
+from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from hotels.models import Hotel, Review
@@ -54,17 +55,13 @@ class CreateReviewView(mixins.CreateModelMixin,
 
 class ReviewsView(generics.ListAPIView):
     serializer_class = ReviewDetailsSerializer
-    # TODO change permission
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
+    pagination_class = LimitOffsetPagination
 
     def get_queryset(self):
         hotel_id = self.request.query_params["hotel_id"]
-        try:
-            limit = int(self.request.query_params["limit"])
-        except Exception:
-            limit = None
-
         queryset = Review.objects.filter(hotel_id=hotel_id)
-        if limit is not None:
-            return queryset[:limit]
+        sort_type = self.request.query_params.get("sort_type")
+        if sort_type:
+            return queryset.order_by(sort_type)
         return queryset

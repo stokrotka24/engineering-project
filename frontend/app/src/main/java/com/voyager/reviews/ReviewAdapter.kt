@@ -1,4 +1,4 @@
-package com.voyager.hotels
+package com.voyager.reviews
 
 import android.text.TextUtils
 import android.view.LayoutInflater
@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.voyager.api.hotels.ReviewDetails
+import com.voyager.api.reviews.ReviewDetails
 import com.voyager.databinding.ReviewItemBinding
 
 private const val MAX_LINES = 6

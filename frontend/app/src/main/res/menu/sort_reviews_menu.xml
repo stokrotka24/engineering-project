@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="@layout/activity_hotel">
+<group android:checkableBehavior="single">
+    <item android:id="@+id/starsDesc"
+        android:title="@string/stars_descending" />
+    <item android:id="@+id/starsAsc"
+        android:title="@string/stars_ascending" />
+    <item android:id="@+id/dateDesc"
+        android:title="@string/date_num_desc" />
+    <item android:id="@+id/dateAsc"
+        android:title="@string/date_num_asc" />
+</group>
+</menu>

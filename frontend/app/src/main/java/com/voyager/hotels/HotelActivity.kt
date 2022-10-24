@@ -106,7 +106,7 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
     private fun setSorting() {
         val sortBtn = binding.sortBtn
         val sortMenu = PopupMenu(this, sortBtn)
-        sortMenu.menuInflater.inflate(R.menu.sort_menu, sortMenu.menu)
+        sortMenu.menuInflater.inflate(R.menu.sort_hotels_menu, sortMenu.menu)
         sortMenu.menu.findItem(sortType).isChecked = true
         sortMenu.setOnMenuItemClickListener { item ->
             Log.d(TAG, "setOnMenuItemClickListener: ")

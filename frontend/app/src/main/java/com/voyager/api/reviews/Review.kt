@@ -1,4 +1,4 @@
-package com.voyager.api.hotels
+package com.voyager.api.reviews
 
 data class Review(
     val user_id: Int? = null,

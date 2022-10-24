@@ -53,8 +53,8 @@ class LoginActivity : AppCompatActivity() {
         if (afterAutoLogOut) { displayAutoLogOutDialog() }
 
         // TODO remove
-        emailField.editText?.setText("t@t.com")
-        passwordField.editText?.setText("t")
+        emailField.editText?.setText("test0@example.com")
+        passwordField.editText?.setText("test")
     }
 
     private fun bindComponents() {
@@ -111,7 +111,7 @@ class LoginActivity : AppCompatActivity() {
                         Log.d(TAG, "onResponse: response.body = ${response.body()}")
                         val tokenResponse = response.body()!!
                         ApiUtils.loggedIn(applicationContext, tokenResponse)
-                        Toast.makeText(applicationContext, getString(R.string.logged_in), Toast.LENGTH_LONG).show()
+                        Toast.makeText(applicationContext, getString(R.string.logged_in), Toast.LENGTH_SHORT).show()
                         val intent = Intent(applicationContext, MainActivity::class.java)
                         startActivity(intent)
                     }
