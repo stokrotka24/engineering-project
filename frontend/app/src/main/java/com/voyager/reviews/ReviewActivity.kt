@@ -47,8 +47,8 @@ class ReviewActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityReviewBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        setToolbar()
         hotel = intent.getParcelableArrayListExtra<HotelDetails>("hotel")!![0]
+        setToolbar()
         setHotelBaseInfo()
         setSorting()
 
@@ -108,6 +108,7 @@ class ReviewActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         val toolbar = binding.returnToolbar
+        toolbar.title = hotel.name
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -115,7 +116,6 @@ class ReviewActivity : AppCompatActivity() {
     }
 
     private fun setHotelBaseInfo() {
-        binding.name.text = hotel.name
         binding.rating.text = hotel.stars
         binding.reviewCount.text = hotel.review_count.toString()
     }
