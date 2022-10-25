@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="@color/main_background_light"
     android:padding="0dp"
-    tools:context=".hotels.ReviewActivity">
+    tools:context=".reviews.ReviewActivity">
 
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/returnToolbar"

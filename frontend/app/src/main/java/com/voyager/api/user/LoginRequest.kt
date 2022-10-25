@@ -1,4 +1,4 @@
-package com.voyager.api.login
+package com.voyager.api.user
 
 data class LoginRequest(
     val email: String,

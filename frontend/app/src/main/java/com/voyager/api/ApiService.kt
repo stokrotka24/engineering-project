@@ -2,12 +2,9 @@ package com.voyager.api
 import com.voyager.api.hotels.Hotel
 import com.voyager.api.hotels.HotelDetails
 import com.voyager.api.reviews.Review
-import com.voyager.api.reviews.ReviewDetails
-import com.voyager.api.login.LoginRequest
-import com.voyager.api.registration.RegisterRequest
-import com.voyager.api.registration.RegisterResponse
 import com.voyager.api.reviews.ReviewPage
 import com.voyager.api.tokens.TokenResponse
+import com.voyager.api.user.*
 import retrofit2.Call
 import retrofit2.http.*
 
@@ -17,6 +14,12 @@ interface ApiService {
 
     @POST("login/")
     fun login(@Body loginRequest: LoginRequest): Call<TokenResponse>
+
+    @PUT("change_password/{id}")
+    fun changePassword(@Path("id") id: Int, @Body changePassRequest: ChangePassRequest): Call<ChangePassResponse>
+
+    @GET("account_info/")
+    fun getAccountInfo(): Call<UserAccount>
 
     @GET("hotels/")
     fun getHotels(@Query("no_recommendations") noRecommendations: Int): Call<List<Hotel>>

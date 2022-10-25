@@ -1,4 +1,4 @@
-package com.voyager.api.registration
+package com.voyager.api.user
 
 data class RegisterErrors(
     val username: List<String>?,

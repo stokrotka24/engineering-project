@@ -1,4 +1,4 @@
-package com.voyager.authorization
+package com.voyager.user
 
 import android.os.Bundle
 import android.util.Log
@@ -12,9 +12,9 @@ import com.voyager.R
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
 import com.voyager.api.HttpStatus
-import com.voyager.api.registration.RegisterErrors
-import com.voyager.api.registration.RegisterRequest
-import com.voyager.api.registration.RegisterResponse
+import com.voyager.api.user.RegisterErrors
+import com.voyager.api.user.RegisterRequest
+import com.voyager.api.user.RegisterResponse
 import com.voyager.databinding.ActivityRegisterBinding
 import retrofit2.Call
 import retrofit2.Callback

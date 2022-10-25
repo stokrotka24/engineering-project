@@ -10,6 +10,7 @@ import com.google.android.material.navigation.NavigationView
 import com.voyager.api.ApiUtils
 import com.voyager.databinding.ActivityMainBinding
 import com.voyager.hotels.SearchFragment
+import com.voyager.user.UserFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
     private lateinit var binding: ActivityMainBinding
