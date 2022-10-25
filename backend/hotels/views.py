@@ -3,7 +3,8 @@ from rest_framework.pagination import LimitOffsetPagination
 from rest_framework.permissions import IsAuthenticated, AllowAny
 
 from hotels.models import Hotel, Review
-from hotels.serializers import HotelSerializer, HotelDetailsSerializer, ReviewSerializer, ReviewDetailsSerializer
+from hotels.serializers import HotelSerializer, HotelDetailsSerializer, ReviewSerializer, HotelReviewSerializer, \
+    UserReviewSerializer, ReviewComplexSerializer
 
 
 class HotelView(generics.ListAPIView):
@@ -53,8 +54,8 @@ class CreateReviewView(mixins.CreateModelMixin,
         return self.create(request, *args, **kwargs)
 
 
-class ReviewsView(generics.ListAPIView):
-    serializer_class = ReviewDetailsSerializer
+class HotelReviewsView(generics.ListAPIView):
+    serializer_class = HotelReviewSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = LimitOffsetPagination
 
@@ -65,3 +66,24 @@ class ReviewsView(generics.ListAPIView):
         if sort_type:
             return queryset.order_by(sort_type)
         return queryset
+
+
+class UserReviewsView(generics.ListAPIView):
+    serializer_class = UserReviewSerializer
+    permission_classes = [IsAuthenticated]
+    pagination_class = LimitOffsetPagination
+
+    def get_queryset(self):
+        user_id = self.request.user.id
+        queryset = Review.objects.filter(user_id=user_id)
+        sort_type = self.request.query_params.get("sort_type")
+        if sort_type:
+            return queryset.order_by(sort_type)
+        return queryset
+
+
+class DeleteReviewView(generics.DestroyAPIView):
+    queryset = Review.objects.all()
+    serializer_class = ReviewComplexSerializer
+    permission_classes = [IsAuthenticated]
+

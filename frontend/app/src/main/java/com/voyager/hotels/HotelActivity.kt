@@ -126,8 +126,8 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         when (sortType) {
             R.id.recommDesc -> Collections.sort(chosenHotels, RecommendationComparator(SortOrder.DESC))
             R.id.recommAsc -> Collections.sort(chosenHotels, RecommendationComparator(SortOrder.ASC))
-            R.id.starsDesc -> Collections.sort(chosenHotels, StarsComparator(SortOrder.DESC))
-            R.id.starsAsc -> Collections.sort(chosenHotels, StarsComparator(SortOrder.ASC))
+            R.id.ratingDesc -> Collections.sort(chosenHotels, StarsComparator(SortOrder.DESC))
+            R.id.ratingAsc -> Collections.sort(chosenHotels, StarsComparator(SortOrder.ASC))
             R.id.reviewsNumDesc -> Collections.sort(chosenHotels, ReviewsNumComparator(SortOrder.DESC))
             R.id.reviewsNumAsc-> Collections.sort(chosenHotels, ReviewsNumComparator(SortOrder.ASC))
         }

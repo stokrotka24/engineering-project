@@ -38,8 +38,10 @@
     <string name="sort">Sort</string>
     <string name="recomm_desc">Most recommended</string>
     <string name="recomm_asc">Least recommended</string>
-    <string name="stars_descending">Best users\' rating</string>
-    <string name="stars_ascending">Worst users\' rating</string>
+    <string name="rating_descending">Best users\' rating</string>
+    <string name="rating_ascending">Worst users\' rating</string>
+    <string name="stars_descending">Best rating</string>
+    <string name="stars_ascending">Worst rating</string>
     <string name="reviews_num_desc">Reviews number (descending)</string>
     <string name="reviews_num_asc">Reviews number (ascending)</string>
     <string name="date_num_desc">Newest</string>

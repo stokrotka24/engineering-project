@@ -20,7 +20,7 @@
             android:name=".user.ChangePasswordActivity"
             android:exported="false" />
         <activity
-            android:name=".reviews.ReviewActivity"
+            android:name=".reviews.HotelReviewsActivity"
             android:exported="false" />
         <activity
             android:name=".hotels.HotelDetailsActivity"

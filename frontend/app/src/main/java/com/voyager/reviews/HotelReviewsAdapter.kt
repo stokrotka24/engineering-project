@@ -6,16 +6,16 @@ import android.view.ViewGroup
 import android.widget.RatingBar
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
-import com.voyager.api.reviews.ReviewDetails
-import com.voyager.databinding.ReviewItemBinding
+import com.voyager.api.reviews.HotelReview
+import com.voyager.databinding.HotelReviewItemBinding
 
 private const val MAX_LINES = 6
 
-class ReviewAdapter(private val reviews: ArrayList<ReviewDetails>
-) : RecyclerView.Adapter<ReviewAdapter.ViewHolder>() {
+class HotelReviewAdapter(private val reviews: ArrayList<HotelReview>
+) : RecyclerView.Adapter<HotelReviewAdapter.ViewHolder>() {
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
-            ReviewItemBinding.inflate(
+            HotelReviewItemBinding.inflate(
                 LayoutInflater.from(parent.context),
                 parent,
                 false
@@ -48,7 +48,7 @@ class ReviewAdapter(private val reviews: ArrayList<ReviewDetails>
 
     override fun getItemCount(): Int = reviews.size
 
-    inner class ViewHolder(binding: ReviewItemBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(binding: HotelReviewItemBinding) : RecyclerView.ViewHolder(binding.root) {
         val date: TextView = binding.date
         val ratingBar: RatingBar = binding.stars
         val userName: TextView = binding.username

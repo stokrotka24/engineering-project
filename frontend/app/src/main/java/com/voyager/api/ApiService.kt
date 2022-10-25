@@ -1,8 +1,9 @@
 package com.voyager.api
 import com.voyager.api.hotels.Hotel
 import com.voyager.api.hotels.HotelDetails
+import com.voyager.api.reviews.HotelReview
 import com.voyager.api.reviews.Review
-import com.voyager.api.reviews.ReviewPage
+import com.voyager.api.reviews.UserReview
 import com.voyager.api.tokens.TokenResponse
 import com.voyager.api.user.*
 import retrofit2.Call
@@ -33,6 +34,12 @@ interface ApiService {
     @POST("create_review/")
     fun createReview(@Body review: Review): Call<Review>
 
-    @GET("reviews/")
-    fun getReviewDetails(@Query("hotel_id") hotelId: Int, @Query("sort_type") sortType: String?, @Query("offset") offset: Int, @Query("limit") limit: Int = 10): Call<ReviewPage>
+    @GET("hotel_reviews/")
+    fun getHotelReviews(@Query("hotel_id") hotelId: Int, @Query("sort_type") sortType: String?, @Query("offset") offset: Int, @Query("limit") limit: Int = 10): Call<Page<HotelReview>>
+
+    @GET("user_reviews/")
+    fun getUserReviews(@Query("sort_type") sortType: String?, @Query("offset") offset: Int, @Query("limit") limit: Int = 10): Call<Page<UserReview>>
+
+    @DELETE("delete_review/{id}")
+    fun deleteReview(@Path("id") id:Int): Call<Unit>
 }

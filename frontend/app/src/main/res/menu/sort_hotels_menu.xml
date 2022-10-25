@@ -7,10 +7,10 @@
         android:title="@string/recomm_desc" />
     <item android:id="@+id/recommAsc"
         android:title="@string/recomm_asc" />
-    <item android:id="@+id/starsDesc"
-        android:title="@string/stars_descending" />
-    <item android:id="@+id/starsAsc"
-        android:title="@string/stars_ascending" />
+    <item android:id="@+id/ratingDesc"
+        android:title="@string/rating_descending" />
+    <item android:id="@+id/ratingAsc"
+        android:title="@string/rating_ascending" />
     <item android:id="@+id/reviewsNumDesc"
         android:title="@string/reviews_num_desc" />
     <item android:id="@+id/reviewsNumAsc"

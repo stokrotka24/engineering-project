@@ -10,6 +10,7 @@ import com.google.android.material.navigation.NavigationView
 import com.voyager.api.ApiUtils
 import com.voyager.databinding.ActivityMainBinding
 import com.voyager.hotels.SearchFragment
+import com.voyager.reviews.UserReviewsFragment
 import com.voyager.user.UserFragment
 
 class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
@@ -52,6 +53,9 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             }
             R.id.nav_account -> {
                 supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, UserFragment()).commit()
+            }
+            R.id.nav_reviews -> {
+                supportFragmentManager.beginTransaction().replace(R.id.fragmentLayout, UserReviewsFragment()).commit()
             }
             R.id.nav_log_out -> {
                 ApiUtils.loggedOut(applicationContext)

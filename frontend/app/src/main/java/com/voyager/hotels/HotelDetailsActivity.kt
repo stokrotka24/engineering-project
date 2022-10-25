@@ -6,7 +6,6 @@ import android.util.Log
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat.startActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.flexbox.FlexDirection
 import com.voyager.R
@@ -19,10 +18,10 @@ import com.voyager.api.DefaultCallback
 import com.voyager.api.HttpStatus
 import com.voyager.api.hotels.Attribute
 import com.voyager.api.reviews.Review
-import com.voyager.api.reviews.ReviewDetails
-import com.voyager.api.reviews.ReviewPage
-import com.voyager.reviews.ReviewActivity
-import com.voyager.reviews.ReviewAdapter
+import com.voyager.api.reviews.HotelReview
+import com.voyager.api.Page
+import com.voyager.reviews.HotelReviewsActivity
+import com.voyager.reviews.HotelReviewAdapter
 import retrofit2.Call
 import retrofit2.Response
 
@@ -48,7 +47,7 @@ class HotelDetailsActivity : AppCompatActivity() {
         setHotelBaseInfo()
         setCategories()
         setAttributes()
-        setReviews()
+        getReviews()
     }
 
     private fun setToolbar() {
@@ -95,9 +94,9 @@ class HotelDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setReviews(reviews: List<ReviewDetails>) {
+    private fun setReviews(reviews: List<HotelReview>) {
         val reviewManager = LinearLayoutManager(this)
-        val reviewAdapter = ReviewAdapter(reviews as ArrayList<ReviewDetails>)
+        val reviewAdapter = HotelReviewAdapter(reviews as ArrayList<HotelReview>)
         binding.reviewRecyclerView.apply {
             layoutManager = reviewManager
             adapter = reviewAdapter
@@ -109,6 +108,7 @@ class HotelDetailsActivity : AppCompatActivity() {
         Log.d(TAG, "submitReviewButtonClicked: ")
         val stars = binding.ratingBar.rating.toInt()
         val reviewContent = binding.reviewContent.text.toString()
+
         if (stars == 0) {
             Toast.makeText(this, "You have to select number of stars", Toast.LENGTH_LONG).show()
         } else if (reviewContent.length > MAX_REVIEW_LEN) {
@@ -137,11 +137,11 @@ class HotelDetailsActivity : AppCompatActivity() {
         }
     }
 
-    private fun setReviews() {
+    private fun getReviews() {
         val api = ApiUtils.getApi()
-        val getReviewDetailsCall: Call<ReviewPage> = api.getReviewDetails(hotel.id, null, 0, MAX_REVIEW_NUM)
-        getReviewDetailsCall.enqueue(object : DefaultCallback<ReviewPage?>(this) {
-            override fun onSuccess(response: Response<ReviewPage?>) {
+        val getReviewsCall: Call<Page<HotelReview>> = api.getHotelReviews(hotel.id, null, 0, MAX_REVIEW_NUM)
+        getReviewsCall.enqueue(object : DefaultCallback<Page<HotelReview>?>(this) {
+            override fun onSuccess(response: Response<Page<HotelReview>?>) {
                 val responseCode = response.code()
                 Log.d(TAG, "onSuccess: response.code = $responseCode")
 
@@ -165,7 +165,7 @@ class HotelDetailsActivity : AppCompatActivity() {
 
     private fun seeAllReviewsButtonClicked() {
         Log.d(TAG, "seeAllReviewsButtonClicked: ")
-        val intent = Intent(this, ReviewActivity::class.java)
+        val intent = Intent(this, HotelReviewsActivity::class.java)
         // TODO put as object not as an array
         intent.putParcelableArrayListExtra("hotel", arrayListOf(hotel))
         startActivity(intent)

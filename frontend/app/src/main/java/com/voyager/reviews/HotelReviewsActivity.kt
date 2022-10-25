@@ -14,14 +14,14 @@ import com.voyager.api.ApiUtils
 import com.voyager.api.DefaultCallback
 import com.voyager.api.HttpStatus
 import com.voyager.api.hotels.HotelDetails
-import com.voyager.api.reviews.ReviewDetails
-import com.voyager.api.reviews.ReviewPage
-import com.voyager.databinding.ActivityReviewBinding
+import com.voyager.api.reviews.HotelReview
+import com.voyager.api.Page
+import com.voyager.databinding.ActivityHotelReviewsBinding
 import retrofit2.Call
 import retrofit2.Response
 
 private const val TAG = "ReviewActivity"
-private val mapSortType = mapOf(
+val mapSortType = mapOf(
     -1 to null,
     R.id.starsAsc to "stars",
     R.id.starsDesc to "-stars",
@@ -29,13 +29,13 @@ private val mapSortType = mapOf(
     R.id.dateDesc to "-date"
 )
 
-class ReviewActivity : AppCompatActivity() {
-    private lateinit var binding: ActivityReviewBinding
+class HotelReviewsActivity : AppCompatActivity() {
+    private lateinit var binding: ActivityHotelReviewsBinding
     private lateinit var hotel: HotelDetails
     private lateinit var recyclerView: RecyclerView
     private lateinit var progressBar: ProgressBar
-    private lateinit var reviewAdapter: ReviewAdapter
-    private var reviewList: ArrayList<ReviewDetails> = ArrayList()
+    private lateinit var reviewAdapter: HotelReviewAdapter
+    private var reviewList: ArrayList<HotelReview> = ArrayList()
     private var lytManager: LinearLayoutManager = LinearLayoutManager(this)
     private var sortType: Int = -1
     private var pageOffset: Int = 0
@@ -45,7 +45,7 @@ class ReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: ")
         super.onCreate(savedInstanceState)
-        binding = ActivityReviewBinding.inflate(layoutInflater)
+        binding = ActivityHotelReviewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
         hotel = intent.getParcelableArrayListExtra<HotelDetails>("hotel")!![0]
         setToolbar()
@@ -54,7 +54,7 @@ class ReviewActivity : AppCompatActivity() {
 
         if (savedInstanceState != null) {
             reviewList =
-                savedInstanceState.getParcelableArrayList<ReviewDetails>("reviews") as ArrayList<ReviewDetails>
+                savedInstanceState.getParcelableArrayList<HotelReview>("reviews") as ArrayList<HotelReview>
             lytManager.onRestoreInstanceState(savedInstanceState.getParcelable("lytManager"))
             pageOffset = savedInstanceState.getInt("pageOffset")
             isLastPage = savedInstanceState.getBoolean("isLastPage")
@@ -64,7 +64,7 @@ class ReviewActivity : AppCompatActivity() {
         progressBar = binding.progressBar
         progressBar.visibility = View.GONE
 
-        reviewAdapter = ReviewAdapter(reviewList)
+        reviewAdapter = HotelReviewAdapter(reviewList)
         recyclerView = binding.reviewRecyclerView
         recyclerView.apply {
             layoutManager = lytManager
@@ -74,14 +74,6 @@ class ReviewActivity : AppCompatActivity() {
             object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    Log.d(TAG, "onScrolled: pageOffset = $pageOffset")
-                    Log.d(TAG, "onScrolled: isLastPage = $isLastPage")
-                    Log.d(TAG, "onScrolled: lytManager.childCount = ${lytManager.childCount}")
-                    Log.d(TAG, "onScrolled: lytManager.itemCount = ${lytManager.itemCount}")
-                    Log.d(TAG, "onScrolled: lytManager.findFirstVisibleItemPosition() = ${lytManager.findFirstVisibleItemPosition()}")
-                    Log.d(TAG, "onScrolled: lytManager.findLastVisibleItemPosition() = ${lytManager.findLastVisibleItemPosition()}")
-                    Log.d(TAG, "onScrolled: lytManager.findLastCompletelyVisibleItemPosition() = ${lytManager.findLastCompletelyVisibleItemPosition()}")
-
                     // if page isn't last and data isn't being loaded now and user achieved end of available data, load next data
                     if (!isLastPage && progressBar.visibility == View.GONE && lytManager.findLastCompletelyVisibleItemPosition() + 1 == lytManager.itemCount) {
                         pageOffset += 10
@@ -108,7 +100,7 @@ class ReviewActivity : AppCompatActivity() {
 
     private fun setToolbar() {
         val toolbar = binding.returnToolbar
-        toolbar.title = hotel.name
+        toolbar.title = "Reviews for ${hotel.name}"
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
@@ -153,9 +145,9 @@ class ReviewActivity : AppCompatActivity() {
         progressBar.visibility = View.VISIBLE
 
         val api = ApiUtils.getApi()
-        val getReviewDetailsCall: Call<ReviewPage> = api.getReviewDetails(hotel.id, mapSortType[sortType], pageOffset)
-        getReviewDetailsCall.enqueue(object : DefaultCallback<ReviewPage?>(this) {
-            override fun onSuccess(response: Response<ReviewPage?>) {
+        val getReviewsCall: Call<Page<HotelReview>> = api.getHotelReviews(hotel.id, mapSortType[sortType], pageOffset)
+        getReviewsCall.enqueue(object : DefaultCallback<Page<HotelReview>?>(this) {
+            override fun onSuccess(response: Response<Page<HotelReview>?>) {
                 val responseCode = response.code()
                 Log.d(TAG, "onSuccess: response.code = $responseCode")
 
