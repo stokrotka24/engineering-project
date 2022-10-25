@@ -14,7 +14,7 @@ private const val MAX_LINES = 4
 class UserReviewAdapter(private val reviews: ArrayList<UserReview>, private val listener: OnLongClickListener
 ) : RecyclerView.Adapter<UserReviewAdapter.ViewHolder>() {
     interface OnLongClickListener {
-        fun onItemLongClicked(position: Int, reviewId: Int): Boolean
+        fun onItemLongClicked(review: UserReview): Boolean
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
@@ -37,7 +37,7 @@ class UserReviewAdapter(private val reviews: ArrayList<UserReview>, private val 
         holder.content.ellipsize = TextUtils.TruncateAt.END
 
         holder.itemView.setOnClickListener { onItemClicked(holder) }
-        holder.itemView.setOnLongClickListener { listener.onItemLongClicked(position, review.id) }
+        holder.itemView.setOnLongClickListener { listener.onItemLongClicked(review) }
     }
 
     private fun onItemClicked(holder: ViewHolder) {

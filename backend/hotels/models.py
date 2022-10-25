@@ -3,8 +3,8 @@ import datetime
 from django.core.validators import MinValueValidator, MaxValueValidator
 from djongo import models
 from enumchoicefield import ChoiceEnum, EnumChoiceField
-
 from common.utils import round_float_to_half
+from django.apps import apps
 
 
 class WiFi(ChoiceEnum):
@@ -181,7 +181,10 @@ class Hotel(models.Model):
     postal_code = models.CharField(max_length=8)
     latitude = models.DecimalField(max_digits=13, decimal_places=10)
     longitude = models.DecimalField(max_digits=13, decimal_places=10)
-    stars = models.DecimalField(max_digits=2, decimal_places=1)
+    stars = models.DecimalField(
+        default=0.0,
+        max_digits=2,
+        decimal_places=1)
     review_count = models.PositiveIntegerField(default=0)
     categories = models.ArrayField(
         model_container=Category
@@ -190,18 +193,6 @@ class Hotel(models.Model):
         model_container=Attributes,
         null=True
     )
-
-
-def update_hotel_statistics(hotel_id):
-    stars_list = list(Review.objects.filter(hotel_id=hotel_id).values_list('stars', flat=True))
-    stars_sum = sum(stars_list)
-    stars_num = len(stars_list)
-    hotel = Hotel.objects.get(pk=hotel_id)
-    hotel.latitude = str(hotel.latitude)
-    hotel.longitude = str(hotel.longitude)
-    hotel.stars = round_float_to_half(stars_sum / stars_num)
-    hotel.review_count = stars_num
-    hotel.save()
 
 
 class Review(models.Model):
@@ -219,10 +210,12 @@ class Review(models.Model):
     def save(self, *args, **kwargs):
         super(Review, self).save(*args, **kwargs)
         update_hotel_statistics(self.hotel_id)
+        update_user_statistics(self.user_id)
 
     def delete(self, *args, **kwargs):
         super(Review, self).delete()
         update_hotel_statistics(self.hotel_id)
+        update_user_statistics(self.user_id)
 
 
 class Recommendation(models.Model):
@@ -230,6 +223,36 @@ class Recommendation(models.Model):
 
     class Meta:
         abstract = True
+
+
+def update_user_statistics(user_id):
+    User = apps.get_model('authorization.User')
+
+    stars_list = list(Review.objects.filter(user_id=user_id).values_list('stars', flat=True))
+    stars_sum = sum(stars_list)
+    stars_num = len(stars_list)
+    user = User.objects.get(pk=user_id)
+    if stars_num == 0:
+        user.average_stars = 0.0
+    else:
+        user.average_stars = stars_sum / stars_num
+    user.review_count = stars_num
+    user.save()
+
+
+def update_hotel_statistics(hotel_id):
+    stars_list = list(Review.objects.filter(hotel_id=hotel_id).values_list('stars', flat=True))
+    stars_sum = sum(stars_list)
+    stars_num = len(stars_list)
+    hotel = Hotel.objects.get(pk=hotel_id)
+    hotel.latitude = str(hotel.latitude)
+    hotel.longitude = str(hotel.longitude)
+    if stars_num == 0:
+        hotel.stars = 0.0
+    else:
+        hotel.stars = round_float_to_half(stars_sum / stars_num)
+    hotel.review_count = stars_num
+    hotel.save()
 
 
 def get_recommendations_for_new_user():

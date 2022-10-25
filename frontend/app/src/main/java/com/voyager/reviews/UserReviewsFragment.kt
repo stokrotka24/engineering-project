@@ -157,11 +157,11 @@ class UserReviewsFragment : Fragment(), UserReviewAdapter.OnLongClickListener {
         })
     }
 
-    override fun onItemLongClicked(position: Int, reviewId: Int): Boolean {
+    override fun onItemLongClicked(review: UserReview): Boolean {
         val dialogBuilder = AlertDialog.Builder(context)
         dialogBuilder
             .setMessage("Are you sure you want to delete this review?")
-            .setPositiveButton("YES") { _, _ -> removeReview(position, reviewId) }
+            .setPositiveButton("YES") { _, _ -> removeReview(review) }
             .setNegativeButton("NO", null)
 
         val dialog = dialogBuilder.create()
@@ -170,9 +170,9 @@ class UserReviewsFragment : Fragment(), UserReviewAdapter.OnLongClickListener {
         return true
     }
 
-    private fun removeReview(position: Int, reviewId: Int) {
+    private fun removeReview(review: UserReview) {
         val api = ApiUtils.getApi()
-        val deleteReviewCall: Call<Unit> = api.deleteReview(reviewId)
+        val deleteReviewCall: Call<Unit> = api.deleteReview(review.id)
         deleteReviewCall.enqueue(object : DefaultCallback<Unit?>(requireContext()) {
             override fun onSuccess(response: Response<Unit?>) {
                 val responseCode = response.code()
@@ -180,8 +180,8 @@ class UserReviewsFragment : Fragment(), UserReviewAdapter.OnLongClickListener {
 
                 when (responseCode) {
                     HttpStatus.NoContent.code -> {
-                        reviewList.removeAt(position)
-                        reviewAdapter.notifyItemRemoved(position)
+                        reviewList.remove(review)
+                        reviewAdapter.notifyDataSetChanged()
                         Toast.makeText(context, "Review has been deleted", Toast.LENGTH_LONG).show()
                     } else -> {
                         Toast.makeText(context, getString(R.string.server_error), Toast.LENGTH_LONG).show()

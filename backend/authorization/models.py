@@ -1,6 +1,6 @@
 from django.contrib.auth.base_user import AbstractBaseUser
 from django.contrib.auth.models import AbstractUser
-from django.core.validators import int_list_validator, MinValueValidator, MaxValueValidator
+from django.core.validators import int_list_validator
 from djongo import models
 from authorization.managers import UserManager
 from hotels.models import Recommendation
@@ -18,13 +18,9 @@ class User(AbstractUser):
     fans = models.PositiveIntegerField(default=0)
     elite = models.CharField(max_length=100, validators=[int_list_validator])
     average_stars = models.DecimalField(
-        default=3.0,
+        default=0.0,
         max_digits=3,
-        decimal_places=2,
-        validators=[
-            MinValueValidator(1),
-            MaxValueValidator(5)
-        ]
+        decimal_places=2
     )
     compliment_hot = models.PositiveIntegerField(default=0)
     compliment_more = models.PositiveIntegerField(default=0)

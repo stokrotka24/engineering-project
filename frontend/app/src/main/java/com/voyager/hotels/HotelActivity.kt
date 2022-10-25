@@ -23,7 +23,7 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "HotelActivity"
 
-class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickListener, HotelAdapter.RecyclerViewListener {
+class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickListener, HotelAdapter.OnClickListener {
     private lateinit var binding: ActivityHotelBinding
     private lateinit var api: ApiService
     private lateinit var recyclerView: RecyclerView
@@ -164,10 +164,10 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         hotelAdapter.notifyDataSetChanged()
     }
 
-    override fun onItemClicked(id: Int) {
-        Log.d(TAG, "onClickRecyclerViewItem: $id")
+    override fun onItemClicked(hotelId: Int) {
+        Log.d(TAG, "onClickRecyclerViewItem: $hotelId")
         val api = ApiUtils.getApi()
-        val getHotelDetailsCall: Call<HotelDetails> = api.getHotelDetails(id)
+        val getHotelDetailsCall: Call<HotelDetails> = api.getHotelDetails(hotelId)
         getHotelDetailsCall.enqueue(object : DefaultCallback<HotelDetails?>(this) {
             override fun onSuccess(response: Response<HotelDetails?>) {
                 val responseCode = response.code()

@@ -10,10 +10,10 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "HotelAdapter"
 
-class HotelAdapter(private val listener: RecyclerViewListener, var chosenHotels: ArrayList<Hotel>
+class HotelAdapter(private val listener: OnClickListener, var chosenHotels: ArrayList<Hotel>
 ) : RecyclerView.Adapter<HotelAdapter.ViewHolder>() {
-    interface RecyclerViewListener {
-        fun onItemClicked(id: Int)
+    interface OnClickListener {
+        fun onItemClicked(hotelId: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {

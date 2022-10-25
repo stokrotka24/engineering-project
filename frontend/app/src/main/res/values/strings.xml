@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Voyager</string>
 
+    <string name="value_not_loaded">--------------</string>
+    
     <string name="username">Username</string>
     <string name="email">Email</string>
     <string name="oldPass">Old password</string>
@@ -59,6 +61,4 @@
 
     <string name="cityState">"%1s, %2s %3s"</string>
     <string name="attrName">"%1s:"</string>
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
