@@ -166,23 +166,8 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
 
     override fun onItemClicked(hotelId: Int) {
         Log.d(TAG, "onClickRecyclerViewItem: $hotelId")
-        val api = ApiUtils.getApi()
-        val getHotelDetailsCall: Call<HotelDetails> = api.getHotelDetails(hotelId)
-        getHotelDetailsCall.enqueue(object : DefaultCallback<HotelDetails?>(this) {
-            override fun onSuccess(response: Response<HotelDetails?>) {
-                val responseCode = response.code()
-                Log.d(TAG, "onSuccess: response.code = $responseCode")
-
-                when (responseCode) {
-                    HttpStatus.OK.code -> {
-                        val hotel = response.body()!!
-                        val intent = Intent(applicationContext, HotelDetailsActivity::class.java)
-                        // TODO put as object not as an array
-                        intent.putParcelableArrayListExtra("hotel", arrayListOf(hotel))
-                        startActivity(intent)
-                    }
-                }
-            }
-        })
+        val intent = Intent(applicationContext, HotelDetailsActivity::class.java)
+        intent.putExtra("hotelId", hotelId)
+        startActivity(intent)
     }
 }

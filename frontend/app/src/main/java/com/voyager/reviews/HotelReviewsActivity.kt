@@ -47,7 +47,7 @@ class HotelReviewsActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityHotelReviewsBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        hotel = intent.getParcelableArrayListExtra<HotelDetails>("hotel")!![0]
+        hotel = intent.getParcelableExtra("hotel")!!
         setToolbar()
         setHotelBaseInfo()
         setSorting()
