@@ -56,6 +56,13 @@ class LoginActivity : AppCompatActivity() {
         passwordField.editText?.setText("test")
     }
 
+    override fun onStart() {
+        super.onStart()
+        // clear data after previous login
+        emailField.editText?.text = null
+        passwordField.editText?.text = null
+    }
+
     private fun bindComponents() {
         binding.let {
             errorTextView = it.loginErrorTextView
