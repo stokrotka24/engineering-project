@@ -113,7 +113,7 @@ def add_hotels():
 
     properties = ["name", "address", "city",
                   "state", "postal_code", "latitude",
-                  "longitude", "review_count"]
+                  "longitude"]
 
     commands = ["from hotels.models import Hotel, WiFi, NoiseLevel, RestaurantsAttire, BYOBCorkage, Smoking, Alcohol;"]
 
@@ -123,7 +123,8 @@ def add_hotels():
         commands.append("h = Hotel(")
         for prop in properties:
             add_property(commands, prop, h[prop])
-        add_property(commands, "stars", float(h["stars"]))
+        add_property(commands, "review_count", 0)
+        add_property(commands, "stars", 0.0)
         add_categories(commands, h["categories"])
         add_attributes(commands, h["attributes"])
         commands.append("); h.save();")

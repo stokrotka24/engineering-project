@@ -69,7 +69,7 @@ def add_users():
 
     users = parse_users(users)
 
-    properties = ["username", "email", "password", "review_count",
+    properties = ["username", "email", "password",
                   "date_joined", "useful_votes", "funny_votes", "cool_votes",
                   "fans", "elite", "compliment_hot",
                   "compliment_more", "compliment_profile", "compliment_cute",
@@ -84,7 +84,8 @@ def add_users():
         commands.append("u = User.objects.create_user(")
         for prop in properties:
             add_property(commands, prop, u[prop])
-        commands.append(f"average_stars={float(u['average_stars'])},")
+        add_property(commands, "review_count", 0)
+        add_property(commands, "average_stars", 0.0)
         commands.append(");")
 
     with shelve.open('data/users/ids_map') as f:
