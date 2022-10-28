@@ -204,7 +204,7 @@ class Review(models.Model):
             MaxValueValidator(5)
         ]
     )
-    date = models.DateField(default=datetime.date.today)
+    date = models.DateTimeField(default=datetime.datetime.now)
     content = models.CharField(max_length=5000, blank=True)
 
     def save(self, *args, **kwargs):

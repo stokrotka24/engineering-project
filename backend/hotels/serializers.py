@@ -73,10 +73,14 @@ class ReviewComplexSerializer(serializers.ModelSerializer):
 
 class HotelReviewSerializer(serializers.ModelSerializer):
     username = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
 
     def get_username(self, review):
         username = User.objects.get(pk=review.user_id).username
         return username
+
+    def get_date(self, review):
+        return review.date.date()
 
     class Meta:
         model = Review
@@ -85,10 +89,14 @@ class HotelReviewSerializer(serializers.ModelSerializer):
 
 class UserReviewSerializer(serializers.ModelSerializer):
     hotel_name = serializers.SerializerMethodField()
+    date = serializers.SerializerMethodField()
 
     def get_hotel_name(self, review):
         hotel_name = Hotel.objects.get(pk=review.hotel_id).name
         return hotel_name
+
+    def get_date(self, review):
+        return review.date.date()
 
     class Meta:
         model = Review

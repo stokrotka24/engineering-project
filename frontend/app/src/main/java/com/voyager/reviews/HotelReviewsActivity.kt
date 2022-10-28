@@ -22,7 +22,6 @@ import retrofit2.Response
 
 private const val TAG = "ReviewActivity"
 val mapSortType = mapOf(
-    -1 to null,
     R.id.starsAsc to "stars",
     R.id.starsDesc to "-stars",
     R.id.dateAsc to "date",
@@ -37,7 +36,7 @@ class HotelReviewsActivity : AppCompatActivity() {
     private lateinit var reviewAdapter: HotelReviewAdapter
     private var reviewList: ArrayList<HotelReview> = ArrayList()
     private var lytManager: LinearLayoutManager = LinearLayoutManager(this)
-    private var sortType: Int = -1
+    private var sortType: Int = R.id.dateDesc
     private var pageOffset: Int = 0
     private var isLastPage: Boolean = false
 
@@ -116,9 +115,7 @@ class HotelReviewsActivity : AppCompatActivity() {
         val sortBtn = binding.sortBtn
         val sortMenu = PopupMenu(this, sortBtn, Gravity.END)
         sortMenu.menuInflater.inflate(R.menu.sort_reviews_menu, sortMenu.menu)
-        if (sortType >= 0) {
-            sortMenu.menu.findItem(sortType).isChecked = true
-        }
+        sortMenu.menu.findItem(sortType).isChecked = true
         sortMenu.setOnMenuItemClickListener { item ->
             Log.d(TAG, "setOnMenuItemClickListener: ")
             item.isChecked = true

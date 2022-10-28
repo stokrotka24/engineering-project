@@ -22,7 +22,7 @@ class HotelView(generics.ListAPIView):
         no_recommendations = int(self.request.query_params.get('no_recommendations'))
         if city:
             recommendations_for_city = []
-            hotels = Hotel.objects.filter(city=city)
+            hotels = Hotel.objects.filter(city__iexact=city)
             hotels_ids_in_city = list(hotels.values_list('id', flat=True))
             print('if: hotels_in_city', hotels_ids_in_city)
             for r in recommendations:

@@ -31,7 +31,7 @@ class UserReviewsFragment : Fragment(), UserReviewAdapter.OnLongClickListener {
     private lateinit var reviewAdapter: UserReviewAdapter
     private var reviewList: ArrayList<UserReview> = ArrayList()
     private var lytManager: LinearLayoutManager = LinearLayoutManager(context)
-    private var sortType: Int = -1
+    private var sortType: Int = R.id.dateDesc
     private var pageOffset: Int = 0
     private var isLastPage: Boolean = false
 
@@ -106,9 +106,7 @@ class UserReviewsFragment : Fragment(), UserReviewAdapter.OnLongClickListener {
         val sortBtn = view?.findViewById<Button>(R.id.sortBtn)!!
         val sortMenu = PopupMenu(context, sortBtn, Gravity.END)
         sortMenu.menuInflater.inflate(R.menu.sort_reviews_menu, sortMenu.menu)
-        if (sortType >= 0) {
-            sortMenu.menu.findItem(sortType).isChecked = true
-        }
+        sortMenu.menu.findItem(sortType).isChecked = true
         sortMenu.setOnMenuItemClickListener { item ->
             Log.d(TAG, "setOnMenuItemClickListener: ")
             item.isChecked = true

@@ -189,6 +189,7 @@ class HotelDetailsActivity : AppCompatActivity() {
                             binding.ratingBar.rating = 0F
                             binding.reviewContent.text.clear()
                             fetchHotel()
+                            fetchReviews()
                         }
                         else -> {
                             Toast.makeText(applicationContext, getString(R.string.server_error), Toast.LENGTH_LONG).show()
