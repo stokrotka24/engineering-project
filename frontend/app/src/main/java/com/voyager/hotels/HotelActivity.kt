@@ -1,23 +1,21 @@
 package com.voyager.hotels
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.PopupMenu
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.voyager.R
 import com.voyager.api.ApiService
 import com.voyager.api.ApiUtils
-import com.voyager.api.DefaultCallback
-import com.voyager.api.HttpStatus
 import com.voyager.api.hotels.Hotel
 import com.voyager.api.hotels.HotelDetails
 import com.voyager.databinding.ActivityHotelBinding
-import retrofit2.Call
-import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -33,6 +31,18 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
     private lateinit var lytManager: LinearLayoutManager
     private lateinit var selectedFilterOptions: BooleanArray
     private var sortType: Int = 0
+    private val activityLauncher = registerForActivityResult(
+        ActivityResultContracts.StartActivityForResult()) {
+            Log.d(TAG, "Child activity finished: ")
+            if (it.resultCode == Activity.RESULT_OK) {
+                val hotel = it.data?.getParcelableExtra<HotelDetails>("hotel")
+                if (hotel != null) {
+                    val hotelInList = allHotels.first { h -> h.id == hotel.id }
+                    hotelInList.stars = hotel.stars
+                    hotelInList.review_count = hotel.review_count
+                }
+            }
+        }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         Log.d(TAG, "onCreate: ")
@@ -168,6 +178,6 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         Log.d(TAG, "onClickRecyclerViewItem: $hotelId")
         val intent = Intent(applicationContext, HotelDetailsActivity::class.java)
         intent.putExtra("hotelId", hotelId)
-        startActivity(intent)
+        activityLauncher.launch(intent)
     }
 }

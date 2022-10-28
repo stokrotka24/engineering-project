@@ -81,11 +81,11 @@ class SearchFragment : Fragment() {
             noRecommendationsEditText.error = "Number of recommendations must be greater than 1 and less than $MAX_RECOMMENDATIONS"
         } else {
             progressBar.visibility = View.VISIBLE
-            getHotels(city, noRecommendations)
+            fetchHotels(city, noRecommendations)
         }
     }
 
-    private fun getHotels(city: String, noRecommendations: Int) {
+    private fun fetchHotels(city: String, noRecommendations: Int) {
         val getHotelsCall: Call<List<Hotel>> = if (city.isBlank()) {
             api.getHotels(noRecommendations)
         } else {

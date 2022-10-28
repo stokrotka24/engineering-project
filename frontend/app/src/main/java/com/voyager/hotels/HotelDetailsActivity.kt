@@ -1,5 +1,6 @@
 package com.voyager.hotels
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
@@ -53,7 +54,7 @@ class HotelDetailsActivity : AppCompatActivity() {
         hotelId = intent.getIntExtra("hotelId", 0)
         binding.hotel = HotelDetails(0, getString(R.string.hotel_name),
             getString(R.string.value_not_loaded), getString(R.string.value_not_loaded),
-            "", "","0.0", 0, ArrayList(), ArrayList())
+            "", "",0F, 0, ArrayList(), ArrayList())
         fetchHotel(createView=true)
         fetchReviews()
     }
@@ -64,6 +65,13 @@ class HotelDetailsActivity : AppCompatActivity() {
         supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         toolbar.setNavigationOnClickListener { onBackPressed() }
+    }
+
+    override fun onBackPressed() {
+        val intent = Intent()
+        intent.putExtra("hotel", binding.hotel)
+        setResult(Activity.RESULT_OK, intent)
+        super.onBackPressed()
     }
 
     private fun setCategoriesRecyclerView() {

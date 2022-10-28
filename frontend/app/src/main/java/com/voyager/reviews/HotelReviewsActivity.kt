@@ -108,7 +108,7 @@ class HotelReviewsActivity : AppCompatActivity() {
     }
 
     private fun setHotelBaseInfo() {
-        binding.rating.text = hotel.stars
+        binding.rating.text = hotel.stars.toString()
         binding.reviewCount.text = hotel.review_count.toString()
     }
 

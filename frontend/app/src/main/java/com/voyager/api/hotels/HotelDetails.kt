@@ -11,7 +11,7 @@ data class HotelDetails(
     val city: String,
     val state: String,
     val postal_code: String,
-    val stars: String,
+    val stars: Float,
     val review_count: Int,
     val categories: List<String>,
     val attributes: List<Attribute>?
