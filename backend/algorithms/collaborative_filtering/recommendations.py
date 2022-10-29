@@ -2,12 +2,11 @@ import os
 import numpy as np
 
 from algorithms.collaborative_filtering.similarities import jaccard_similarity, cosine_similarity
-from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, \
-    get_binary_utility_matrix, get_normalized_utility_matrix, delete_matrices
+from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, delete_matrices
 from authorization.models import User
 
 
-def predict_ratings(utility_matrix_for_similarity_type, similarities, axis, n, weighted_average=True):
+def predict_ratings(utility_matrix_for_similarity_type, utility_matrix, similarities, axis, n, weighted_average=True):
     similarities = similarities.tolil()
     no_rows = similarities.shape[0]
 
@@ -21,7 +20,6 @@ def predict_ratings(utility_matrix_for_similarity_type, similarities, axis, n, w
 
     similarities = similarities.tocsr()
 
-    utility_matrix = get_utility_matrix()
     # Original utility matrix must be used, because binary & normalized matrices doesn't store explicit zeroes
     utility_matrix_ones = utility_matrix.copy()
     utility_matrix_ones.data = np.ones_like(utility_matrix.data)
@@ -49,24 +47,19 @@ def predict_ratings(utility_matrix_for_similarity_type, similarities, axis, n, w
     return ratings_sum / weights_sum
 
 
-def jaccard_collaborative_filtering(axis, n, weighted_average, threshold=3):
-    binary_utility_matrix = get_binary_utility_matrix(threshold)
+def jaccard_collaborative_filtering(axis, n, weighted_average, utility_matrix, binary_utility_matrix):
     similarities = jaccard_similarity(binary_utility_matrix, axis)
-    utility_matrix = get_utility_matrix()
-    return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
+    return predict_ratings(utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
 
 
-def cosine_collaborative_filtering(axis, n, weighted_average, rounded_data=False, threshold=3):
-    if rounded_data:
-        utility_matrix = get_binary_utility_matrix(threshold)
-    else:
-        utility_matrix = get_utility_matrix()
-    similarities = cosine_similarity(utility_matrix, axis)
-    return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
+def cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix, utility_matrix_to_calc_similarities):
+    similarities = cosine_similarity(utility_matrix_to_calc_similarities, axis)
+    return predict_ratings(utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
 
 
-def centered_cosine_collaborative_filtering(axis, n, weighted_average, only_positive_similarities=True):
-    normalized_utility_matrix = get_normalized_utility_matrix()
+def centered_cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix,
+                                            normalized_utility_matrix, only_positive_similarities=True):
+
     similarities = cosine_similarity(normalized_utility_matrix, axis)
 
     if only_positive_similarities:
@@ -75,14 +68,15 @@ def centered_cosine_collaborative_filtering(axis, n, weighted_average, only_posi
         similarities.indices = positive_similarities.indices
         similarities.indptr = positive_similarities.indptr
 
-    return predict_ratings(normalized_utility_matrix, similarities, axis, n, weighted_average)
+    return predict_ratings(normalized_utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
 
 
 def update_recommendations():
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     delete_matrices()
 
-    predicted_ratings = cosine_collaborative_filtering(0, 1000, True)
+    utility_matrix = get_utility_matrix()
+    predicted_ratings = cosine_collaborative_filtering(0, 1000, True, utility_matrix, utility_matrix)
     utility_matrix = get_utility_matrix()
 
     users = User.objects.all()

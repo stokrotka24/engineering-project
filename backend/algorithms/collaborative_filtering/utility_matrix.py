@@ -12,22 +12,26 @@ django.setup()
 from authorization.models import User
 from hotels.models import Hotel, Review
 
-no_users = User.objects.count()
-no_hotels = Hotel.objects.count()
+
+first_user_id = User.objects.first().id
+first_hotel_id = Hotel.objects.first().id
+users_count = User.objects.count()
+hotels_count = Hotel.objects.count()
 
 
-def create_utility_matrix():
+def create_utility_matrix(user_bias=first_user_id, hotel_bias=first_hotel_id,
+                          no_users=users_count, no_hotels=hotels_count):
     reviews = Review.objects.all()
     um = dok_matrix((no_users, no_hotels), dtype=np.int32)
     reviews_timestamps = dok_matrix((no_users, no_hotels), dtype=np.single)
 
     for review in reviews:
-        user_id = review.user_id
-        hotel_id = review.hotel_id
+        user_id = review.user_id - user_bias
+        hotel_id = review.hotel_id - hotel_bias
         # insert the newest review.stars
-        if reviews_timestamps[user_id - 1, hotel_id - 1] < review.date.timestamp():
-            um[user_id - 1, hotel_id - 1] = review.stars
-            reviews_timestamps[user_id - 1, hotel_id - 1] = review.date.timestamp()
+        if reviews_timestamps[user_id, hotel_id] < review.date.timestamp():
+            um[user_id, hotel_id] = review.stars
+            reviews_timestamps[user_id, hotel_id] = review.date.timestamp()
 
     print("Utility matrix created")
     um = um.tocsr()
@@ -43,7 +47,8 @@ def get_utility_matrix():
     return load_npz(um_file)
 
 
-def create_binary_utility_matrix(positive_threshold):
+def create_binary_utility_matrix(positive_threshold, user_bias=first_user_id, hotel_bias=first_hotel_id,
+                                 no_users=hotels_count, no_hotels=users_count):
     """
     Creates and saves binary utility matrix:
         1 if rating is greater or equal to positive_threshold
@@ -52,6 +57,10 @@ def create_binary_utility_matrix(positive_threshold):
 
     Args:
         positive_threshold: number, above which rating will be treated as positive (=1)
+        user_bias:
+        hotel_bias:
+        no_users:
+        no_hotels:
 
     Returns:
         -
@@ -61,19 +70,19 @@ def create_binary_utility_matrix(positive_threshold):
     reviews_timestamps = dok_matrix((no_users, no_hotels), dtype=np.single)
 
     for review in reviews:
-        user_id = review.user_id
-        hotel_id = review.hotel_id
+        user_id = review.user_id - user_bias
+        hotel_id = review.hotel_id - hotel_bias
 
-        if reviews_timestamps[user_id - 1, hotel_id - 1] < review.date.timestamp():
+        if reviews_timestamps[user_id, hotel_id] < review.date.timestamp():
             if review.stars >= positive_threshold:
-                bin_um[user_id - 1, hotel_id - 1] = 1
+                bin_um[user_id, hotel_id] = 1
             else:
-                bin_um[user_id - 1, hotel_id - 1] = 0
-            reviews_timestamps[user_id - 1, hotel_id - 1] = review.date.timestamp()
+                bin_um[user_id, hotel_id] = 0
+            reviews_timestamps[user_id, hotel_id] = review.date.timestamp()
 
     print("Binary utility matrix created")
     bin_um = bin_um.tocsr()
-    bin_um.eliminate_zeroes()
+    bin_um.eliminate_zeros()
     save_npz(f"{MATRICES_DIR}/binary_utility_matrix_{positive_threshold}", bin_um, True)
     print("Binary utility matrix saved")
 
@@ -93,7 +102,7 @@ def get_rating_mean_per_user(utility_matrix):
     return rating_sum / rating_num
 
 
-def create_normalized_utility_matrix_no_acceleration():
+def create_normalized_utility_matrix_no_acceleration(no_users=users_count, no_hotels=hotels_count):
     """
         Creates and saves normalized utility matrix (subtracting user's average).
         Normalized utility matrix doesn't store explicit zeroes (even for items rated equal to user's average).
