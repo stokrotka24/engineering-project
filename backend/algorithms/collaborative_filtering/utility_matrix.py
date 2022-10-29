@@ -3,7 +3,7 @@ import os
 from pathlib import Path
 import django
 import numpy as np
-from scipy.sparse import dok_matrix, save_npz, load_npz, diags, csr_matrix
+from scipy.sparse import dok_matrix, save_npz, load_npz, diags
 
 MATRICES_DIR = "matrices"
 sys.path.append(Path(__file__).parent.parent.parent.__str__())
@@ -19,11 +19,15 @@ no_hotels = Hotel.objects.count()
 def create_utility_matrix():
     reviews = Review.objects.all()
     um = dok_matrix((no_users, no_hotels), dtype=np.int32)
+    reviews_timestamps = dok_matrix((no_users, no_hotels), dtype=np.single)
 
     for review in reviews:
         user_id = review.user_id
         hotel_id = review.hotel_id
-        um[user_id - 1, hotel_id - 1] = review.stars
+        # insert the newest review.stars
+        if reviews_timestamps[user_id - 1, hotel_id - 1] < review.date.timestamp():
+            um[user_id - 1, hotel_id - 1] = review.stars
+            reviews_timestamps[user_id - 1, hotel_id - 1] = review.date.timestamp()
 
     print("Utility matrix created")
     um = um.tocsr()
@@ -47,22 +51,29 @@ def create_binary_utility_matrix(positive_threshold):
     Binary utility matrix doesn't store explicit zeroes (even for items rated less than positive_threshold).
 
     Args:
-        positive_threshold: number, above which rating will be treated as positive
+        positive_threshold: number, above which rating will be treated as positive (=1)
 
     Returns:
         -
     """
     reviews = Review.objects.all()
     bin_um = dok_matrix((no_users, no_hotels), dtype=np.int32)
+    reviews_timestamps = dok_matrix((no_users, no_hotels), dtype=np.single)
 
     for review in reviews:
         user_id = review.user_id
         hotel_id = review.hotel_id
-        if review.stars >= positive_threshold:
-            bin_um[user_id - 1, hotel_id - 1] = 1
+
+        if reviews_timestamps[user_id - 1, hotel_id - 1] < review.date.timestamp():
+            if review.stars >= positive_threshold:
+                bin_um[user_id - 1, hotel_id - 1] = 1
+            else:
+                bin_um[user_id - 1, hotel_id - 1] = 0
+            reviews_timestamps[user_id - 1, hotel_id - 1] = review.date.timestamp()
 
     print("Binary utility matrix created")
     bin_um = bin_um.tocsr()
+    bin_um.eliminate_zeroes()
     save_npz(f"{MATRICES_DIR}/binary_utility_matrix_{positive_threshold}", bin_um, True)
     print("Binary utility matrix saved")
 

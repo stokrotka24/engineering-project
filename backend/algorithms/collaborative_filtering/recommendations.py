@@ -56,16 +56,25 @@ def jaccard_collaborative_filtering(axis, n, weighted_average, threshold=3):
     return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
 
 
-# TODO add possibility to calc cosine similarities on binary matrix
-def cosine_collaborative_filtering(axis, n, weighted_average):
-    utility_matrix = get_utility_matrix()
+def cosine_collaborative_filtering(axis, n, weighted_average, rounded_data=False, threshold=3):
+    if rounded_data:
+        utility_matrix = get_binary_utility_matrix(threshold)
+    else:
+        utility_matrix = get_utility_matrix()
     similarities = cosine_similarity(utility_matrix, axis)
     return predict_ratings(utility_matrix, similarities, axis, n, weighted_average)
 
 
-def centered_cosine_collaborative_filtering(axis, n, weighted_average):
+def centered_cosine_collaborative_filtering(axis, n, weighted_average, only_positive_similarities=True):
     normalized_utility_matrix = get_normalized_utility_matrix()
     similarities = cosine_similarity(normalized_utility_matrix, axis)
+
+    if only_positive_similarities:
+        positive_similarities = similarities > 0
+        similarities.data = similarities.data[similarities.data > 0]
+        similarities.indices = positive_similarities.indices
+        similarities.indptr = positive_similarities.indptr
+
     return predict_ratings(normalized_utility_matrix, similarities, axis, n, weighted_average)
 
 

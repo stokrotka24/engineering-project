@@ -37,7 +37,7 @@ def map_categories_to_index():
         current_column_index += 1
 
 
-def add_null_boolean_field(field_name):
+def add_boolean_field(field_name):
     global current_column_index
 
     map_feature_to_index[field_name] = dict()
@@ -64,8 +64,6 @@ def add_enum_choices(enum_name):
         map_feature_to_index[enum_name][enum_key] = current_column_index
         current_column_index += 1
 
-    current_column_index += 1
-
 
 def add_embedded_attr(embedded_attr_name):
     global current_column_index
@@ -85,7 +83,7 @@ def map_attributes_to_index():
 
     for attr_field in attributes_fields:
         if isinstance(attr_field, NullBooleanField):
-            add_null_boolean_field(attr_field.attname)
+            add_boolean_field(attr_field.attname)
         elif isinstance(attr_field, EmbeddedField):
             add_embedded_attr(attr_field.attname)
         elif isinstance(attr_field, EnumChoiceField):
