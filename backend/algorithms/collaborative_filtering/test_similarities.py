@@ -130,6 +130,19 @@ class TestSimilarities(unittest.TestCase):
 
         assert_array_equal(actual, expected)
 
+    @func_name
+    def test_similarities_user_based_on_binary_data(self):
+        matrix = csr_matrix([[1, 0, 0, 1], [1, 1, 0, 0]])
+        actual = similarities.jaccard_similarity(matrix, 1)
+        expected = [[1.0, 1/3], [1/3, 1.0]]
+        assert_allclose(actual.toarray(), expected, rtol=0, atol=1.0e-15)
+
+        actual = similarities.cosine_similarity(matrix, 1)
+        expected = [[1.0, 1 / 2], [1 / 2, 1.0]]
+        assert_allclose(actual.toarray(), expected, rtol=0, atol=1.0e-15)
+
+        print()
+
 
 if __name__ == '__main__':
     unittest.main()

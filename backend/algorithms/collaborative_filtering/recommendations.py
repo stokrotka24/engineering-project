@@ -58,15 +58,13 @@ def cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix, ut
 
 
 def centered_cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix,
-                                            normalized_utility_matrix, only_positive_similarities=True):
+                                            normalized_utility_matrix):
 
     similarities = cosine_similarity(normalized_utility_matrix, axis)
-
-    if only_positive_similarities:
-        positive_similarities = similarities > 0
-        similarities.data = similarities.data[similarities.data > 0]
-        similarities.indices = positive_similarities.indices
-        similarities.indptr = positive_similarities.indptr
+    positive_similarities = similarities > 0
+    similarities.data = similarities.data[similarities.data > 0]
+    similarities.indices = positive_similarities.indices
+    similarities.indptr = positive_similarities.indptr
 
     return predict_ratings(normalized_utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
 
