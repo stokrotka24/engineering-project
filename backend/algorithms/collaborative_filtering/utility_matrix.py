@@ -48,7 +48,7 @@ def get_utility_matrix():
 
 
 def create_binary_utility_matrix(positive_threshold, user_bias=first_user_id, hotel_bias=first_hotel_id,
-                                 no_users=hotels_count, no_hotels=users_count):
+                                 no_users=users_count, no_hotels=hotels_count):
     """
     Creates and saves binary utility matrix:
         1 if rating is greater or equal to positive_threshold

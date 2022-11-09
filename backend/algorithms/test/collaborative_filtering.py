@@ -30,9 +30,9 @@ def root_mean_square_error(predicted_ratings, predicted_ratings_indices, utility
 
 
 def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmType, n: int, weighted_average: bool,
-                   test_ratio: float = 0.2, **kwargs):
-    test_utility_matrix = load_npz(f"matrices/utility_matrix_{test_ratio}.npz")
-    utility_matrix = load_npz(f"matrices/utility_matrix.npz")
+                   file_prefix="", test_ratio: float = 0.2, **kwargs):
+    test_utility_matrix = load_npz(f"matrices/{file_prefix}utility_matrix_{test_ratio}.npz")
+    utility_matrix = load_npz(f"matrices/{file_prefix}utility_matrix.npz")
     deleted_ratings_indices = (utility_matrix - test_utility_matrix).todok().keys()
 
     match similarity_type:
@@ -107,34 +107,37 @@ n_values = {AlgorithmType.item_based: [i for i in range(1, 6)] + [i for i in ran
                                       [i for i in range(5000, NO_USERS // 10, 5000)]}
 
 
-def test_jaccard_and_cosine_binary():
+def test_jaccard_and_cosine_binary(file_prefix=""):
     for similarity_type in binary_similarities_types:
         for algorithm_type in algorithm_types:
             for weighted_average in bool_values:
                 for positive_threshold in positive_threshold_values:
-                    with open(f"results/{algorithm_type}/{similarity_type}_{weighted_average}_{positive_threshold}",
-                              "a") as f:
+                    with open(
+                            f"{file_prefix}results/{algorithm_type}/{similarity_type}_{weighted_average}_{positive_threshold}",
+                            "a") as f:
                         for n in n_values[algorithm_type]:
                             print(similarity_type, algorithm_type, n, weighted_average, positive_threshold)
                             elapsed_time, pr, mae, rmse = test_algorithm(similarity_type=similarity_type,
                                                                          algorithm_type=algorithm_type,
                                                                          n=n, weighted_average=weighted_average,
+                                                                         file_prefix=file_prefix,
                                                                          test_ratio=0.2,
                                                                          positive_threshold=positive_threshold)
                             f.write(f"{n} {elapsed_time} {pr} {mae} {rmse}\n")
 
 
-def test_cosine_and_centered_cosine():
+def test_cosine_and_centered_cosine(file_prefix=""):
     for similarity_type in similarities_types:
         for algorithm_type in algorithm_types:
             for weighted_average in bool_values:
-                with open(f"results/{algorithm_type}/{similarity_type}_{weighted_average}",
+                with open(f"{file_prefix}results/{algorithm_type}/{similarity_type}_{weighted_average}",
                           "a") as f:
                     for n in n_values[algorithm_type]:
                         print(similarity_type, algorithm_type, n, weighted_average)
                         elapsed_time, pr, mae, rmse = test_algorithm(similarity_type=similarity_type,
                                                                      algorithm_type=algorithm_type,
-                                                                     n=n, weighted_average=weighted_average)
+                                                                     n=n, weighted_average=weighted_average,
+                                                                     file_prefix=file_prefix)
 
                         f.write(f"{n} {elapsed_time} {pr} {mae} {rmse}\n")
 
@@ -142,37 +145,38 @@ def test_cosine_and_centered_cosine():
 if __name__ == "__main__":
     test_jaccard_and_cosine_binary()
     test_cosine_and_centered_cosine()
+    test_jaccard_and_cosine_binary("filtered_")
+    test_cosine_and_centered_cosine("filtered_")
 
-# print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
-#                  algorithm_type=AlgorithmType.user_based,
-#                  n=3000,
-#                  weighted_average=False,
-#                  test_ratio=0.2,
-#                  positive_threshold=5))
-
-# print(test_algorithm(similarity_type=SimilarityType.cosine,
-#                      algorithm_type=AlgorithmType.item_based,
-#                      n=1000,
-#                      weighted_average=True))
-# print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
-#                      algorithm_type=AlgorithmType.user_based,
-#                      n=1,
-#                      weighted_average=True,
-#                      test_ratio=0.2,
-#                      positive_threshold=4))
-# print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
-#                      algorithm_type=AlgorithmType.user_based,
-#                      n=10000,
-#                      weighted_average=True,
-#                      test_ratio=0.2,
-#                      positive_threshold=1))
-# print(test_algorithm(similarity_type=SimilarityType.jaccard,
-#                      algorithm_type=AlgorithmType.user_based,
-#                      n=10000,
-#                      weighted_average=True,
-#                      test_ratio=0.2,
-#                      positive_threshold=4))
-# print(test_algorithm(similarity_type=SimilarityType.centered_cosine,
-#                      algorithm_type=AlgorithmType.user_based,
-#                      n=100000,
-#                      weighted_average=False))
+    # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
+    #                  algorithm_type=AlgorithmType.user_based,
+    #                  n=3000,
+    #                  weighted_average=False,
+    #                  test_ratio=0.2,
+    #                  positive_threshold=5))
+    # print(test_algorithm(similarity_type=SimilarityType.cosine,
+    #                      algorithm_type=AlgorithmType.item_based,
+    #                      n=1000,
+    #                      weighted_average=True))
+    # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
+    #                      algorithm_type=AlgorithmType.user_based,
+    #                      n=1,
+    #                      weighted_average=True,
+    #                      test_ratio=0.2,
+    #                      positive_threshold=4))
+    # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
+    #                      algorithm_type=AlgorithmType.user_based,
+    #                      n=10000,
+    #                      weighted_average=True,
+    #                      test_ratio=0.2,
+    #                      positive_threshold=1))
+    # print(test_algorithm(similarity_type=SimilarityType.jaccard,
+    #                      algorithm_type=AlgorithmType.user_based,
+    #                      n=10000,
+    #                      weighted_average=True,
+    #                      test_ratio=0.2,
+    #                      positive_threshold=4))
+    # print(test_algorithm(similarity_type=SimilarityType.centered_cosine,
+    #                      algorithm_type=AlgorithmType.user_based,
+    #                      n=100000,
+    #                      weighted_average=True))
