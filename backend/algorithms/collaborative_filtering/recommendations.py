@@ -59,7 +59,6 @@ def cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix, ut
 
 def centered_cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix,
                                             normalized_utility_matrix):
-
     similarities = cosine_similarity(normalized_utility_matrix, axis)
     positive_similarities = similarities > 0
     similarities.data = similarities.data[similarities.data > 0]
@@ -89,6 +88,7 @@ def update_recommendations():
         predictions_indices = [hotel_index for hotel_index in predictions_indices if hotel_index not in ratings_indices]
         hotel_index_to_prediction = [(index, predictions[index]) for index in predictions_indices]
         hotel_index_to_prediction.sort(key=lambda t: t[1], reverse=True)
+        print([hotel_index + 1 for (hotel_index, _) in hotel_index_to_prediction])
         recommendations = [{"hotel_id": hotel_index + 1} for (hotel_index, _) in hotel_index_to_prediction]
 
         if len(recommendations) > 0:

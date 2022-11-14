@@ -72,18 +72,23 @@ def add_embedded_attr(embedded_attr_name):
     embedded_keys = get_embedded_keys(embedded_class)
 
     for embedded_key in embedded_keys:
-        map_feature_to_index[embedded_attr_name][embedded_key] = dict()
-        for val in boolean_values:
-            map_feature_to_index[embedded_attr_name][embedded_key][val] = current_column_index
-            current_column_index += 1
+        # map_feature_to_index[embedded_attr_name][embedded_key] = dict()
+        map_feature_to_index[embedded_attr_name][embedded_key] = current_column_index
+        current_column_index += 1
+        # for val in boolean_values:
+        #     map_feature_to_index[embedded_attr_name][embedded_key][val] = current_column_index
+        #     current_column_index += 1
 
 
 def map_attributes_to_index():
+    global current_column_index
     attributes_fields = Attributes._meta.fields
 
     for attr_field in attributes_fields:
         if isinstance(attr_field, NullBooleanField):
-            add_boolean_field(attr_field.attname)
+            map_feature_to_index[attr_field.attname] = current_column_index
+            current_column_index += 1
+            # add_boolean_field(attr_field.attname)
         elif isinstance(attr_field, EmbeddedField):
             add_embedded_attr(attr_field.attname)
         elif isinstance(attr_field, EnumChoiceField):

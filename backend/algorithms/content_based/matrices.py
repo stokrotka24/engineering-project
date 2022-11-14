@@ -28,8 +28,11 @@ def create_hotel_matrix():
             for (attr_key, attr_val) in attrs.items():
                 if attr_key in embedded_attr_name_to_class.keys():
                     for (emb_attr_key, emb_attr_val) in attr_val.items():
-                        if emb_attr_val is not None:
-                            column_index = map_feature_to_col_index[attr_key][emb_attr_key][emb_attr_val]
+                        # if emb_attr_val is not None:
+                        #     column_index = map_feature_to_col_index[attr_key][emb_attr_key][emb_attr_val]
+                        #     hotel_matrix[hotel_index, column_index] = 1
+                        if emb_attr_val:
+                            column_index = map_feature_to_col_index[attr_key][emb_attr_key]
                             hotel_matrix[hotel_index, column_index] = 1
 
                 elif attr_key in enum_name_to_class.keys():
@@ -37,9 +40,16 @@ def create_hotel_matrix():
                         column_index = map_feature_to_col_index[attr_key][attr_val.name]
                         hotel_matrix[hotel_index, column_index] = 1
 
-                elif attr_val in boolean_values:
+                # elif attr_val in boolean_values:
+                #     try:
+                #         column_index = map_feature_to_col_index[attr_key][attr_val]
+                #         hotel_matrix[hotel_index, column_index] = 1
+                #     except KeyError:
+                #         pass
+                #         # print("Unsupported attribute:", attr_key)
+                elif attr_val:
                     try:
-                        column_index = map_feature_to_col_index[attr_key][attr_val]
+                        column_index = map_feature_to_col_index[attr_key]
                         hotel_matrix[hotel_index, column_index] = 1
                     except KeyError:
                         pass
