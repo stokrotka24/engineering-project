@@ -1,4 +1,5 @@
 import math
+import shelve
 from collections import defaultdict
 from scipy.sparse import load_npz
 from algorithms.content_based.matrices import get_hotel_matrix, get_user_matrix
@@ -39,14 +40,18 @@ def calc_mean_per_list_size(d: dict):
     return list(map(lambda t: (t[0], sum(t[1]) / len(t[1])), d.items()))
 
 
-def test():
+def test(delete_ratio=0.0):
     hotel_matrix = get_hotel_matrix()
     user_matrix = get_user_matrix()
     similarities = cosine_similarity(user_matrix, hotel_matrix.T)
 
     utility_matrix = load_npz("matrices/utility_matrix.npz")
-    utility_matrix = utility_matrix.todok()
-    ratings = list(utility_matrix.keys())
+    if delete_ratio > 0.0:
+        file = shelve.open("matrices/deleted_ratings_0.2.bin")
+        ratings = file["deleted_ratings"]
+    else:
+        utility_matrix = utility_matrix.todok()
+        ratings = list(utility_matrix.keys())
 
     ratings_map = defaultdict(list)
     for (user_id, hotel_id) in ratings:
@@ -97,4 +102,4 @@ def test():
     print("normalized_discounted_cumulative_gains\n", normalized_discounted_cumulative_gains)
 
 
-test()
+test(0.0)

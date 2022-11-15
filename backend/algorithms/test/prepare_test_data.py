@@ -1,4 +1,5 @@
 import random
+import shelve
 
 import numpy as np
 from scipy.sparse import save_npz, diags, dok_matrix, load_npz
@@ -24,6 +25,8 @@ def delete_ratings_in_utility_matrix(utility_matrix, delete_ratio=0.25, file_inf
     no_ratings_to_delete = round(delete_ratio * len(ratings_indices))
     print("Real delete ratio:", no_ratings_to_delete / len(ratings_indices))
     ratings_indices_to_delete = random.sample(ratings_indices, no_ratings_to_delete)
+    with shelve.open(f"matrices/{file_infix}deleted_ratings_{delete_ratio}.bin") as f:
+        f['deleted_ratings'] = ratings_indices_to_delete
 
     updated_utility_matrix = utility_matrix.copy()
     for indices in ratings_indices_to_delete:
