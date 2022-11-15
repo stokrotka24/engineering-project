@@ -33,7 +33,7 @@ def jaccard_similarity_no_acceleration(matrix: csr_matrix, axis) -> csc_matrix |
     return intersection_a_b
 
 
-def jaccard_similarity(matrix: csr_matrix, axis) -> csc_matrix | csr_matrix:
+def jaccard(matrix: csr_matrix, axis) -> csc_matrix | csr_matrix:
     """
         Returns:
             csc_matrix (if axis =  0)
@@ -65,7 +65,7 @@ def jaccard_similarity(matrix: csr_matrix, axis) -> csc_matrix | csr_matrix:
     return intersection_a_b
 
 
-def cosine_similarity(matrix, axis) -> csr_matrix:
+def cosine(matrix, axis) -> csr_matrix:
     normalized_matrix_by_axis = normalize(matrix, axis=axis)
     if axis == 0:
         return normalized_matrix_by_axis.T * normalized_matrix_by_axis

@@ -1,7 +1,7 @@
 import os
 import numpy as np
 
-from algorithms.collaborative_filtering.similarities import jaccard_similarity, cosine_similarity
+from algorithms.collaborative_filtering.similarities import jaccard, cosine
 from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, delete_matrices
 from authorization.models import User
 
@@ -47,19 +47,20 @@ def predict_ratings(utility_matrix_for_similarity_type, utility_matrix, similari
     return ratings_sum / weights_sum
 
 
-def jaccard_collaborative_filtering(axis, n, weighted_average, utility_matrix, binary_utility_matrix):
-    similarities = jaccard_similarity(binary_utility_matrix, axis)
+def jaccard_cf(axis, n, weighted_average, utility_matrix, binary_utility_matrix):
+    similarities = jaccard(binary_utility_matrix, axis)
     return predict_ratings(utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
 
 
-def cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix, utility_matrix_to_calc_similarities):
-    similarities = cosine_similarity(utility_matrix_to_calc_similarities, axis)
+def cosine_cf(axis, n, weighted_average, utility_matrix, utility_matrix_to_calc_similarities):
+    similarities = cosine(utility_matrix_to_calc_similarities, axis)
     return predict_ratings(utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
 
 
-def centered_cosine_collaborative_filtering(axis, n, weighted_average, utility_matrix,
-                                            normalized_utility_matrix):
-    similarities = cosine_similarity(normalized_utility_matrix, axis)
+def cosine_normalized_data_cf(axis, n, weighted_average, utility_matrix,
+                              normalized_utility_matrix):
+    similarities = cosine(normalized_utility_matrix, axis)
+
     positive_similarities = similarities > 0
     similarities.data = similarities.data[similarities.data > 0]
     similarities.indices = positive_similarities.indices
@@ -73,7 +74,7 @@ def update_recommendations():
     delete_matrices()
 
     utility_matrix = get_utility_matrix()
-    predicted_ratings = cosine_collaborative_filtering(0, 1000, True, utility_matrix, utility_matrix)
+    predicted_ratings = cosine_cf(0, 1000, True, utility_matrix, utility_matrix)
     utility_matrix = get_utility_matrix()
 
     users = User.objects.all()

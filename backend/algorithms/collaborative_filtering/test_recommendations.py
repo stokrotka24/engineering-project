@@ -4,7 +4,7 @@ import unittest
 import numpy as np
 from scipy.sparse import csr_matrix
 
-from algorithms.collaborative_filtering.recommendations import jaccard_collaborative_filtering
+from algorithms.collaborative_filtering.recommendations import jaccard_cf
 from algorithms.test.algorithm_type import AlgorithmType
 
 
@@ -30,10 +30,10 @@ class TestRecommendations(unittest.TestCase):
         ))
 
     def test_jaccard_item_based_weighted_average_True(self):
-        predicted_ratings = jaccard_collaborative_filtering(axis=AlgorithmType.item_based.value, n=2,
-                                                                   weighted_average=True,
-                                                                   utility_matrix=self.um,
-                                                                   binary_utility_matrix=self.bin_um_positive_threshold_3)
+        predicted_ratings = jaccard_cf(axis=AlgorithmType.item_based.value, n=2,
+                                       weighted_average=True,
+                                       utility_matrix=self.um,
+                                       binary_utility_matrix=self.bin_um_positive_threshold_3)
         self.assertTrue(np.isnan(predicted_ratings[0, 2]))
         self.assertTrue(np.isnan(predicted_ratings[1, 0]))
         self.assertTrue(np.isnan(predicted_ratings[1, 2]))

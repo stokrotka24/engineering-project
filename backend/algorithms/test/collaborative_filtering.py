@@ -5,8 +5,8 @@ from statistics import mean
 import numpy as np
 from scipy.sparse import load_npz, diags
 
-from algorithms.collaborative_filtering.recommendations import cosine_collaborative_filtering, \
-    jaccard_collaborative_filtering, centered_cosine_collaborative_filtering
+from algorithms.collaborative_filtering.recommendations import cosine_cf, \
+    jaccard_cf, cosine_normalized_data_cf
 from algorithms.collaborative_filtering.utility_matrix import get_rating_mean_per_user
 from algorithms.test.algorithm_type import AlgorithmType
 from algorithms.test.prepare_test_data import binarize_matrix, NO_HOTELS, NO_USERS
@@ -41,19 +41,19 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
             positive_threshold = kwargs["positive_threshold"]
             bin_test_utility_matrix = binarize_matrix(test_utility_matrix, positive_threshold)
             predicted_ratings = \
-                cosine_collaborative_filtering(axis=algorithm_type.value, n=n,
-                                               weighted_average=weighted_average,
-                                               utility_matrix=test_utility_matrix,
-                                               utility_matrix_to_calc_similarities=bin_test_utility_matrix)
+                cosine_cf(axis=algorithm_type.value, n=n,
+                          weighted_average=weighted_average,
+                          utility_matrix=test_utility_matrix,
+                          utility_matrix_to_calc_similarities=bin_test_utility_matrix)
             end = time.time()
 
         case SimilarityType.cosine:
             start = time.time()
             predicted_ratings \
-                = cosine_collaborative_filtering(axis=algorithm_type.value, n=n,
-                                                 weighted_average=weighted_average,
-                                                 utility_matrix=test_utility_matrix,
-                                                 utility_matrix_to_calc_similarities=test_utility_matrix)
+                = cosine_cf(axis=algorithm_type.value, n=n,
+                            weighted_average=weighted_average,
+                            utility_matrix=test_utility_matrix,
+                            utility_matrix_to_calc_similarities=test_utility_matrix)
             end = time.time()
 
         case SimilarityType.jaccard:
@@ -61,10 +61,10 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
             positive_threshold = kwargs["positive_threshold"]
             bin_test_utility_matrix = binarize_matrix(test_utility_matrix, positive_threshold)
             predicted_ratings \
-                = jaccard_collaborative_filtering(axis=algorithm_type.value, n=n,
-                                                  weighted_average=weighted_average,
-                                                  utility_matrix=test_utility_matrix,
-                                                  binary_utility_matrix=bin_test_utility_matrix)
+                = jaccard_cf(axis=algorithm_type.value, n=n,
+                             weighted_average=weighted_average,
+                             utility_matrix=test_utility_matrix,
+                             binary_utility_matrix=bin_test_utility_matrix)
             end = time.time()
 
         case SimilarityType.centered_cosine:
@@ -75,10 +75,10 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
             ones.data = np.ones_like(test_utility_matrix.data)
             norm_test_utility_matrix = test_utility_matrix - rating_mean * ones
             predicted_ratings \
-                = centered_cosine_collaborative_filtering(axis=algorithm_type.value, n=n,
-                                                          weighted_average=weighted_average,
-                                                          utility_matrix=test_utility_matrix,
-                                                          normalized_utility_matrix=norm_test_utility_matrix)
+                = cosine_normalized_data_cf(axis=algorithm_type.value, n=n,
+                                            weighted_average=weighted_average,
+                                            utility_matrix=test_utility_matrix,
+                                            normalized_utility_matrix=norm_test_utility_matrix)
             ones = utility_matrix.copy()
             ones.data = np.ones_like(utility_matrix.data)
             utility_matrix = utility_matrix - rating_mean * ones

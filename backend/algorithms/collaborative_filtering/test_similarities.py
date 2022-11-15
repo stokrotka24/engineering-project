@@ -36,7 +36,7 @@ class TestSimilarities(unittest.TestCase):
     @func_name
     def test_jaccard_similarity_item_based(self):
         start = time.time()
-        actual = similarities.jaccard_similarity(self.binary_utility_matrix, 0)
+        actual = similarities.jaccard(self.binary_utility_matrix, 0)
         elapsed = time.time() - start
         actual = actual.tolil()
         actual.setdiag(1.0)
@@ -54,7 +54,7 @@ class TestSimilarities(unittest.TestCase):
     @func_name
     def test_jaccard_similarity_user_based(self):
         start = time.time()
-        actual = similarities.jaccard_similarity(self.binary_utility_matrix, 1)
+        actual = similarities.jaccard(self.binary_utility_matrix, 1)
         elapsed = time.time() - start
         actual = actual.tolil()
         actual.setdiag(1.0)
@@ -102,7 +102,7 @@ class TestSimilarities(unittest.TestCase):
     @func_name
     def test_cosine_similarity_item_based(self):
         start = time.time()
-        actual = similarities.cosine_similarity(self.utility_matrix, 0)
+        actual = similarities.cosine(self.utility_matrix, 0)
         elapsed = time.time() - start
         actual = actual.toarray()
 
@@ -118,7 +118,7 @@ class TestSimilarities(unittest.TestCase):
     @func_name
     def test_cosine_similarity_user_based(self):
         start = time.time()
-        actual = similarities.cosine_similarity(self.utility_matrix, 1)
+        actual = similarities.cosine(self.utility_matrix, 1)
         elapsed = time.time() - start
         actual = actual.toarray()
 
@@ -133,11 +133,11 @@ class TestSimilarities(unittest.TestCase):
     @func_name
     def test_similarities_user_based_on_binary_data(self):
         matrix = csr_matrix([[1, 0, 0, 1], [1, 1, 0, 0]])
-        actual = similarities.jaccard_similarity(matrix, 1)
+        actual = similarities.jaccard(matrix, 1)
         expected = [[1.0, 1/3], [1/3, 1.0]]
         assert_allclose(actual.toarray(), expected, rtol=0, atol=1.0e-15)
 
-        actual = similarities.cosine_similarity(matrix, 1)
+        actual = similarities.cosine(matrix, 1)
         expected = [[1.0, 1 / 2], [1 / 2, 1.0]]
         assert_allclose(actual.toarray(), expected, rtol=0, atol=1.0e-15)
 

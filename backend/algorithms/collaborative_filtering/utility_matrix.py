@@ -102,7 +102,7 @@ def get_rating_mean_per_user(utility_matrix):
     return rating_sum / rating_num
 
 
-def create_normalized_utility_matrix_no_acceleration(no_users=users_count, no_hotels=hotels_count):
+def create_normalized_utility_matrix_no_acceleration():
     """
         Creates and saves normalized utility matrix (subtracting user's average).
         Normalized utility matrix doesn't store explicit zeroes (even for items rated equal to user's average).
@@ -111,6 +111,7 @@ def create_normalized_utility_matrix_no_acceleration(no_users=users_count, no_ho
             -
         """
     um = get_utility_matrix()
+    no_users, no_hotels = um.shape
     rating_mean = get_rating_mean_per_user(um)
 
     normalized_um = dok_matrix((no_users, no_hotels), dtype=np.float64)
@@ -118,12 +119,12 @@ def create_normalized_utility_matrix_no_acceleration(no_users=users_count, no_ho
         user_row = um.getrow(user_id)
         hotel_ids = user_row.indices
         ratings = user_row.data
-        data_size = len(ratings)
-        for i in range(data_size):
-            normalized_um[user_id, hotel_ids[i]] = ratings[i] - rating_mean[user_id]
+        for (hotel_id, rating) in zip(hotel_ids, ratings):
+            normalized_um[user_id, hotel_id] = rating - rating_mean[user_id]
 
+    normalized_um = normalized_um.tocsr()
     print("Normalized utility matrix created")
-    save_npz(f"{MATRICES_DIR}/normalized_utility_matrix_no_acc", normalized_um.tocsr(), True)
+    save_npz(f"{MATRICES_DIR}/normalized_utility_matrix_no_acc", normalized_um, True)
     print("Normalized utility matrix saved")
 
 
