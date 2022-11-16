@@ -7,10 +7,10 @@ from algorithms.test.collaborative_filtering import positive_threshold_values, a
 from algorithms.test.similarity_type import SimilarityType
 
 title = {
-    SimilarityType.jaccard: "Jaccard similarity",
-    SimilarityType.cosine_binary: "Cosine similarity for binary matrix",
-    SimilarityType.cosine: "Cosine similarity",
-    SimilarityType.centered_cosine: "Centered cosine similarity"
+    SimilarityType.jaccard: "Jaccard",
+    SimilarityType.cosine_binary: "Cosine for binary matrix",
+    SimilarityType.cosine: "Cosine",
+    SimilarityType.cosine_normalized: "Cosine for normalized data"
 }
 
 

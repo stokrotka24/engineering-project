@@ -37,9 +37,9 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
 
     match similarity_type:
         case SimilarityType.cosine_binary:
-            start = time.time()
             positive_threshold = kwargs["positive_threshold"]
             bin_test_utility_matrix = binarize_matrix(test_utility_matrix, positive_threshold)
+            start = time.time()
             predicted_ratings = \
                 cosine_cf(axis=algorithm_type.value, n=n,
                           weighted_average=weighted_average,
@@ -57,9 +57,9 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
             end = time.time()
 
         case SimilarityType.jaccard:
-            start = time.time()
             positive_threshold = kwargs["positive_threshold"]
             bin_test_utility_matrix = binarize_matrix(test_utility_matrix, positive_threshold)
+            start = time.time()
             predicted_ratings \
                 = jaccard_cf(axis=algorithm_type.value, n=n,
                              weighted_average=weighted_average,
@@ -67,7 +67,7 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
                              binary_utility_matrix=bin_test_utility_matrix)
             end = time.time()
 
-        case SimilarityType.centered_cosine:
+        case SimilarityType.cosine_normalized:
             start = time.time()
             rating_mean = get_rating_mean_per_user(test_utility_matrix)
             rating_mean = diags(diagonals=rating_mean, offsets=0)
@@ -96,7 +96,7 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
 
 
 binary_similarities_types = [SimilarityType.jaccard, SimilarityType.cosine_binary]
-similarities_types = [SimilarityType.cosine, SimilarityType.centered_cosine]
+similarities_types = [SimilarityType.cosine, SimilarityType.cosine_normalized]
 algorithm_types = [alg_type for alg_type in AlgorithmType]
 bool_values = [False, True]
 positive_threshold_values = [i for i in range(1, 6)]

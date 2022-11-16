@@ -4,6 +4,7 @@ from collections import defaultdict
 from scipy.sparse import load_npz
 from algorithms.content_based.matrices import get_hotel_matrix, get_user_matrix
 from algorithms.content_based.similarities import cosine_similarity
+from algorithms.test.prepare_test_data import prepare_user_matrix
 
 
 def infinity_norm_for_indices_difference(l1: list, l2: list):
@@ -42,16 +43,14 @@ def calc_mean_per_list_size(d: dict):
 
 def test(delete_ratio=0.0):
     hotel_matrix = get_hotel_matrix()
-    user_matrix = get_user_matrix()
+
+    user_matrix = prepare_user_matrix(delete_ratio)
+
     similarities = cosine_similarity(user_matrix, hotel_matrix.T)
 
     utility_matrix = load_npz("matrices/utility_matrix.npz")
-    if delete_ratio > 0.0:
-        file = shelve.open("matrices/deleted_ratings_0.2.bin")
-        ratings = file["deleted_ratings"]
-    else:
-        utility_matrix = utility_matrix.todok()
-        ratings = list(utility_matrix.keys())
+    file = shelve.open("matrices/deleted_ratings_0.2.bin")
+    ratings = file["deleted_ratings"]
 
     ratings_map = defaultdict(list)
     for (user_id, hotel_id) in ratings:
@@ -63,7 +62,7 @@ def test(delete_ratio=0.0):
     normalized_discounted_cumulative_gains = defaultdict(list)
 
     for (user_id, hotel_indices) in ratings_map.items():
-        if user_id % 1000 == 0:
+        if user_id % 5000 == 0:
             print(user_id)
         similarities_for_user = []
         user_ratings = []
@@ -102,4 +101,4 @@ def test(delete_ratio=0.0):
     print("normalized_discounted_cumulative_gains\n", normalized_discounted_cumulative_gains)
 
 
-test(0.0)
+test(0.2)
