@@ -3,7 +3,7 @@ from scipy.sparse import lil_matrix
 
 from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, delete_matrices
 from algorithms.content_based.matrices import get_hotel_matrix, get_user_matrix
-from algorithms.content_based.similarities import cosine_similarity
+from algorithms.content_based.similarities import cosine
 from authorization.models import User
 
 
@@ -12,7 +12,7 @@ def update_recommendations():
 
     hotel_matrix = get_hotel_matrix()
     user_matrix = get_user_matrix()
-    similarities = cosine_similarity(user_matrix, hotel_matrix.T)
+    similarities = cosine(user_matrix, hotel_matrix.T)
 
     utility_matrix = get_utility_matrix()
     similarities = lil_matrix(np.where((utility_matrix.toarray() == 0), similarities.toarray(), 0))

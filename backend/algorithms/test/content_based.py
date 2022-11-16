@@ -3,7 +3,7 @@ import shelve
 from collections import defaultdict
 from scipy.sparse import load_npz
 from algorithms.content_based.matrices import get_hotel_matrix, get_user_matrix
-from algorithms.content_based.similarities import cosine_similarity
+from algorithms.content_based.similarities import cosine
 from algorithms.test.prepare_test_data import prepare_user_matrix
 
 
@@ -46,7 +46,7 @@ def test(delete_ratio=0.0):
 
     user_matrix = prepare_user_matrix(delete_ratio)
 
-    similarities = cosine_similarity(user_matrix, hotel_matrix.T)
+    similarities = cosine(user_matrix, hotel_matrix.T)
 
     utility_matrix = load_npz("matrices/utility_matrix.npz")
     file = shelve.open("matrices/deleted_ratings_0.2.bin")

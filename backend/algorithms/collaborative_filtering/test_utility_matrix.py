@@ -25,13 +25,23 @@ class TestUtilityMatrices(unittest.TestCase):
         self.assertEqual(binary_utility_matrix[2, 908], 0)
 
     def test_normalized_utility_matrix(self):
-        start = time.time()
-        create_normalized_utility_matrix_no_acceleration()
-        elapsed_no_acc = time.time() - start
+        elapsed_no_acc = 0
+        elapsed = 0
+        for i in range(10):
+            start = time.time()
+            create_normalized_utility_matrix_no_acceleration()
+            elapsed_no_acc += time.time() - start
 
-        start = time.time()
-        create_normalized_utility_matrix()
-        elapsed = time.time() - start
+            start = time.time()
+            create_normalized_utility_matrix()
+            elapsed += time.time() - start
+
+        elapsed_no_acc = elapsed_no_acc/10
+        elapsed = elapsed/10
+        print(elapsed_no_acc)
+        print(elapsed)
+        print("no acc/with acc implementation time =",
+              elapsed_no_acc / elapsed)
 
         normalized_utility_matrix_1 = load_npz(f"matrices/normalized_utility_matrix_no_acc.npz")
         self.assertAlmostEqual(normalized_utility_matrix_1[2, 908], - 2/3, places=15)
