@@ -1,7 +1,7 @@
 from collections import defaultdict
 import matplotlib.pyplot as plt
 
-from algorithms.test.collaborative_filtering import positive_threshold_values, algorithm_types, bool_values, \
+from algorithms.test.predicted_ratings_test import positive_threshold_values, algorithm_types, bool_values, \
     binary_similarities_types
 from algorithms.test.similarity_type import SimilarityType
 

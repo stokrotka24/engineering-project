@@ -1,4 +1,5 @@
 import math
+import shelve
 import time
 from collections import defaultdict
 from statistics import mean
@@ -8,7 +9,9 @@ from scipy.sparse import load_npz, diags
 from algorithms.collaborative_filtering.recommendations import cosine_cf, \
     jaccard_cf, cosine_normalized_data_cf
 from algorithms.collaborative_filtering.utility_matrix import get_rating_mean_per_user
+from algorithms.hybrid.recommendations import hybrid
 from algorithms.test.algorithm_type import AlgorithmType
+from algorithms.test.renking_quality_test import calc_ranking_quality_measures
 from algorithms.test.prepare_test_data import binarize_matrix, NO_HOTELS, NO_USERS
 from algorithms.test.similarity_type import SimilarityType
 
@@ -30,7 +33,7 @@ def root_mean_square_error(predicted_ratings, predicted_ratings_indices, utility
 
 
 def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmType, n: int, weighted_average: bool,
-                   file_prefix="", test_ratio: float = 0.2, **kwargs):
+                   file_prefix="", test_ratio: float = 0.2, ranking_quality_measures=False, **kwargs):
     test_utility_matrix = load_npz(f"matrices/{file_prefix}utility_matrix_{test_ratio}.npz")
     utility_matrix = load_npz(f"matrices/{file_prefix}utility_matrix.npz")
     deleted_ratings_indices = (utility_matrix - test_utility_matrix).todok().keys()
@@ -83,6 +86,11 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
             ones.data = np.ones_like(utility_matrix.data)
             utility_matrix = utility_matrix - rating_mean * ones
             end = time.time()
+        case _:
+            start = time.time()
+            predicted_ratings = \
+                hybrid(utility_matrix=test_utility_matrix, n=n, weighted_average=weighted_average)
+            end = time.time()
 
     predicted_ratings_indices = list(filter(
         lambda indices: not np.isnan(predicted_ratings[indices[0], indices[1]]),
@@ -92,6 +100,11 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
     prediction_ability = len(predicted_ratings_indices) / len(deleted_ratings_indices)
     mae = mean_absolute_error(predicted_ratings, predicted_ratings_indices, utility_matrix)
     rmse = root_mean_square_error(predicted_ratings, predicted_ratings_indices, utility_matrix)
+
+    if ranking_quality_measures:
+        calc_ranking_quality_measures(deleted_ratings=predicted_ratings_indices,
+                                      recommendations=predicted_ratings,
+                                      utility_matrix=utility_matrix)
     return elapsed_time, prediction_ability, mae, rmse
 
 
@@ -148,6 +161,8 @@ if __name__ == "__main__":
     test_jaccard_and_cosine_binary("filtered_")
     test_cosine_and_centered_cosine("filtered_")
 
+    # print(test_algorithm(similarity_type=None, algorithm_type=None, n=400, weighted_average=False))
+
     # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
     #                  algorithm_type=AlgorithmType.user_based,
     #                  n=3000,
@@ -157,7 +172,7 @@ if __name__ == "__main__":
     # print(test_algorithm(similarity_type=SimilarityType.cosine,
     #                      algorithm_type=AlgorithmType.item_based,
     #                      n=1000,
-    #                      weighted_average=True))
+    #                      weighted_average=True, ranking_quality_measures=True))
     # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
     #                      algorithm_type=AlgorithmType.user_based,
     #                      n=1,

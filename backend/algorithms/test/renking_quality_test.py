@@ -26,7 +26,17 @@ def sum_squared_error(l1: list, l2: list):
 
 
 def kendall_tau_distance(l1: list, l2: list):
-    pass
+    length = len(l1)
+
+    d = 0
+    for i in range(length):
+        for j in range(i + 1, length):
+            elem1 = l1[i]
+            elem2 = l1[j]
+
+            if l2.index(elem1) > l2.index(elem2):
+                d += 1
+    return d
 
 
 def discounted_cumulative_gain(recommendation_list, user_id, ratings):
@@ -41,37 +51,28 @@ def calc_mean_per_list_size(d: dict):
     return list(map(lambda t: (t[0], sum(t[1]) / len(t[1])), d.items()))
 
 
-def test(delete_ratio=0.0):
-    hotel_matrix = get_hotel_matrix()
-
-    user_matrix = prepare_user_matrix(delete_ratio)
-
-    similarities = cosine(user_matrix, hotel_matrix)
-
-    utility_matrix = load_npz("matrices/utility_matrix.npz")
-    file = shelve.open("matrices/deleted_ratings_0.2.bin")
-    ratings = file["deleted_ratings"]
-
-    ratings_map = defaultdict(list)
-    for (user_id, hotel_id) in ratings:
-        ratings_map[user_id].append(hotel_id)
+def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matrix):
+    deleted_ratings_map = defaultdict(list)
+    for (user_id, hotel_id) in deleted_ratings:
+        deleted_ratings_map[user_id].append(hotel_id)
 
     infinity_norms = defaultdict(list)
     sum_squared_errors = defaultdict(list)
+    kendall_tau_distances = defaultdict(list)
     discounted_cumulative_gains = defaultdict(list)
     normalized_discounted_cumulative_gains = defaultdict(list)
 
-    for (user_id, hotel_indices) in ratings_map.items():
+    for (user_id, hotel_indices) in deleted_ratings_map.items():
         if user_id % 5000 == 0:
             print(user_id)
-        similarities_for_user = []
+        recommendations_for_user = []
         user_ratings = []
         for hotel_id in hotel_indices:
-            similarities_for_user.append((hotel_id, similarities[user_id, hotel_id]))
+            recommendations_for_user.append((hotel_id, recommendations[user_id, hotel_id]))
             user_ratings.append((hotel_id, utility_matrix[user_id, hotel_id]))
 
-        similarities_for_user.sort(key=lambda t: t[1], reverse=True)
-        hotel_sorted_by_recommendation = list(map(lambda t: t[0], similarities_for_user))
+        recommendations_for_user.sort(key=lambda t: t[1], reverse=True)
+        hotel_sorted_by_recommendation = list(map(lambda t: t[0], recommendations_for_user))
         user_ratings.sort(key=lambda t: t[1], reverse=True)
         hotel_sorted_by_ratings = list(map(lambda t: t[0], user_ratings))
 
@@ -81,6 +82,8 @@ def test(delete_ratio=0.0):
         sum_squared_errors[len(hotel_indices)] \
             .append(sum_squared_error(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
         # print(sum_squared_error(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
+        kendall_tau_distances[len(hotel_indices)] \
+            .append(kendall_tau_distance(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
 
         dcg = discounted_cumulative_gain(hotel_sorted_by_recommendation, user_id, utility_matrix)
         discounted_cumulative_gains[len(hotel_indices)].append(dcg)
@@ -94,6 +97,9 @@ def test(delete_ratio=0.0):
     sum_squared_errors = calc_mean_per_list_size(sum_squared_errors)
     print("sum_squared_errors\n", sum_squared_errors)
 
+    kendall_tau_distances = calc_mean_per_list_size(kendall_tau_distances)
+    print("kendall_tau_distances\n", kendall_tau_distances)
+
     discounted_cumulative_gains = calc_mean_per_list_size(discounted_cumulative_gains)
     print("discounted_cumulative_gains\n", discounted_cumulative_gains)
 
@@ -101,4 +107,18 @@ def test(delete_ratio=0.0):
     print("normalized_discounted_cumulative_gains\n", normalized_discounted_cumulative_gains)
 
 
-test(0.2)
+def test(delete_ratio=0.0):
+    hotel_matrix = get_hotel_matrix()
+
+    user_matrix = prepare_user_matrix(delete_ratio)
+
+    similarities = cosine(user_matrix, hotel_matrix)
+
+    utility_matrix = load_npz("matrices/utility_matrix.npz")
+    file = shelve.open("matrices/deleted_ratings_0.2.bin")
+    deleted_ratings = file["deleted_ratings"]
+    calc_ranking_quality_measures(similarities, deleted_ratings, utility_matrix)
+
+
+if __name__ == "__main__":
+    test(0.2)
