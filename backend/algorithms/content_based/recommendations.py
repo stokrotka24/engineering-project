@@ -12,7 +12,7 @@ def update_recommendations():
 
     hotel_matrix = get_hotel_matrix()
     user_matrix = get_user_matrix()
-    similarities = cosine(user_matrix, hotel_matrix.T)
+    similarities = cosine(user_matrix, hotel_matrix)
 
     utility_matrix = get_utility_matrix()
     similarities = lil_matrix(np.where((utility_matrix.toarray() == 0), similarities.toarray(), 0))

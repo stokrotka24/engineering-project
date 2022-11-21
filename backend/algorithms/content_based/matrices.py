@@ -5,7 +5,7 @@ from scipy.sparse import dok_matrix, save_npz, load_npz, csr_matrix
 
 from algorithms.collaborative_filtering.utility_matrix import get_normalized_utility_matrix, get_utility_matrix
 from algorithms.content_based.map_features_to_index import enum_name_to_class, \
-    embedded_attr_name_to_class, boolean_values, create_map_feature_to_index
+    embedded_attr_name_to_class, create_map_feature_to_index
 from hotels.models import Hotel
 
 MATRICES_DIR = "matrices"
@@ -28,9 +28,6 @@ def create_hotel_matrix():
             for (attr_key, attr_val) in attrs.items():
                 if attr_key in embedded_attr_name_to_class.keys():
                     for (emb_attr_key, emb_attr_val) in attr_val.items():
-                        # if emb_attr_val is not None:
-                        #     column_index = map_feature_to_col_index[attr_key][emb_attr_key][emb_attr_val]
-                        #     hotel_matrix[hotel_index, column_index] = 1
                         if emb_attr_val:
                             column_index = map_feature_to_col_index[attr_key][emb_attr_key]
                             hotel_matrix[hotel_index, column_index] = 1
@@ -40,13 +37,6 @@ def create_hotel_matrix():
                         column_index = map_feature_to_col_index[attr_key][attr_val.name]
                         hotel_matrix[hotel_index, column_index] = 1
 
-                # elif attr_val in boolean_values:
-                #     try:
-                #         column_index = map_feature_to_col_index[attr_key][attr_val]
-                #         hotel_matrix[hotel_index, column_index] = 1
-                #     except KeyError:
-                #         pass
-                #         # print("Unsupported attribute:", attr_key)
                 elif attr_val:
                     try:
                         column_index = map_feature_to_col_index[attr_key]

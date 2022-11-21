@@ -2,7 +2,8 @@ from scipy.sparse import csr_matrix
 from sklearn.preprocessing import normalize
 
 
-def cosine(matrix1, matrix2) -> csr_matrix:
-    normalized_matrix1 = normalize(matrix1, axis=1)
-    normalized_matrix2 = normalize(matrix2, axis=0)
-    return normalized_matrix1 * normalized_matrix2
+def cosine(user_matrix, hotel_matrix) -> csr_matrix:
+    normalized_user_matrix = normalize(user_matrix, axis=1)
+    normalized_hotel_matrix = normalize(hotel_matrix, axis=1)
+    normalized_hotel_matrix = normalized_hotel_matrix.T
+    return normalized_user_matrix * normalized_hotel_matrix

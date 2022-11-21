@@ -6,20 +6,7 @@ from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix
 from authorization.models import User
 
 
-def predict_ratings(utility_matrix_for_similarity_type, utility_matrix, similarities, axis, n, weighted_average=True):
-    similarities = similarities.tolil()
-    no_rows = similarities.shape[0]
-
-    for row_index in range(no_rows):
-        row_data = np.array(similarities.data[row_index])
-        column_indices = np.array(similarities.rows[row_index])
-        # get indices of n similar objects (n+1 because we'll get also the same object - similarity(A,A) = 1.0)
-        sorted_data_indices = row_data.argsort()[-(n + 1):]
-        similarities.data[row_index] = row_data[sorted_data_indices].tolist()
-        similarities.rows[row_index] = column_indices[sorted_data_indices].tolist()
-
-    similarities = similarities.tocsr()
-
+def predict_ratings(utility_matrix_for_similarity_type, utility_matrix, similarities, axis, weighted_average=True):
     # Original utility matrix must be used, because binary & normalized matrices doesn't store explicit zeroes
     utility_matrix_ones = utility_matrix.copy()
     utility_matrix_ones.data = np.ones_like(utility_matrix.data)
@@ -47,14 +34,32 @@ def predict_ratings(utility_matrix_for_similarity_type, utility_matrix, similari
     return ratings_sum / weights_sum
 
 
+def filter_similarities(similarities, n):
+    similarities = similarities.tolil()
+    no_rows = similarities.shape[0]
+
+    for row_index in range(no_rows):
+        row_data = np.array(similarities.data[row_index])
+        column_indices = np.array(similarities.rows[row_index])
+        # get indices of n similar objects (n+1 because we'll get also the same object - similarity(A,A) = 1.0)
+        sorted_data_indices = row_data.argsort()[-(n + 1):]
+        similarities.data[row_index] = row_data[sorted_data_indices].tolist()
+        similarities.rows[row_index] = column_indices[sorted_data_indices].tolist()
+
+    similarities = similarities.tocsr()
+    return similarities
+
+
 def jaccard_cf(axis, n, weighted_average, utility_matrix, binary_utility_matrix):
     similarities = jaccard(binary_utility_matrix, axis)
-    return predict_ratings(utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
+    similarities = filter_similarities(similarities, n)
+    return predict_ratings(utility_matrix, utility_matrix, similarities, axis, weighted_average)
 
 
 def cosine_cf(axis, n, weighted_average, utility_matrix, utility_matrix_to_calc_similarities):
     similarities = cosine(utility_matrix_to_calc_similarities, axis)
-    return predict_ratings(utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
+    similarities = filter_similarities(similarities, n)
+    return predict_ratings(utility_matrix, utility_matrix, similarities, axis, weighted_average)
 
 
 def cosine_normalized_data_cf(axis, n, weighted_average, utility_matrix,
@@ -66,7 +71,9 @@ def cosine_normalized_data_cf(axis, n, weighted_average, utility_matrix,
     similarities.indices = positive_similarities.indices
     similarities.indptr = positive_similarities.indptr
 
-    return predict_ratings(normalized_utility_matrix, utility_matrix, similarities, axis, n, weighted_average)
+    similarities = filter_similarities(similarities, n)
+
+    return predict_ratings(normalized_utility_matrix, utility_matrix, similarities, axis, weighted_average)
 
 
 def update_recommendations():
@@ -75,7 +82,6 @@ def update_recommendations():
 
     utility_matrix = get_utility_matrix()
     predicted_ratings = cosine_cf(0, 1000, True, utility_matrix, utility_matrix)
-    utility_matrix = get_utility_matrix()
 
     users = User.objects.all()
     # TODO update recommendations for every user

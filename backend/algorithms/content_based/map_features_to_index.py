@@ -20,7 +20,6 @@ enum_name_to_class = {"wiFi": WiFi, "noiseLevel": NoiseLevel, "restaurantsAttire
                       "BYOBCorkage": BYOBCorkage, "smoking": Smoking, "alcohol": Alcohol}
 embedded_attr_name_to_class = {"music": Music, "businessParking": Parking, "goodForMeal": GoodForMeal,
                                "bestNights": BestNights, "ambience": Ambience}
-boolean_values = [True, False]
 
 
 def map_categories_to_index():
@@ -34,15 +33,6 @@ def map_categories_to_index():
 
     for category in categories:
         map_feature_to_index[category] = current_column_index
-        current_column_index += 1
-
-
-def add_boolean_field(field_name):
-    global current_column_index
-
-    map_feature_to_index[field_name] = dict()
-    for val in boolean_values:
-        map_feature_to_index[field_name][val] = current_column_index
         current_column_index += 1
 
 
@@ -72,12 +62,8 @@ def add_embedded_attr(embedded_attr_name):
     embedded_keys = get_embedded_keys(embedded_class)
 
     for embedded_key in embedded_keys:
-        # map_feature_to_index[embedded_attr_name][embedded_key] = dict()
         map_feature_to_index[embedded_attr_name][embedded_key] = current_column_index
         current_column_index += 1
-        # for val in boolean_values:
-        #     map_feature_to_index[embedded_attr_name][embedded_key][val] = current_column_index
-        #     current_column_index += 1
 
 
 def map_attributes_to_index():
@@ -88,7 +74,6 @@ def map_attributes_to_index():
         if isinstance(attr_field, NullBooleanField):
             map_feature_to_index[attr_field.attname] = current_column_index
             current_column_index += 1
-            # add_boolean_field(attr_field.attname)
         elif isinstance(attr_field, EmbeddedField):
             add_embedded_attr(attr_field.attname)
         elif isinstance(attr_field, EnumChoiceField):
@@ -97,7 +82,6 @@ def map_attributes_to_index():
             print("Unsupported type:", type(attr_field))
 
 
-# TODO add choice categories/attributes/both
 def create_map_feature_to_index():
     map_categories_to_index()
     map_attributes_to_index()
