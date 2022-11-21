@@ -50,10 +50,6 @@ class LoginActivity : AppCompatActivity() {
         afterAutoLogOut = intent.getBooleanExtra("afterAutoLogOut", false)
         Log.d(TAG, "onCreate: afterAutoLogOut = $afterAutoLogOut")
         if (afterAutoLogOut) { displayAutoLogOutDialog() }
-
-        // TODO remove
-        emailField.editText?.setText("test0@example.com")
-        passwordField.editText?.setText("test")
     }
 
     override fun onStart() {

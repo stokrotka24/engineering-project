@@ -10,7 +10,6 @@ import com.voyager.R
 import com.voyager.api.hotels.Attribute
 import com.voyager.databinding.AttributeItemBinding
 
-// TODO move map to some utils
 private val attrMap = mapOf(
     "businessAcceptsCreditCards" to Pair("accepts credit cards", R.drawable.ic_baseline_credit_card_24),
     "wiFi" to Pair("Wi-Fi", R.drawable.ic_baseline_wifi_24),

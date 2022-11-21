@@ -49,9 +49,6 @@ class SearchFragment : Fragment() {
         bindComponents()
         progressBar.visibility = View.GONE
         setComponentsListeners()
-
-        // TODO remove
-        noRecommendationsEditText.setText("9")
     }
 
     private fun bindComponents() {
