@@ -11,20 +11,16 @@ class HotelView(generics.ListAPIView):
     serializer_class = HotelSerializer
     permission_classes = [IsAuthenticated]
 
-    # TODO delete prints
     def get_queryset(self):
         user = self.request.user
         hotels = Hotel.objects
         recommendations = user.recommendations
-        print(recommendations[0])
         city = self.request.query_params.get('city')
-        print(city)
         no_recommendations = int(self.request.query_params.get('no_recommendations'))
         if city:
             recommendations_for_city = []
             hotels = Hotel.objects.filter(city__iexact=city)
             hotels_ids_in_city = list(hotels.values_list('id', flat=True))
-            print('if: hotels_in_city', hotels_ids_in_city)
             for r in recommendations:
                 if r["hotel_id"] in hotels_ids_in_city:
                     recommendations_for_city.append(r)

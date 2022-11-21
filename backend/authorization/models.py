@@ -11,7 +11,6 @@ class User(AbstractUser):
     email = models.EmailField(max_length=64, unique=True)
     id = models.AutoField(unique=True, primary_key=True)
     review_count = models.PositiveIntegerField(default=0)
-    # TODO: add friends
     useful_votes = models.PositiveIntegerField(default=0)
     funny_votes = models.PositiveIntegerField(default=0)
     cool_votes = models.PositiveIntegerField(default=0)

@@ -1,0 +1,4 @@
+7.625257396697998
+0.048607158660888675
+no acc/with acc implementation time = 156.87519301212714
+no acc/with acc implementation time = 156.87519301212714
