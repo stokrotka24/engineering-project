@@ -1,5 +1,4 @@
 import math
-import shelve
 import time
 from collections import defaultdict
 from statistics import mean
@@ -155,43 +154,23 @@ def test_cosine_and_centered_cosine(file_prefix=""):
                         f.write(f"{n} {elapsed_time} {pr} {mae} {rmse}\n")
 
 
+def test_hybrid(file_prefix=""):
+    for weighted_average in bool_values:
+        with open(f"{file_prefix}results/hybrid/{weighted_average}",
+                  "a") as f:
+            for n in n_values[AlgorithmType.item_based]:
+                print("hybrid", n, weighted_average)
+                elapsed_time, pr, mae, rmse = test_algorithm(similarity_type=None, algorithm_type=None,
+                                                             n=n, weighted_average=weighted_average,
+                                                             file_prefix=file_prefix)
+
+                f.write(f"{n} {elapsed_time} {pr} {mae} {rmse}\n")
+
+
 if __name__ == "__main__":
     test_jaccard_and_cosine_binary()
     test_cosine_and_centered_cosine()
+    test_hybrid()
     test_jaccard_and_cosine_binary("filtered_")
     test_cosine_and_centered_cosine("filtered_")
-
-    # print(test_algorithm(similarity_type=None, algorithm_type=None, n=400, weighted_average=False))
-
-    # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
-    #                  algorithm_type=AlgorithmType.user_based,
-    #                  n=3000,
-    #                  weighted_average=False,
-    #                  test_ratio=0.2,
-    #                  positive_threshold=5))
-    # print(test_algorithm(similarity_type=SimilarityType.cosine,
-    #                      algorithm_type=AlgorithmType.item_based,
-    #                      n=1000,
-    #                      weighted_average=True, ranking_quality_measures=True))
-    # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
-    #                      algorithm_type=AlgorithmType.user_based,
-    #                      n=1,
-    #                      weighted_average=True,
-    #                      test_ratio=0.2,
-    #                      positive_threshold=4))
-    # print(test_algorithm(similarity_type=SimilarityType.cosine_binary,
-    #                      algorithm_type=AlgorithmType.user_based,
-    #                      n=10000,
-    #                      weighted_average=True,
-    #                      test_ratio=0.2,
-    #                      positive_threshold=1))
-    # print(test_algorithm(similarity_type=SimilarityType.jaccard,
-    #                      algorithm_type=AlgorithmType.user_based,
-    #                      n=10000,
-    #                      weighted_average=True,
-    #                      test_ratio=0.2,
-    #                      positive_threshold=4))
-    # print(test_algorithm(similarity_type=SimilarityType.centered_cosine,
-    #                      algorithm_type=AlgorithmType.user_based,
-    #                      n=100000,
-    #                      weighted_average=True))
+    test_hybrid("filtered_")
