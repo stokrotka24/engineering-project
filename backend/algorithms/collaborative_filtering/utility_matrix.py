@@ -21,6 +21,18 @@ hotels_count = Hotel.objects.count()
 
 def create_utility_matrix(user_bias=first_user_id, hotel_bias=first_hotel_id,
                           no_users=users_count, no_hotels=hotels_count):
+    """
+    Creates standard utility matrix from user ratings.
+
+    Args:
+        user_bias: how many first users omit
+        hotel_bias: how many first hotels omit
+        no_users: number of users included
+        no_hotels: number of hotels included
+
+    Returns:
+        -
+    """
     reviews = Review.objects.all()
     um = dok_matrix((no_users, no_hotels), dtype=np.int32)
     reviews_timestamps = dok_matrix((no_users, no_hotels), dtype=np.single)
@@ -57,10 +69,10 @@ def create_binary_utility_matrix(positive_threshold, user_bias=first_user_id, ho
 
     Args:
         positive_threshold: number, above which rating will be treated as positive (=1)
-        user_bias:
-        hotel_bias:
-        no_users:
-        no_hotels:
+        user_bias: how many first users omit
+        hotel_bias: how many first hotels omit
+        no_users: number of users included
+        no_hotels: number of hotels included
 
     Returns:
         -
@@ -96,6 +108,14 @@ def get_binary_utility_matrix(positive_threshold):
 
 
 def get_rating_mean_per_user(utility_matrix):
+    """
+    Args:
+        utility_matrix:
+
+    Returns:
+        vector with mean value of each row in utility matrix
+    """
+
     rating_sum = utility_matrix.sum(axis=1).A1
     rating_num = np.diff(utility_matrix.indptr)
     rating_num[rating_num == 0] = 1  # to avoid division by 0
@@ -104,12 +124,12 @@ def get_rating_mean_per_user(utility_matrix):
 
 def create_normalized_utility_matrix_no_acceleration():
     """
-        Creates and saves normalized utility matrix (subtracting user's average).
-        Normalized utility matrix doesn't store explicit zeroes (even for items rated equal to user's average).
+    Creates and saves normalized utility matrix (subtracting user's average).
+    Normalized utility matrix doesn't store explicit zeroes (even for items rated equal to user's average).
 
-        Returns:
-            -
-        """
+    Returns:
+        -
+    """
     um = get_utility_matrix()
     no_users, no_hotels = um.shape
     rating_mean = get_rating_mean_per_user(um)
@@ -129,6 +149,13 @@ def create_normalized_utility_matrix_no_acceleration():
 
 
 def create_normalized_utility_matrix():
+    """
+    Creates and saves normalized utility matrix (subtracting user's average).
+    Normalized utility matrix doesn't store explicit zeroes (even for items rated equal to user's average).
+
+    Returns:
+        -
+    """
     um = get_utility_matrix()
     rating_mean = get_rating_mean_per_user(um)
 

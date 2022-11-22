@@ -7,9 +7,16 @@ from sklearn.preprocessing import normalize
 # caution: operation astype(float) change order of .data and .indices
 def jaccard_similarity_no_acceleration(matrix: csr_matrix, axis) -> csc_matrix | csr_matrix:
     """
-        Returns:
-            csc_matrix (if axis =  0)
-            csr_matrix (if axis =  1)
+    Calculates jaccard similarities between each row (axis=1)/each column (axis=0) of matrix.
+
+    Args:
+        matrix: binary utility matrix
+        axis: which dimension of matrix is considered
+
+    Returns:
+        csc_matrix (if axis =  0)
+        csr_matrix (if axis =  1)
+
     """
 
     matrix_copy = matrix.copy().astype(float)
@@ -35,9 +42,16 @@ def jaccard_similarity_no_acceleration(matrix: csr_matrix, axis) -> csc_matrix |
 
 def jaccard(matrix: csr_matrix, axis) -> csc_matrix | csr_matrix:
     """
-        Returns:
-            csc_matrix (if axis =  0)
-            csr_matrix (if axis =  1)
+    Calculates jaccard similarities between each row (axis=1)/each column (axis=0) of matrix.
+
+    Args:
+        matrix: binary utility matrix
+        axis: which dimension of matrix is considered
+
+    Returns:
+        csc_matrix (if axis =  0)
+        csr_matrix (if axis =  1)
+
     """
 
     matrix_copy = matrix.copy().astype(float)
@@ -66,6 +80,18 @@ def jaccard(matrix: csr_matrix, axis) -> csc_matrix | csr_matrix:
 
 
 def cosine(matrix, axis) -> csr_matrix:
+    """
+        Calculates cosine similarities between each row (axis=1)/each column (axis=0) of matrix.
+
+        Args:
+            matrix: binary utility matrix
+            axis: which dimension of matrix is considered
+
+        Returns:
+            csc_matrix (if axis =  0)
+            csr_matrix (if axis =  1)
+
+        """
     normalized_matrix_by_axis = normalize(matrix, axis=axis)
     if axis == 0:
         return normalized_matrix_by_axis.T * normalized_matrix_by_axis

@@ -1,5 +1,6 @@
 import os
 import numpy as np
+from scipy.sparse import csr_matrix, lil_matrix
 
 from algorithms.collaborative_filtering.similarities import jaccard, cosine
 from algorithms.collaborative_filtering.utility_matrix import get_utility_matrix, delete_matrices
@@ -82,22 +83,15 @@ def update_recommendations():
 
     utility_matrix = get_utility_matrix()
     predicted_ratings = cosine_cf(0, 1000, True, utility_matrix, utility_matrix)
+    predicted_ratings = np.nan_to_num(predicted_ratings, nan=0, copy=False)
+    predicted_ratings = lil_matrix(np.where((utility_matrix.toarray() == 0), predicted_ratings, 0))
 
     users = User.objects.all()
-    # TODO update recommendations for every user
-    for (user_index, user) in enumerate(users[:3]):
-        ratings_indices = utility_matrix.getrow(user_index).indices
-        predictions = predicted_ratings[user_index].A1
-        predictions_indices = np.squeeze(np.argwhere(~np.isnan(predictions)))
-        if predictions_indices.shape == ():  # case where we have prediction for one hotel
-            predictions_indices = np.array([predictions_indices])
-
-        predictions_indices = [hotel_index for hotel_index in predictions_indices if hotel_index not in ratings_indices]
-        hotel_index_to_prediction = [(index, predictions[index]) for index in predictions_indices]
-        hotel_index_to_prediction.sort(key=lambda t: t[1], reverse=True)
-        print([hotel_index + 1 for (hotel_index, _) in hotel_index_to_prediction])
-        recommendations = [{"hotel_id": hotel_index + 1} for (hotel_index, _) in hotel_index_to_prediction]
-
+    for (user_index, user) in enumerate(users[:20]):
+        user_row = np.array(predicted_ratings.data[user_index])
+        hotel_indices = np.array(predicted_ratings.rows[user_index])
+        sorted_data_indices = user_row.argsort()[::-1]
+        recommendations = [{"hotel_id": hotel_index + 1} for hotel_index in hotel_indices[sorted_data_indices]]
         if len(recommendations) > 0:
             user.average_stars = float(str(user.average_stars))
             user.recommendations = recommendations
