@@ -36,6 +36,13 @@ def predict_ratings(utility_matrix_for_similarity_type, utility_matrix, similari
 
 
 def filter_similarities(similarities, n):
+    """
+    Filters similarities matrix:
+        in each row matrix only n the most similar users/hotels will be left
+
+    Returns:
+        Filtered matrix of similarities between users/hotels
+    """
     similarities = similarities.tolil()
     no_rows = similarities.shape[0]
 
@@ -52,12 +59,24 @@ def filter_similarities(similarities, n):
 
 
 def jaccard_cf(axis, n, weighted_average, utility_matrix, binary_utility_matrix):
+    """
+    Collaborative filtering algorithm using jaccard similarity
+
+    Returns:
+        Predicted hotel ratings
+    """
     similarities = jaccard(binary_utility_matrix, axis)
     similarities = filter_similarities(similarities, n)
     return predict_ratings(utility_matrix, utility_matrix, similarities, axis, weighted_average)
 
 
 def cosine_cf(axis, n, weighted_average, utility_matrix, utility_matrix_to_calc_similarities):
+    """
+    Collaborative filtering algorithm using cosine similarity
+
+    Returns:
+        Predicted hotel ratings
+    """
     similarities = cosine(utility_matrix_to_calc_similarities, axis)
     similarities = filter_similarities(similarities, n)
     return predict_ratings(utility_matrix, utility_matrix, similarities, axis, weighted_average)
@@ -65,6 +84,13 @@ def cosine_cf(axis, n, weighted_average, utility_matrix, utility_matrix_to_calc_
 
 def cosine_normalized_data_cf(axis, n, weighted_average, utility_matrix,
                               normalized_utility_matrix):
+    """
+    Collaborative filtering algorithm for normalized ratings using cosine similarity
+
+    Returns:
+        Predicted hotel ratings
+    """
+
     similarities = cosine(normalized_utility_matrix, axis)
 
     positive_similarities = similarities > 0
@@ -78,6 +104,9 @@ def cosine_normalized_data_cf(axis, n, weighted_average, utility_matrix,
 
 
 def update_recommendations():
+    """
+    Updates recommendations from collaborative filtering algorithm in database
+    """
     os.chdir(os.path.dirname(os.path.realpath(__file__)))
     delete_matrices()
 
