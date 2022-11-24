@@ -1,6 +1,6 @@
 from rest_framework import generics, mixins
 from rest_framework.pagination import LimitOffsetPagination
-from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.permissions import IsAuthenticated
 
 from hotels.models import Hotel, Review
 from hotels.serializers import HotelSerializer, HotelDetailsSerializer, ReviewSerializer, HotelReviewSerializer, \
@@ -41,7 +41,7 @@ class CreateReviewView(mixins.CreateModelMixin,
                        generics.GenericAPIView):
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
-    permission_classes = [AllowAny]
+    permission_classes = [IsAuthenticated]
 
     def post(self, request, *args, **kwargs):
         # request.data._mutable = True
