@@ -10,7 +10,7 @@ from algorithms.collaborative_filtering.recommendations import cosine_cf, \
 from algorithms.collaborative_filtering.utility_matrix import get_rating_mean_per_user
 from algorithms.hybrid.recommendations import hybrid
 from algorithms.test.algorithm_type import AlgorithmType
-from algorithms.test.renking_quality_test import calc_ranking_quality_measures
+from algorithms.test.ranking_quality_test import calc_ranking_quality_measures
 from algorithms.test.prepare_test_data import binarize_matrix, NO_HOTELS, NO_USERS
 from algorithms.test.similarity_type import SimilarityType
 

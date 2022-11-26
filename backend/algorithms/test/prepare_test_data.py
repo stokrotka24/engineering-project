@@ -20,7 +20,7 @@ def create_test_utility_matrix():
                           no_users=NO_USERS, no_hotels=NO_HOTELS)
 
 
-def delete_ratings_in_utility_matrix(utility_matrix, delete_ratio=0.25, file_infix=""):
+def delete_ratings_in_utility_matrix(utility_matrix, delete_ratio=0.2, file_infix=""):
     print("Delete ratio:", delete_ratio)
     utility_matrix = utility_matrix.todok()
     ratings_indices = list(utility_matrix.keys())
@@ -38,7 +38,7 @@ def delete_ratings_in_utility_matrix(utility_matrix, delete_ratio=0.25, file_inf
     save_npz(f"matrices/{file_infix}utility_matrix_{delete_ratio}.npz", updated_utility_matrix, True)
 
 
-def prepare_user_matrix(delete_ratio=0.25):
+def prepare_user_matrix(delete_ratio=0.2):
     hotel_matrix = get_hotel_matrix()
 
     utility_matrix = load_npz(f"matrices/utility_matrix_{delete_ratio}.npz")
@@ -54,7 +54,6 @@ def prepare_user_matrix(delete_ratio=0.25):
     user_matrix[np.isnan(user_matrix)] = 0
     user_matrix = csr_matrix(user_matrix)
 
-    save_npz(f"matrices/user_matrix_{delete_ratio}.npz", user_matrix, True)
     return user_matrix
 
 
