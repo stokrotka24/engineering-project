@@ -23,6 +23,15 @@ class TokenAuthenticator(val context: Context): Authenticator {
                 .build()
     }
 
+    /**
+     * This method is invoked when server responded with 401 code.
+     * Tries to renew access token and built recent request with renewed token.
+     * If renewing token fails, user is logged out.
+     *
+     * @param response  response with 401 code, includes request parameters
+     * @return          recent request with renewed token if renewing token succeeded
+     *                  null if it failed
+     */
     override fun authenticate(route: Route?, response: Response): Request? {
         Log.d(TAG, "authenticate: ")
 
@@ -37,6 +46,12 @@ class TokenAuthenticator(val context: Context): Authenticator {
         }
     }
 
+    /**
+     * Sends request containing refresh token in order to renew access token.
+     *
+     * @exception RefreshTokenExpiredException if refresh token expired and renewing access token failed
+     * @return renewed access token
+     */
     private fun getRenewedAccessToken(): String {
         Log.d(TAG, "getRenewedAccessToken: ")
         val refreshTokenRequest = TokenRefreshRequest(tokenManager.getRefreshToken())

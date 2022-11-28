@@ -11,6 +11,12 @@ private const val TAG = "TokenInterceptor"
 class TokenInterceptor(context: Context): Interceptor {
     private val tokenManager = TokenManager(context)
 
+    /**
+     * Add access token to request header.
+     *
+     * @param chain contains request to be sent
+     * @return chain with request with attached access token
+     */
     override fun intercept(chain: Interceptor.Chain): Response {
         Log.d(TAG, "intercept: ")
 

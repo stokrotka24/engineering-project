@@ -4,6 +4,11 @@ import android.content.Context
 import android.content.SharedPreferences
 import com.voyager.R
 
+/**
+ * Manages access to access and refresh tokens.
+ *
+ * @param context application context needed to use shared preferences
+ */
 class TokenManager(context: Context) {
     private val preferences: SharedPreferences = context.getSharedPreferences(context.getString(R.string.app_name), Context.MODE_PRIVATE)
     companion object {
