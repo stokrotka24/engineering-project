@@ -46,6 +46,12 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         }
     }
 
+    /**
+     * Replaces fragmentLayout with new fragment based on selected item from navigation drawer.
+     * If log-out is chosen, finishes MainActivity and returns to the login screen.
+     *
+     * @param item chosen option from navigation drawer
+     */
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when(item.itemId) {
             R.id.nav_hotels -> {

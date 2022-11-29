@@ -10,6 +10,10 @@ import okhttp3.OkHttpClient
 
 private const val TAG = "ApiUtils"
 
+/**
+ * Manage access to Retrofit api instance.
+ * If log-in or log-out occurs, invokes rebuilding api instance.
+ */
 object ApiUtils {
     private val apiBuilder = ApiBuilder<ApiService>()
     private val client: OkHttpClient = OkHttpClient.Builder().build()

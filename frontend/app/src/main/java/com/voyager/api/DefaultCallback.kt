@@ -11,6 +11,10 @@ import retrofit2.Response
 
 private const val TAG = "DefaultCallback"
 
+/**
+ * It is container for Callback.
+ * If log-out occurs, returns to the login screen.
+ */
 abstract class DefaultCallback<T>(private val context: Context): Callback<T> {
     override fun onResponse(call: Call<T>, response: Response<T>) {
         if (response.code() == HttpStatus.Unauthorized.code) {
