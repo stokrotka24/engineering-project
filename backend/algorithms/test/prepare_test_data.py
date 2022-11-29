@@ -1,5 +1,6 @@
 import random
 import shelve
+import time
 
 import numpy as np
 from scipy.sparse import save_npz, diags, dok_matrix, load_npz, csr_matrix
@@ -112,5 +113,21 @@ def prepare_data():
         delete_ratings_in_utility_matrix(f_um, delete_ratio, "filtered_")
 
 
+def measure_time_creating_utility_matrix_from_training_set():
+    no_tests = 10
+    elapsed_time = 0
+    for i in range(no_tests):
+        print(i)
+        start = time.time()
+        create_test_utility_matrix()
+        um = load_npz("matrices/utility_matrix.npz")
+        delete_ratings_in_utility_matrix(um, 0.2)
+        end = time.time()
+        # print(end - start)
+        elapsed_time += end - start
+    return elapsed_time/no_tests
+
+
 if __name__ == "__main__":
+    # measure_time_creating_utility_matrix_from_training_set()
     prepare_data()

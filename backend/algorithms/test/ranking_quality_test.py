@@ -61,6 +61,7 @@ def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matr
     sum_squared_errors = defaultdict(list)
     kendall_tau_distances = defaultdict(list)
     discounted_cumulative_gains = defaultdict(list)
+    max_discounted_cumulative_gains = defaultdict(list)
     normalized_discounted_cumulative_gains = defaultdict(list)
     min_normalized_discounted_cumulative_gains = defaultdict(list)
 
@@ -80,17 +81,15 @@ def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matr
 
         infinity_norms[len(hotel_indices)] \
             .append(infinity_norm_for_indices_difference(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
-        # print(infinity_norm_for_indices_difference(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
         sum_squared_errors[len(hotel_indices)] \
             .append(sum_squared_error(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
-        # print(sum_squared_error(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
         kendall_tau_distances[len(hotel_indices)] \
             .append(kendall_tau_distance(hotel_sorted_by_ratings, hotel_sorted_by_recommendation))
 
         dcg = discounted_cumulative_gain(hotel_sorted_by_recommendation, user_id, utility_matrix)
         discounted_cumulative_gains[len(hotel_indices)].append(dcg)
-        # print(discounted_cumulative_gain(hotel_sorted_by_recommendation, user_id, utility_matrix))
         max_dcg = discounted_cumulative_gain(hotel_sorted_by_ratings, user_id, utility_matrix)
+        max_discounted_cumulative_gains[len(hotel_indices)].append(max_dcg)
         normalized_discounted_cumulative_gains[len(hotel_indices)] \
             .append(dcg / max_dcg)
 
@@ -111,6 +110,9 @@ def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matr
 
     discounted_cumulative_gains = calc_mean_per_list_size(discounted_cumulative_gains)
     print("discounted_cumulative_gains\n", discounted_cumulative_gains)
+
+    max_discounted_cumulative_gains = calc_mean_per_list_size(max_discounted_cumulative_gains)
+    print("max_discounted_cumulative_gains\n", max_discounted_cumulative_gains)
 
     normalized_discounted_cumulative_gains = calc_mean_per_list_size(normalized_discounted_cumulative_gains)
     print("normalized_discounted_cumulative_gains\n", normalized_discounted_cumulative_gains)

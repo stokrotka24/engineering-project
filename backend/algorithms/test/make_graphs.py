@@ -1,8 +1,5 @@
 from collections import defaultdict
 import matplotlib.pyplot as plt
-
-from algorithms.test.predicted_ratings_test import positive_threshold_values, algorithm_types, bool_values, \
-    binary_similarities_types
 from algorithms.test.similarity_type import SimilarityType
 
 title = {
@@ -153,7 +150,7 @@ def hybrid_vs_cf():
     n, elapsed_time, ratio, mae, rmse = add_data(key_to_files, 100)
 
     plt.figure()
-    plt.title(f"MAE for hybrid and cosine version (hotel based, weighted average)")
+    plt.title(f"MAE for hybrid and cosine version (hotel based) with weighted average")
     plt.xlabel("n")
     plt.ylabel("MAE")
     for key in key_to_files:
@@ -164,7 +161,7 @@ def hybrid_vs_cf():
     plt.close()
 
     plt.figure()
-    plt.title(f"RMSE for hybrid and cosine version (hotel based, weighted average)")
+    plt.title(f"RMSE for hybrid and cosine version (hotel based) with weighted average")
     plt.xlabel("n")
     plt.ylabel("RMSE")
     for key in key_to_files:
@@ -175,7 +172,7 @@ def hybrid_vs_cf():
     plt.close()
 
     plt.figure()
-    plt.title(f"RATIO for hybrid and cosine version (hotel based, weighted average)")
+    plt.title(f"RATIO for hybrid and cosine version (hotel based) with weighted average")
     plt.xlabel("n")
     plt.ylabel("RATIO")
     for key in key_to_files:
@@ -186,7 +183,7 @@ def hybrid_vs_cf():
     plt.close()
 
     plt.figure()
-    plt.title(f"Time for hybrid and cosine version (hotel based, weighted average)")
+    plt.title(f"Time for hybrid and cosine version (hotel based) with weighted average")
     plt.xlabel("n")
     plt.ylabel("Time [s]")
     for key in key_to_files:
