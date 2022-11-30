@@ -78,8 +78,6 @@ def map_attributes_to_index():
             add_embedded_attr(attr_field.attname)
         elif isinstance(attr_field, EnumChoiceField):
             add_enum_choices(attr_field.attname)
-        else:
-            print("Unsupported type:", type(attr_field))
 
 
 def create_map_feature_to_index():
@@ -90,4 +88,3 @@ def create_map_feature_to_index():
 
 if __name__ == "__main__":
     create_map_feature_to_index()
-    print(map_feature_to_index)

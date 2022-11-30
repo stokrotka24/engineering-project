@@ -2,7 +2,7 @@ import math
 import shelve
 import time
 from collections import defaultdict
-from scipy.sparse import load_npz
+from scipy.sparse import load_npz, save_npz
 from algorithms.content_based.matrices import create_hotel_matrix
 from algorithms.content_based.similarities import cosine
 from algorithms.test.prepare_test_data import prepare_user_matrix
@@ -52,7 +52,7 @@ def calc_mean_per_list_size(d: dict):
     return list(map(lambda t: (t[0], sum(t[1]) / len(t[1])), d.items()))
 
 
-def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matrix):
+def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matrix, file):
     deleted_ratings_map = defaultdict(list)
     for (user_id, hotel_id) in deleted_ratings:
         deleted_ratings_map[user_id].append(hotel_id)
@@ -61,13 +61,9 @@ def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matr
     sum_squared_errors = defaultdict(list)
     kendall_tau_distances = defaultdict(list)
     discounted_cumulative_gains = defaultdict(list)
-    max_discounted_cumulative_gains = defaultdict(list)
     normalized_discounted_cumulative_gains = defaultdict(list)
-    min_normalized_discounted_cumulative_gains = defaultdict(list)
 
     for (user_id, hotel_indices) in deleted_ratings_map.items():
-        if user_id % 5000 == 0:
-            print(user_id)
         recommendations_for_user = []
         user_ratings = []
         for hotel_id in hotel_indices:
@@ -89,51 +85,51 @@ def calc_ranking_quality_measures(recommendations, deleted_ratings, utility_matr
         dcg = discounted_cumulative_gain(hotel_sorted_by_recommendation, user_id, utility_matrix)
         discounted_cumulative_gains[len(hotel_indices)].append(dcg)
         max_dcg = discounted_cumulative_gain(hotel_sorted_by_ratings, user_id, utility_matrix)
-        max_discounted_cumulative_gains[len(hotel_indices)].append(max_dcg)
         normalized_discounted_cumulative_gains[len(hotel_indices)] \
             .append(dcg / max_dcg)
 
-        reversed_hotels = hotel_sorted_by_ratings.copy()
-        reversed_hotels.reverse()
-        min_dcg = discounted_cumulative_gain(reversed_hotels, user_id, utility_matrix)
-        min_normalized_discounted_cumulative_gains[len(hotel_indices)] \
-            .append(min_dcg / max_dcg)
-
     infinity_norms = calc_mean_per_list_size(infinity_norms)
-    print("infinity_norms\n", infinity_norms)
-
     sum_squared_errors = calc_mean_per_list_size(sum_squared_errors)
-    print("sum_squared_errors\n", sum_squared_errors)
-
     kendall_tau_distances = calc_mean_per_list_size(kendall_tau_distances)
-    print("kendall_tau_distances\n", kendall_tau_distances)
-
     discounted_cumulative_gains = calc_mean_per_list_size(discounted_cumulative_gains)
-    print("discounted_cumulative_gains\n", discounted_cumulative_gains)
-
-    max_discounted_cumulative_gains = calc_mean_per_list_size(max_discounted_cumulative_gains)
-    print("max_discounted_cumulative_gains\n", max_discounted_cumulative_gains)
-
     normalized_discounted_cumulative_gains = calc_mean_per_list_size(normalized_discounted_cumulative_gains)
-    print("normalized_discounted_cumulative_gains\n", normalized_discounted_cumulative_gains)
 
-    min_normalized_discounted_cumulative_gains = calc_mean_per_list_size(min_normalized_discounted_cumulative_gains)
-    print("min_normalized_discounted_cumulative_gains\n", min_normalized_discounted_cumulative_gains)
+    with open(file, "a") as f:
+        f.write(f"{infinity_norms}\n")
+        f.write(f"{sum_squared_errors}\n")
+        f.write(f"{kendall_tau_distances}\n")
+        f.write(f"{discounted_cumulative_gains}\n")
+        f.write(f"{normalized_discounted_cumulative_gains}\n")
 
 
-def test(delete_ratio=0.2):
+def content_based(delete_ratio=0.2):
     start = time.time()
     hotel_matrix = create_hotel_matrix()
     user_matrix = prepare_user_matrix(delete_ratio)
     similarities = cosine(user_matrix, hotel_matrix)
-    end = time.time()
-    print(f"Time: {end - start}")
+    elapsed_time = time.time() - start
+    save_npz(f"matrices/similarities_{delete_ratio}.npz", similarities, True)
+    return elapsed_time
 
+
+def test_content_based_ranking(delete_ratio=0.2, deleted_ratings=None, ranking_file="results/content_based.txt"):
     utility_matrix = load_npz("matrices/utility_matrix.npz")
-    file = shelve.open(f"matrices/deleted_ratings_{delete_ratio}.bin")
-    deleted_ratings = file["deleted_ratings"]
-    calc_ranking_quality_measures(similarities, deleted_ratings, utility_matrix)
+    if deleted_ratings is None:
+        file = shelve.open(f"matrices/deleted_ratings_{delete_ratio}.bin")
+        deleted_ratings = file["deleted_ratings"]
+    similarities = load_npz(f"matrices/similarities_{delete_ratio}.npz")
+    calc_ranking_quality_measures(similarities, deleted_ratings, utility_matrix, ranking_file)
+
+
+def measure_content_based_average_time(no_tests=10):
+    elapsed_time = 0
+    for i in range(no_tests):
+        elapsed_time += content_based()
+
+    with open("results/cb_cf_time.txt", "a") as f:
+        f.write(f"content_based: {elapsed_time / no_tests} s")
 
 
 if __name__ == "__main__":
-    test(0.2)
+    measure_content_based_average_time()
+    test_content_based_ranking()

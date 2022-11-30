@@ -13,7 +13,6 @@ MATRICES_DIR = "matrices"
 
 def create_hotel_matrix():
     map_feature_to_col_index, no_columns = create_map_feature_to_index()
-    print(map_feature_to_col_index)
     hotels = Hotel.objects.all()
     no_rows = len(hotels)
     hotel_matrix = dok_matrix((no_rows, no_columns), dtype=np.int32)

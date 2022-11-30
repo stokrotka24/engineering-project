@@ -10,7 +10,7 @@ from algorithms.collaborative_filtering.recommendations import cosine_cf, \
 from algorithms.collaborative_filtering.utility_matrix import get_rating_mean_per_user
 from algorithms.hybrid.recommendations import hybrid
 from algorithms.test.algorithm_type import AlgorithmType
-from algorithms.test.ranking_quality_test import calc_ranking_quality_measures
+from algorithms.test.ranking_quality_test import calc_ranking_quality_measures, test_content_based_ranking
 from algorithms.test.prepare_test_data import binarize_matrix, NO_HOTELS, NO_USERS
 from algorithms.test.similarity_type import SimilarityType
 
@@ -101,9 +101,12 @@ def test_algorithm(similarity_type: SimilarityType, algorithm_type: AlgorithmTyp
     rmse = root_mean_square_error(predicted_ratings, predicted_ratings_indices, utility_matrix)
 
     if ranking_quality_measures:
+        ranking_file = kwargs["ranking_file"]
         calc_ranking_quality_measures(deleted_ratings=predicted_ratings_indices,
                                       recommendations=predicted_ratings,
-                                      utility_matrix=utility_matrix)
+                                      utility_matrix=utility_matrix, file=f"results/{ranking_file}.txt")
+        test_content_based_ranking(delete_ratio=test_ratio, deleted_ratings=predicted_ratings_indices,
+                                   ranking_file=f"results/content_based_vs_{ranking_file}.txt")
     return elapsed_time, prediction_ability, mae, rmse
 
 
@@ -167,6 +170,42 @@ def test_hybrid(file_prefix=""):
                 f.write(f"{n} {elapsed_time} {pr} {mae} {rmse}\n")
 
 
+def calc_average_time_jaccard_variant(no_tests=10):
+    elapsed_time = 0
+    for i in range(no_tests):
+        single_elapsed_time, _, _, _ = test_algorithm(similarity_type=SimilarityType.jaccard,
+                                                      algorithm_type=AlgorithmType.user_based,
+                                                      n=3000, weighted_average=False, ranking_quality_measures=False,
+                                                      positive_threshold=3)
+        elapsed_time += single_elapsed_time
+
+    with open(f"results/cb_cf_time.txt", "a") as f:
+        f.write(f"jaccard: {elapsed_time / no_tests} s")
+
+
+def calc_average_time_cosine_variant(no_tests=10):
+    elapsed_time = 0
+    for i in range(no_tests):
+        single_elapsed_time, _, _, _ = test_algorithm(similarity_type=SimilarityType.cosine,
+                                                      algorithm_type=AlgorithmType.item_based,
+                                                      n=240, weighted_average=True, ranking_quality_measures=False)
+        elapsed_time += single_elapsed_time
+
+    with open(f"results/cb_cf_time.txt", "a") as f:
+        f.write(f"cosine: {elapsed_time / no_tests} s")
+
+
+def compare_with_content_based():
+    calc_average_time_jaccard_variant()
+    calc_average_time_cosine_variant()
+
+    test_algorithm(similarity_type=SimilarityType.jaccard, algorithm_type=AlgorithmType.user_based,
+                   n=3000, weighted_average=False, ranking_quality_measures=True, positive_threshold=3,
+                   ranking_file="jaccard")
+    test_algorithm(similarity_type=SimilarityType.cosine, algorithm_type=AlgorithmType.item_based,
+                   n=240, weighted_average=True, ranking_quality_measures=True, ranking_file="cosine")
+
+
 if __name__ == "__main__":
     test_jaccard_and_cosine_binary()
     test_cosine_and_centered_cosine()
@@ -174,3 +213,4 @@ if __name__ == "__main__":
     test_jaccard_and_cosine_binary("filtered_")
     test_cosine_and_centered_cosine("filtered_")
     test_hybrid("filtered_")
+    compare_with_content_based()
