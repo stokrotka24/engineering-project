@@ -6,6 +6,13 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import com.voyager.R
 
+/**
+ * Displays dialog with filter options.
+ *
+ * @param listener listener, who will be notified about new selected filter options
+ *                 when positive button will be clicked
+ * @param selectedFilterOptions currently selected filter options to display in dialog
+ */
 class FilterFragment(private val listener: OnMultiChoiceClickListener, private val selectedFilterOptions: BooleanArray) : DialogFragment() {
     interface OnMultiChoiceClickListener {
         fun onClickPositiveButton(selectedFilterOptions: BooleanArray)

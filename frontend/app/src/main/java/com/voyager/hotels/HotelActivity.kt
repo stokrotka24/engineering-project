@@ -160,6 +160,14 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         chosenHotels.addAll(hotels)
     }
 
+    /**
+     * This method is invoked when filter dialog was closed with positive button.
+     * Applies selected filter options and filters hotels.
+     * After filtering, sorts hotels with chosen sort type.
+     *
+     * @param selectedFilterOptions filter options selected in filter dialog
+     * @see FilterFragment displays filter dialog
+     */
     @SuppressLint("NotifyDataSetChanged")
     override fun onClickPositiveButton(selectedFilterOptions: BooleanArray) {
         Log.d(TAG, "onClickPositiveButton: ")
@@ -174,6 +182,12 @@ class HotelActivity : AppCompatActivity(), FilterFragment.OnMultiChoiceClickList
         hotelAdapter.notifyDataSetChanged()
     }
 
+    /**
+     * This method is invoked when hotel from list was clicked.
+     * Launches activity with details of this hotel.
+     *
+     * @param hotelId id of clicked hotel
+     */
     override fun onItemClicked(hotelId: Int) {
         Log.d(TAG, "onClickRecyclerViewItem: $hotelId")
         val intent = Intent(applicationContext, HotelDetailsActivity::class.java)

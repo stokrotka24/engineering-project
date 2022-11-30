@@ -46,12 +46,6 @@ class TokenAuthenticator(val context: Context): Authenticator {
         }
     }
 
-    /**
-     * Sends request containing refresh token in order to renew access token.
-     *
-     * @exception RefreshTokenExpiredException if refresh token expired and renewing access token failed
-     * @return renewed access token
-     */
     private fun getRenewedAccessToken(): String {
         Log.d(TAG, "getRenewedAccessToken: ")
         val refreshTokenRequest = TokenRefreshRequest(tokenManager.getRefreshToken())

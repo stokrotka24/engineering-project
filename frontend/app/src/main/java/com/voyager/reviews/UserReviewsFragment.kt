@@ -155,6 +155,12 @@ class UserReviewsFragment : Fragment(), UserReviewAdapter.OnLongClickListener {
         })
     }
 
+    /**
+     * This method is invoked when review from list is long clicked.
+     * Deletes selected review, if it is confirmed in displayed dialog.
+     *
+     * @param review long clicked review
+     */
     override fun onItemLongClicked(review: UserReview): Boolean {
         val dialogBuilder = AlertDialog.Builder(context)
         dialogBuilder

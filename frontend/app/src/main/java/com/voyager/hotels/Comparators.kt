@@ -7,6 +7,13 @@ enum class SortOrder {
 }
 
 class RecommendationComparator(private val sortOrder: SortOrder): Comparator<Hotel> {
+    /**
+     * Provides comparison of hotel recommendation score.
+     * The lower the recommendation score, more recommended the hotel is
+     *
+     * @param hotel1 first hotel to compare
+     * @param hotel2 second hotel to compare
+     */
     override fun compare(hotel1: Hotel, hotel2: Hotel): Int {
         if (sortOrder == SortOrder.DESC) {
             return hotel1.recommendation_score.compareTo(hotel2.recommendation_score)
