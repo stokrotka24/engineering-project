@@ -8,18 +8,33 @@ from authorization.serializers import RegisterSerializer, ChangePasswordSerializ
 
 
 class RegisterView(generics.CreateAPIView):
+    """
+    Creates a new user instance.
+    If registration succeeded, returns username and email of created user.
+    Otherwise, returns registration problems e.g. difference between password
+    and password confirmation.
+    """
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [AllowAny]
 
 
 class ChangePasswordView(generics.UpdateAPIView):
+    """
+    Changes user password.
+    If changing password succeeded, returns user id, username and email.
+    Otherwise, returns changing password problems e.g. difference between password
+    and password confirmation.
+    """
     queryset = User.objects.all()
     serializer_class = ChangePasswordSerializer
     permission_classes = [IsAuthenticated]
 
 
 class AccountInfoView(APIView):
+    """
+    Returns user data: id, username, email.
+    """
     permission_classes = [IsAuthenticated]
 
     def get(self, request, format=None):

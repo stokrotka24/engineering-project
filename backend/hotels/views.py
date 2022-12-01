@@ -8,10 +8,18 @@ from hotels.serializers import HotelSerializer, HotelDetailsSerializer, ReviewSe
 
 
 class HotelView(generics.ListAPIView):
+    """
+    Returns a list of hotels recommended for user.
+    """
     serializer_class = HotelSerializer
     permission_classes = [IsAuthenticated]
 
     def get_queryset(self):
+        """
+        Filters hotels queryset and returns the most recommended hotels
+        (optionally from city defined in the request) for user.
+        Number of recommendations is defined in the request.
+        """
         user = self.request.user
         hotels = Hotel.objects
         recommendations = user.recommendations
@@ -32,6 +40,11 @@ class HotelView(generics.ListAPIView):
 
 
 class HotelDetailsView(generics.RetrieveAPIView):
+    """
+    Returns following details of hotel:
+    id, name, address, city, state, postal_code,
+    stars, review_count, categories, attributes.
+    """
     queryset = Hotel.objects.all()
     serializer_class = HotelDetailsSerializer
     permission_classes = [IsAuthenticated]
@@ -39,6 +52,10 @@ class HotelDetailsView(generics.RetrieveAPIView):
 
 class CreateReviewView(mixins.CreateModelMixin,
                        generics.GenericAPIView):
+    """
+    Creates hotel review.
+    If creating succeeded, returns created review.
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = [IsAuthenticated]
@@ -51,6 +68,10 @@ class CreateReviewView(mixins.CreateModelMixin,
 
 
 class HotelReviewsView(generics.ListAPIView):
+    """
+    Returns a list of reviews for given hotel.
+    Reviews are sorted in requested way and paginated.
+    """
     serializer_class = HotelReviewSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = LimitOffsetPagination
@@ -65,6 +86,10 @@ class HotelReviewsView(generics.ListAPIView):
 
 
 class UserReviewsView(generics.ListAPIView):
+    """
+    Returns a list of reviews for given user.
+    Reviews are sorted in requested way and paginated.
+    """
     serializer_class = UserReviewSerializer
     permission_classes = [IsAuthenticated]
     pagination_class = LimitOffsetPagination
@@ -79,6 +104,9 @@ class UserReviewsView(generics.ListAPIView):
 
 
 class DeleteReviewView(generics.DestroyAPIView):
+    """
+    Deletes given review.
+    """
     queryset = Review.objects.all()
     serializer_class = ReviewComplexSerializer
     permission_classes = [IsAuthenticated]
