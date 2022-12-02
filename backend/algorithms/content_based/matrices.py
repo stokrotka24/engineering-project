@@ -12,6 +12,13 @@ MATRICES_DIR = "matrices"
 
 
 def create_hotel_matrix():
+    """
+    Creates hotel matrix: If given hotel belongs to given category/has given attribute,
+    then in the row of this hotel and in the column of this category/attribute is value 1.
+
+    Returns:
+        hotel matrix
+    """
     map_feature_to_col_index, no_columns = create_map_feature_to_index()
     hotels = Hotel.objects.all()
     no_rows = len(hotels)
@@ -58,6 +65,14 @@ def get_hotel_matrix():
 
 
 def create_user_matrix():
+    """
+    Creates user matrix from user ratings and hotel attributes, categories.
+    Value in the row of given user and in the column of given hotel category/attribute
+    represents user attitude to this category/attribute.
+
+    Returns:
+        user matrix
+    """
     hotel_matrix = get_hotel_matrix()
     normalized_utility_matrix = get_normalized_utility_matrix()
     utility_matrix = get_utility_matrix()

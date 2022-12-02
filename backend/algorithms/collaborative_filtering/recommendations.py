@@ -8,6 +8,21 @@ from authorization.models import User
 
 
 def predict_ratings(utility_matrix_for_similarity_type, utility_matrix, similarities, axis, weighted_average=True):
+    """
+    Predicts users ratings for hotels from utility matrix.
+
+    Args:
+        utility_matrix_for_similarity_type: if similarity function is cosine for normalized data - it is normalized utility matrix
+                                            otherwise - it is utility matrix
+        utility_matrix:
+        similarities: matrix of similarities (axis=0 - between hotels, axis=1 - between users)
+        axis: which dimension of utility matrix is considered: 0 - columns (hotel based), 1 - rows (item based)
+        weighted_average: True - prediction using weighted average, False -  prediction using arithmetic average
+
+    Returns:
+        Matrix with predicted users ratings for hotels
+    """
+
     # Original utility matrix must be used, because binary & normalized matrices doesn't store explicit zeroes
     utility_matrix_ones = utility_matrix.copy()
     utility_matrix_ones.data = np.ones_like(utility_matrix.data)
@@ -63,7 +78,7 @@ def jaccard_cf(axis, n, weighted_average, utility_matrix, binary_utility_matrix)
     Collaborative filtering algorithm using jaccard similarity
 
     Returns:
-        Predicted hotel ratings
+        Predicted users ratings for hotels
     """
     similarities = jaccard(binary_utility_matrix, axis)
     similarities = filter_similarities(similarities, n)
@@ -75,7 +90,7 @@ def cosine_cf(axis, n, weighted_average, utility_matrix, utility_matrix_to_calc_
     Collaborative filtering algorithm using cosine similarity
 
     Returns:
-        Predicted hotel ratings
+        Predicted users ratings for hotels
     """
     similarities = cosine(utility_matrix_to_calc_similarities, axis)
     similarities = filter_similarities(similarities, n)
@@ -88,7 +103,7 @@ def cosine_normalized_data_cf(axis, n, weighted_average, utility_matrix,
     Collaborative filtering algorithm for normalized ratings using cosine similarity
 
     Returns:
-        Predicted hotel ratings
+        Predicted users ratings for hotels
     """
 
     similarities = cosine(normalized_utility_matrix, axis)

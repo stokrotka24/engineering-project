@@ -8,6 +8,9 @@ from authorization.models import User
 
 
 def update_recommendations():
+    """
+        Updates recommendations from content based algorithm in database
+    """
     delete_matrices()
 
     hotel_matrix = get_hotel_matrix()
