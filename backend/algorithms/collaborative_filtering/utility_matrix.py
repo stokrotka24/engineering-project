@@ -15,22 +15,24 @@ from hotels.models import Hotel, Review
 
 first_user_id = User.objects.first().id
 first_hotel_id = Hotel.objects.first().id
-users_count = User.objects.count()
-hotels_count = Hotel.objects.count()
+last_user_id = User.objects.last().id
+last_hotel_id = Hotel.objects.last().id
 
 
 def create_utility_matrix(user_bias=first_user_id, hotel_bias=first_hotel_id,
-                          no_users=users_count, no_hotels=hotels_count):
+                          max_user_id=last_user_id, max_hotel_id=last_hotel_id):
     """
     Creates standard utility matrix from user ratings.
 
     Args:
         user_bias: how many first users omit
         hotel_bias: how many first hotels omit
-        no_users: number of users included
-        no_hotels: number of hotels included
+        max_user_id: maximum user id that will be included in matrix
+        max_hotel_id: maximum user id that will be included in matrix
     """
     reviews = Review.objects.all()
+    no_users = max_user_id - user_bias + 1
+    no_hotels = max_hotel_id - hotel_bias + 1
     um = dok_matrix((no_users, no_hotels), dtype=np.int32)
     reviews_timestamps = dok_matrix((no_users, no_hotels), dtype=np.single)
 
@@ -57,7 +59,7 @@ def get_utility_matrix():
 
 
 def create_binary_utility_matrix(positive_threshold, user_bias=first_user_id, hotel_bias=first_hotel_id,
-                                 no_users=users_count, no_hotels=hotels_count):
+                                 max_user_id=last_user_id, max_hotel_id=last_hotel_id):
     """
     Creates and saves binary utility matrix:
         1 if rating is greater or equal to positive_threshold
@@ -68,10 +70,12 @@ def create_binary_utility_matrix(positive_threshold, user_bias=first_user_id, ho
         positive_threshold: number, above which rating will be treated as positive (=1)
         user_bias: how many first users omit
         hotel_bias: how many first hotels omit
-        no_users: number of users included
-        no_hotels: number of hotels included
+        max_user_id: maximum user id that will be included in matrix
+        max_hotel_id: maximum user id that will be included in matrix
     """
     reviews = Review.objects.all()
+    no_users = max_user_id - user_bias + 1
+    no_hotels = max_hotel_id - hotel_bias + 1
     bin_um = dok_matrix((no_users, no_hotels), dtype=np.int32)
     reviews_timestamps = dok_matrix((no_users, no_hotels), dtype=np.single)
 

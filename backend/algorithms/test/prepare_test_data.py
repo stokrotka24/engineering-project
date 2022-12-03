@@ -10,15 +10,17 @@ from algorithms.collaborative_filtering.utility_matrix import create_utility_mat
 from algorithms.content_based.matrices import get_hotel_matrix
 
 FIRST_TEST_USER_ID = 3
+LAST_TEST_USER_ID = 152762
 NO_USERS = 152760
 
 FIRST_TEST_HOTEL_ID = 1
+LAST_TEST_HOTEL_ID = 2977
 NO_HOTELS = 2977
 
 
 def create_test_utility_matrix():
     create_utility_matrix(user_bias=FIRST_TEST_USER_ID, hotel_bias=FIRST_TEST_HOTEL_ID,
-                          no_users=NO_USERS, no_hotels=NO_HOTELS)
+                          max_user_id=LAST_TEST_USER_ID, max_hotel_id=LAST_TEST_HOTEL_ID)
 
 
 def delete_ratings_in_utility_matrix(utility_matrix, delete_ratio=0.2, file_infix=""):
