@@ -23,12 +23,10 @@ android {
 
     buildTypes {
         debug {
-            // TODO: change to server local IP in order to work on real device
             buildConfigField("String", "API_URL", "\"https://10.0.2.2:5000/\"")
         }
 
         release {
-            // TODO: change to server local IP in order to work on real device
             buildConfigField("String", "API_URL", "\"https://10.0.2.2:5000/\"")
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
