@@ -21,7 +21,7 @@ def update_recommendations():
     similarities = lil_matrix(np.where((utility_matrix.toarray() == 0), similarities.toarray(), 0))
 
     users = User.objects.all()
-    for (user_index, user) in enumerate(users[:3]):
+    for (user_index, user) in enumerate(users):
         user_row = np.array(similarities.data[user_index])
         hotel_indices = np.array(similarities.rows[user_index])
         sorted_data_indices = user_row.argsort()[::-1]

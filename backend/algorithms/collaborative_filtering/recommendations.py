@@ -131,7 +131,7 @@ def update_recommendations():
     predicted_ratings = lil_matrix(np.where((utility_matrix.toarray() == 0), predicted_ratings, 0))
 
     users = User.objects.all()
-    for (user_index, user) in enumerate(users[:20]):
+    for (user_index, user) in enumerate(users):
         user_row = np.array(predicted_ratings.data[user_index])
         hotel_indices = np.array(predicted_ratings.rows[user_index])
         sorted_data_indices = user_row.argsort()[::-1]
